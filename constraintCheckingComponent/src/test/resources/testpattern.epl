@@ -1,2 +1,0 @@
-select *
-from VirtualMachine(cpu > 0.5)

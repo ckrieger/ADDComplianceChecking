@@ -1,6 +1,5 @@
 package de.iaas.grossmann.cpe.engine.handler;
 
-import de.iaas.grossmann.cpe.engine.model.HttpEvent;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import com.espertech.esper.client.EPStatement;
 import de.iaas.grossmann.cpe.engine.model.CircuitBreaker;
 import de.iaas.grossmann.cpe.engine.model.EventType;
 import de.iaas.grossmann.cpe.engine.model.VirtualMachine;
-import de.iaas.grossmann.cpe.engine.model.Tick;
 import de.iaas.grossmann.cpe.engine.subscriber.PatternStatementSubscriber;
 
 @Component
@@ -29,20 +27,14 @@ public class EsperCEPEngine implements InitializingBean, CEPEventHandler, CEPSta
 	private void setupEngine() {
 		Configuration config = setupConfig();
 		cepProvider = EPServiceProviderManager.getProvider("myCEPEngine", config);
-//		cepRT = cepProvider.getEPRuntime();
 	}
 
 	private Configuration setupConfig() {
 		Configuration config = new Configuration();
-		// We register Ticks as objects the engine will have to handle
+
 		config.addEventType("VirtualMachine", VirtualMachine.class.getName());
 		config.addEventType("CircuitBreaker", CircuitBreaker.class.getName());
-		//config.addEventTypeAutoName("model");
 		EPServiceProvider epService = EPServiceProviderManager.getDefaultProvider(config);
-
-		String[] propertyNamesVM = epService.getEPAdministrator().getConfiguration().getEventType("VirtualMachine").getPropertyNames();
-		String[] propertyNamesCB = epService.getEPAdministrator().getConfiguration().getEventType("CircuitBreaker").getPropertyNames();
-		System.out.println(propertyNamesVM);
 		return config;
 	}
 	
@@ -58,7 +50,6 @@ public class EsperCEPEngine implements InitializingBean, CEPEventHandler, CEPSta
     public void addStatementSubscriber(PatternStatementSubscriber subscriber) {
         System.out.println("add new Subscriber Statement for pattern " + subscriber.getPatternName());
         System.out.println("Subscriber Statement: " + subscriber.getStatement());
-//        this.violationService.addSubscriber(subscriber);
         EPStatement newStatement = cepProvider.getEPAdministrator().createEPL(subscriber.getStatement());
         newStatement.setSubscriber(subscriber);
     }

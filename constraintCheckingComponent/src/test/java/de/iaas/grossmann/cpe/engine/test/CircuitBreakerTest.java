@@ -18,8 +18,6 @@ import de.iaas.grossmann.cpe.engine.handler.CEPStatementHandler;
 import de.iaas.grossmann.cpe.engine.handler.StatementViolationService;
 import de.iaas.grossmann.cpe.engine.model.CircuitBreaker;
 import de.iaas.grossmann.cpe.engine.subscriber.PatternStatementSubscriber;
-import de.iaas.grossmann.cpe.engine.test.generator.HttpEventGenerator;
-import de.iaas.grossmann.cpe.engine.test.generator.WorkloadEventGenerator;
 import de.iaas.grossmann.cpe.engine.test.util.PatternStatementUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,8 +28,6 @@ public class CircuitBreakerTest {
 	private CEPStatementHandler statementHandler;
 	@Autowired
 	private StatementViolationService violationService;
-	@Autowired
-	private HttpEventGenerator generator;
 	@Autowired
 	private PatternStatementUtils patternUtils;
 	@Autowired

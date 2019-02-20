@@ -1,3 +1,0 @@
-create schema HttpEvent(id long, source string, destination string, failure int, success int, timestamp long);
-
-@Name('Watchdog Violation')select * from pattern [ every id) and timer:interval(300 milliseconds)];
