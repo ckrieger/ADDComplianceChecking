@@ -1,0 +1,17 @@
+create schema VMCount(number int);
+create window VMCountWin.win:length(1) as VMCount;
+
+create schema ReduceCountEvent(number int);
+create window ReduceCountEventWin.win:length(1) as ReduceCountEvent;
+
+create schema IncreaseCountEvent(number int);
+create window IncreaseCountEventWin.win:length(1) as IncreaseCountEvent;
+create context SegmentedByScalingGroup partition by scalingGroupId  from VirtualMachine;
+
+context SegmentedByScalingGroup insert into VMCount select cast(count(*),int) as number from VirtualMachine.std:unique(id).win:time(200 milliseconds) vme;
+
+insert into ReduceCountEvent select se.number as number from pattern [ every fe=VMCount -> se=VMCount(fe.number > se.number)];
+
+insert into IncreaseCountEvent select see.number as number from pattern [ every fee=VMCount -> see=VMCount(fee.number < see.number)];
+
+@Name('Watchdog Violation')select * from pattern [ every re=ReduceCountEvent -> not ie=IncreaseCountEvent(re.number < ie.number) and timer:interval(300 milliseconds)];

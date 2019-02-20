@@ -1,0 +1,8 @@
+create context SegmentedByCircuitBreaker partition by id from CircuitBreaker;
+
+context SegmentedByCircuitBreaker insert into CircuitBreakerFailureRateExcessEvent select * from CircuitBreaker.win:length(3) where remoteFunctionCallStatus = "failure" having count(*) > 2;
+insert into CircuitBreakerCloseDesiredEvent select * from pattern[ every CircuitBreakerFailureRateExcessEvent -> not CircuitBreaker(remoteFunctionCallStatus = "failure") where timer:within(100 msec)];
+
+@Name('Circuit Breaker Violation')select * from pattern [every (CircuitBreakerFailureRateExcessEvent -> CircuitBreaker(remoteFunctionCallStatus != "blocked" ) where timer:within(100 msec)) or (CircuitBreakerCloseDesiredEvent -> not CircuitBreakerFailureRateExcessEvent until CircuitBreaker(remoteFunctionCallStatus = "blocked"))];
+
+

@@ -1,0 +1,34 @@
+create schema HttpEvent(id long, source string, destination string, failure int, success int, timestamp long);
+
+
+create schema CircuitBreakerFailureRateExcessEvent(id long, source string, destination string, timestamp long);
+create schema CircuitBreakerClosedDesiredEvent(id long, source string, destination string, timestamp long);
+create schema CircuitBreakerOpenedDesiredEvent(id long, source string, destination string, timestamp long);
+create schema CircuitBreakerSleepDesiredAfterOpenedEvent(id long, source string, destination string, timestamp long);
+create schema CircuitBreakerSleepDesiredAfterRetryAttemptEvent(id long, source string, destination string, timestamp long);
+
+
+insert into CircuitBreakerFailureRateExcessEvent select last(id) as id, last(source) as source, last(destination) as destination, last(timestamp) as timestamp from HttpEvent.win:time(1 sec)
+where source='MS1' and destination='MS2' having sum(failure)/(sum(failure)+sum(success)) > 0.5 output last every 1000 msec;
+
+insert into CircuitBreakerOpenedDesiredEvent select e.id as id, e.source as source, e.destination as destination, e.timestamp as timestamp from pattern [not CircuitBreakerOpenedDesiredEvent(source='MS1', destination='MS2') and e=CircuitBreakerFailureRateExcessEvent(source='MS1', destination='MS2')];
+
+insert into CircuitBreakerOpenedDesiredEvent select e.id as id, e.source as source, e.destination as destination, e.timestamp as timestamp from pattern [every( CircuitBreakerClosedDesiredEvent(source='MS1', destination='MS2') -> not CircuitBreakerOpenedDesiredEvent(source='MS1', destination='MS2') until e=CircuitBreakerFailureRateExcessEvent(source='MS1', destination='MS2') )];
+
+insert into CircuitBreakerSleepDesiredAfterOpenedEvent select id, source, destination, timestamp from CircuitBreakerOpenedDesiredEvent(source='MS1', destination='MS2');
+
+insert into CircuitBreakerSleepDesiredAfterRetryAttemptEvent select e.id as id, e.source as source, e.destination as destination, e.timestamp as timestamp from pattern [every( (CircuitBreakerSleepDesiredAfterOpenedEvent(source='MS1', destination='MS2') 
+or CircuitBreakerSleepDesiredAfterRetryAttemptEvent(source='MS1', destination='MS2')) -> not HttpEvent(source='MS1', destination='MS2', success=1) until e=HttpEvent(source='MS1', destination='MS2', failure=1) )];
+
+@Name('Sleep period violation')select cause from pattern [every( (CircuitBreakerSleepDesiredAfterOpenedEvent(source='MS1', destination='MS2') or CircuitBreakerSleepDesiredAfterRetryAttemptEvent(source='MS1', destination='MS2')) ->
+cause = HttpEvent(source='MS1', destination='MS2') where timer:within(100 msec) )];
+
+insert into CircuitBreakerClosedDesiredEvent select e.id as id, e.source as source, e.destination as destination, e.timestamp as timestamp 
+from pattern [every( (CircuitBreakerSleepDesiredAfterOpenedEvent(source='MS1', destination='MS2') or CircuitBreakerSleepDesiredAfterRetryAttemptEvent(source='MS1', destination='MS2')) -> 
+not HttpEvent(source='MS1', destination='MS2', failure=1) until e=HttpEvent(source='MS1', destination='MS2', success=1) )];
+
+
+
+context SegmentedByCircuitBreaker insert into CircuitBreakerFailureRateExcessEvent select cast(count(*),int) a number from CircuitBreaker.win:length(3) ce where ce.functionCallFailed = true;
+
+@Name('Circuit Breaker Close After Timeout Violation')select * from pattern [every CircuitBreakerCloseDesiredEvent -> CircuitBreaker(remoteFunctionCallStatus = "blocked") until CircuitBreakerFailureRateExcessEvent];

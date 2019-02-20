@@ -1,0 +1,6 @@
+create schema AverageCpuEvent(value double);
+create window AverageCpuEventWin.win:length(1) as AverageCpuEvent;
+
+insert into AverageCpuEvent select avg(ne.cpu) as value from VirtualMachine.std:unique(id) ne;
+
+@Name('GrowingWorkload Violation')select * from pattern [ every fe=AverageCpuEvent -> se=AverageCpuEvent(fe.value >= se.value)];

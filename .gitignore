@@ -1,0 +1,7 @@
+**/src-gen/
+**/xtend-gen/
+**/aws.properties
+**/target/*
+**/generated/*
+**/cpl/esper/bin/*
+cpl/.idea/
