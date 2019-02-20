@@ -51,7 +51,7 @@ public class CircuitBreakerTest {
 	}
 
 	@Test
-	public void shouldThrowViolationIfCircuitBreakerDoesNotTripAfterThresholdExceededAndSleepPeriodIsViolated() throws FileNotFoundException, IOException, InterruptedException {
+	public void shouldThrowViolationIfCircuitBreakerDoesNotTripAfterThresholdExceededAndSleepPeriodIsViolated() throws IOException {
 	  PatternStatementSubscriber subscriber = patternUtils.preparePattern("CircuitBreaker");
 	  // exceed threshold
 	  for (int i = 0; i < functionCallFailureThresholdExceeded; i++) {
