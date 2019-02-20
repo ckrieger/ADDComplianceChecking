@@ -1,0 +1,158 @@
+grammar de.iaas.grossmann.ccpl.CCPL with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate cCPL "http://www.iaas.de/grossmann/ccpl/CCPL"
+
+ConstraintTemplate:
+	'pattern' patternName=ID':' componentEvents+=ComponentEvent (componentEvents+=ComponentEvent)* (statements+=Statement) (statements+=Statement)*
+;
+
+ComponentEvent:
+	'use' event=Event ';'
+;
+
+Event:
+	name=ID '(' parameters+=Parameter (',' parameters+=Parameter)* ')'
+;
+
+Parameter:
+	name=ID type=ParameterType
+;
+
+enum ParameterType:
+	DOUBLE='double' | INTEGER='int' | LONG='long' | STRING='string' | BOOLEAN='boolean'
+;
+
+Statement:
+	scontext=Context ( definition=EventDefinition | compliance=Compliance | violation=Violation )
+;
+
+//-------------------CONTEXT>>>>>>>>>>>>>>>>>>>>>>>
+Context:
+	'context' (collections+=EventCollection) ("," collections+=EventCollection)* ':'
+;
+
+EventCollection:
+	name=ID '=' event=[Event] constraint=EventConstraint? filter=EventFilter? time=TimeConstraint? window=WindowConstraint?
+;
+
+WindowConstraint:
+	'last(' ( value=INT | var=ConstraintVariable ) ')'
+;
+
+EventConstraint:
+	'(' expression=Expression ')'
+;
+
+EventFilter hidden():
+	'!' parameter=[Parameter]
+;
+//-------------------CONTEXT<<<<<<<<<<<<<<<<<<<<<<<
+
+EventDefinition:
+	'def:' event=Event ':' expressions+=Expression (',' expressions+=Expression)* ';'
+	('of' 'sequence:' sequence=EventSequence)? 
+;
+
+Compliance:
+	'compliance' constraint=Constraint
+;
+
+Violation:
+	'violation' constraint=Constraint
+;
+
+Constraint:
+	('when' 'sequence:' sequence=EventSequence | 'when:' expression=Expression ';')
+;
+
+// first?='first'?
+EventSequence:
+	 variables+=SequenceVariable ('->' variables+=SequenceVariable)* ';'
+;
+
+SequenceVariable:
+	negation?='not'? event=[EventCollection] time=TimeConstraint?
+;
+
+TimeConstraint:
+	'time' ( value=INT | var=ConstraintVariable ) timeUnit=TimeUnit
+;
+
+enum TimeUnit:
+	MILLISECOND='milliseconds' | SECOND='sec' | MINUTE='min'
+;
+
+//-------------------EXPRESSIONS>>>>>>>>>>>>>>>>>>>>>>>
+Expression:
+	OrExpression
+;
+
+OrExpression returns Expression:
+	AndExpression ({OrExpression.left=current} 'or' right=AndExpression)*
+;
+
+AndExpression returns Expression:
+	NotExpression ({AndExpression.left=current} 'and' right=NotExpression)*
+;
+
+NotExpression returns Expression:
+	{NotExpression} 'not' expression=NotExpression 
+	| CompareExpression
+;
+
+CompareExpression returns Expression:
+	MathExpression ({CompareExpression.left=current} operator=CompareOperator right=MathExpression)*
+;
+
+MathExpression returns Expression:
+	MathTerm ({MathExpression.left=current} operator=MathOperator right=MathTerm)*
+;
+	
+MathTerm returns Expression:
+	{MathTerm} (
+	'(' child=Expression ')'
+	| literal=Literal
+	| ref=ParameterReference
+	| function=Function
+	| variable=ConstraintVariable
+	)
+;
+
+enum CompareOperator:
+	GEQ='>=' | LEQ='<=' | EQ='=' | NEQ='!=' | GT='>' | LT='<'
+;
+
+enum MathOperator:
+	ADD='+' | SUB='-' | MULT='*' | DIV='/' | MOD='%'
+;
+
+DOUBLE:
+	INT '.' INT
+;
+
+Function:
+	aggregateFunction=AggregateFunction '(' value=ParameterReference ')' | countFunction?='count'
+;
+
+enum AggregateFunction:
+	AVG='avg' | SUM='sum' | PRODUCT='product'
+;
+
+ParameterReference:
+	ref=[EventCollection] '.' parameter=[Parameter]
+;
+
+Literal:
+	text=STRING | intNumber=INT | doubleNumber=DOUBLE | booleanValue=BOOLEAN
+;
+
+BOOLEAN:
+	trueValue='true' | falseValue='false'
+;
+
+ConstraintVariable:
+	'${' name=ID '}'
+;
+//-------------------EXPRESSIONS<<<<<<<<<<<<<<<<<<<<<<<

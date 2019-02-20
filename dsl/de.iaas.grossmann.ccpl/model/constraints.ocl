@@ -1,0 +1,89 @@
+import cCPL : 'generated/CCPL.ecore'
+
+package cCPL
+
+context ConstraintTemplate
+inv patternNameExists: not self.patternName->oclIsUndefined()
+inv patternNameNotNull: self.patternName <> null
+-- document contains at least one violation or compliance
+inv existsComplianceOrViolation: self.statements->exists(s | not s.violation->oclIsUndefined() or not s.compliance->oclIsUndefined())
+-- ???(check if yes or no) document does not contain both, violation and compliance
+inv eitherComplianceOrViolation:
+	self.statements->forAll(s | s->oclIsTypeOf(Violation) or s->oclIsTypeOf(EventDefinition))
+	or self.statements->forAll(s | s->oclIsTypeOf(Compliance) or s->oclIsTypeOf(EventDefinition))
+
+-- when a sequence is used in a statement, the context must define the same amount of events that are used in the sequence
+-- for every variable used in a sequence, there must be an according variable in the context events
+context Statement
+-- for every variable in an event definition with a sequence, there exists a context event with according variable name
+inv varsContextDefinition: self.definition.sequence.variables->forAll(var | self.scontext.collections->exists(event | event.name = var.event.name))
+inv varsAmountContextDefinition: self.definition.sequence.variables->size() = self.scontext.collections->size()
+-- for every variable in a violation constraint with a sequence, there exists a context event with according variable name
+inv varsContextViolation: self.violation.constraint.sequence.variables->forAll(var | self.scontext.collections->exists(event | event.name = var.event.name))
+inv varsAmountContextViolation: self.violation.constraint.sequence.variables->size() = self.scontext.collections->size()
+-- for every variable in a compliance constraint with a sequence, there exists a context event with according variable name
+inv varsContextCompliance: self.compliance.constraint.sequence.variables->forAll(var | self.scontext.collections->exists(event | event.name = var.event.name))
+inv varsAmountContextCompliance: self.compliance.constraint.sequence.variables->size() = self.scontext.collections->size()
+
+-- for every statement there must be either one of definition, violation, or compliance
+inv onlyOne: not self.definition->oclIsUndefined() xor not self.violation->oclIsUndefined() xor not self.compliance->oclIsUndefined() 
+--inv definition: not self.definition->oclIsUndefined() implies self.violation->oclIsUndefined() and self.compliance->oclIsUndefined() 
+--inv violation: not self.violation->oclIsUndefined() implies self.definition->oclIsUndefined() and self.compliance->oclIsUndefined()
+--inv compliance: not self.compliance->oclIsUndefined() implies self.violation->oclIsUndefined() and self.definition->oclIsUndefined()
+
+
+context EventDefinition
+-- the amount of expressions for an event definition must be equal to the amount of parameters for the event
+inv amountParamsEqAmountExp: self.event.parameters->size() = self.expressions->size()
+--inv order: self.event.parameters->forAll( param | self.expressions->  )
+
+context Context
+-- the variable names for the context events must be unique
+inv uniqueNames: self.collections->isUnique(collection | collection.name)
+
+context EventCollection
+-- event filters must reference an existing parameter of the context event
+inv correctParameterRef: not self.filter->oclIsUndefined() implies 
+	self.event.parameters->exists(parameter | parameter.name = self.filter.parameter.name)
+-- the variable name of a context event must always be given
+inv varName: not self.name->oclIsUndefined() and self.name <> null
+
+context Event
+-- the parameter names for the event must be unique
+inv uniqueParameters: self.parameters->isUnique(parameter | parameter.name)
+
+context ConstraintTemplate
+-- the event names of component events and event definitions must be unique
+inv uniqueEvents: self.componentEvents->collect(ce | ce.event)->union(self.statements->collect(s | s.definition.event))->isUnique(event | event.name)
+
+
+context MathTerm
+inv onlyOneExists: not self.variable->oclIsUndefined() xor not self.literal->oclIsUndefined() 
+  xor not self.function->oclIsUndefined() xor not self.ref->oclIsUndefined() xor not self.child->oclIsUndefined()
+
+context Literal
+inv onlyOneType: not self.text->oclIsUndefined() xor not self.intNumber->oclIsUndefined() xor not self.doubleNumber->oclIsUndefined() xor not self.booleanValue->oclIsUndefined()
+
+context ConstraintVariable
+inv name: not self.name->oclIsUndefined() and self.name <> null
+
+context Function
+inv fun: not self.aggregateFunction->oclIsUndefined() xor self.countFunction
+
+--context Statement
+--inv countContext: self.allOwnedElements()->selectByType(Function)->exists(f | f.countFunction ) implies self.scontext.collections->size() = 1 
+
+
+--------------------
+context TimeConstraint
+inv oneValue: not self.value->oclIsUndefined() xor not self.var->oclIsUndefined()
+inv timeUnit: not self.timeUnit->oclIsUndefined()
+
+context WindowConstraint
+inv valueExists: not self.value->oclIsUndefined() xor not self.var->oclIsUndefined()
+
+context EventFilter
+inv paramExists: not self.parameter->oclIsUndefined()
+
+
+endpackage
