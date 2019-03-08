@@ -86,6 +86,12 @@
 	    <version>${esper-version}</version>
 	</dependency>
 
+      <dependency>
+          <groupId>de.iaas.grossmann.cpe</groupId>
+          <artifactId>monitor</artifactId>
+          <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+
   </dependencies>
 
 </project>
