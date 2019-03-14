@@ -28,7 +28,7 @@ export class PatternEditComponent implements OnInit, OnDestroy {
           if (pattern) {
             this.pattern = pattern;
           } else {
-            console.log(`Car with id '${id}' not found, returning to list`);
+            console.log(`Pattern with id '${id}' not found, returning to list`);
             //this.gotoList();
           }
         });

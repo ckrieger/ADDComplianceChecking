@@ -15,6 +15,7 @@ public class Pattern {
     @Id @GeneratedValue
     private Long id;
     private @NonNull String name;
+    private String pConstraint;
 
     public Long getId() {
         return id;
@@ -31,4 +32,8 @@ public class Pattern {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getpConstraint() { return pConstraint; }
+
+    public void setpConstraint(String pConstraint) { this.pConstraint = pConstraint; }
 }

@@ -8,6 +8,7 @@ import { PatternService } from '../services/pattern.service';
 })
 export class PatternComponent implements OnInit {
   patterns: Array<any>;
+  panelOpenState = false;
 
   constructor(private patternService: PatternService) { }
 
