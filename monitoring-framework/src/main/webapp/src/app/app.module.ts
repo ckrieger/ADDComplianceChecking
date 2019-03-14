@@ -7,11 +7,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { PatternComponent } from './pattern/pattern.component';
 import { MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatToolbarModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PatternEditComponent } from './pattern-edit/pattern-edit.component';
+import { ProjectListComponent } from './project-list/project-list.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PatternComponent
+    PatternComponent,
+    PatternEditComponent,
+    ProjectListComponent
   ],
   imports: [
     BrowserModule,
@@ -22,7 +27,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatCardModule,
     MatInputModule,
     MatListModule,
-    MatToolbarModule
+    MatToolbarModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

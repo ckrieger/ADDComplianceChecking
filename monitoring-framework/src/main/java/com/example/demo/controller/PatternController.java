@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import com.example.demo.model.Pattern;
 import com.example.demo.repository.PatternRepository;
@@ -21,4 +22,5 @@ public class PatternController {
     public Collection<Pattern> getPatterns(){
         return repository.findAll();
     }
+
 }
