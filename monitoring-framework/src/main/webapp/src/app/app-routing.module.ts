@@ -14,7 +14,7 @@ const routes: Routes = [
     component: PatternComponent
   },
   {
-    path: 'pattern-add',
+    path: 'pattern-edit',
     component: PatternEditComponent
   },
   {

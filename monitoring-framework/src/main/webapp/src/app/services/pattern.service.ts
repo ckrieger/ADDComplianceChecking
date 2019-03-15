@@ -16,7 +16,7 @@ export class PatternService {
   }
 
   getAll(): Observable<any> {
-    return this.http.get(this.patternApi);
+    return this.http.get(this.patternApi + "/get");
   }
 
   get(id: string) {
@@ -24,15 +24,14 @@ export class PatternService {
   }
 
   add(pattern: any): Observable<any> {
-    return this.http.post(this.patternApi, pattern);
-
+    return this.http.post(this.patternApi + "/add", pattern);
   }
 
   update(pattern: any): Observable<any> {
     return this.http.put(this.patternApi + '/' + pattern.id, pattern)
   }
 
-  remove(id: string) {
-    return this.http.delete(this.patternApi + '/' + id);
+  remove(pattern: any): Observable<any> {
+    return this.http.post(this.patternApi + '/remove', pattern);
   }
 }

@@ -1,12 +1,22 @@
 <mat-card>
-  <mat-card-title>Pattern List</mat-card-title>
-  <mat-card-content>
-    <mat-list>
-      <mat-list-item *ngFor="let pattern of patterns">
-        <!--<img mat-list-avatar src="{{pattern.giphyUrl}}" alt="{{pattern.name}}">-->
-        <h3 mat-line>{{pattern.name}}</h3>
-      </mat-list-item>
-    </mat-list>
-  </mat-card-content>
-  <button mat-fab color="primary" [routerLink]="['/pattern-add']">Add</button>
+  <mat-card-title><h3>Patterns</h3></mat-card-title>
+  <div class="right-flex">
+    <button mat-flat-button color="primary" [routerLink]="['/pattern-edit']">Add pattern</button>
+  </div>
 </mat-card>
+<mat-accordion *ngFor="let pattern of patterns">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h4>{{pattern.name}}</h4>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-card>
+      <mat-card-subtitle>Constraint</mat-card-subtitle>
+      <mat-card-content>{{pattern.pConstraint}}</mat-card-content>
+      <div class="example-button-row">
+        <button mat-stroked-button color="primary" [routerLink]="['/pattern-edit', pattern]" >Edit</button>
+      </div>
+    </mat-card>
+  </mat-expansion-panel>
+</mat-accordion>

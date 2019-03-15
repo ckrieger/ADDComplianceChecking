@@ -28,7 +28,7 @@ export class PatternEditComponent implements OnInit, OnDestroy {
           if (pattern) {
             this.pattern = pattern;
           } else {
-            console.log(`Car with id '${id}' not found, returning to list`);
+            console.log(`Pattern with id '${id}' not found, returning to list`);
             //this.gotoList();
           }
         });
@@ -45,15 +45,19 @@ export class PatternEditComponent implements OnInit, OnDestroy {
   }
 
   save(form: NgForm) {
-    this.patternService.add(form).subscribe(result => {
+    this.patternService.add(JSON.stringify(form)).subscribe(result => {
       this.gotoList();
     }, error => console.error(error));
   }
 
   remove(href) {
-    this.patternService.remove(href).subscribe(result => {
+    this.patternService.remove(JSON.stringify(href)).subscribe(result => {
       this.gotoList();
     }, error => console.error(error));
+  }
+
+  cancel() {
+    this.gotoList();
   }
 
 }
