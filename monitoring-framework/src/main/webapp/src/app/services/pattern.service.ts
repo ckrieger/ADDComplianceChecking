@@ -31,7 +31,7 @@ export class PatternService {
     return this.http.put(this.patternApi + '/' + pattern.id, pattern)
   }
 
-  remove(id: string) {
-    return this.http.delete(this.patternApi + '/' + id);
+  remove(pattern: any): Observable<any> {
+    return this.http.post(this.patternApi + '/remove', pattern);
   }
 }

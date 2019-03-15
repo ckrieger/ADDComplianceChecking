@@ -52,7 +52,7 @@ export class PatternEditComponent implements OnInit, OnDestroy {
   }
 
   remove(href) {
-    this.patternService.remove(href).subscribe(result => {
+    this.patternService.remove(JSON.stringify(href)).subscribe(result => {
       this.gotoList();
     }, error => console.error(error));
   }

@@ -37,7 +37,7 @@ public class PatternController {
         pattern.setName(jsonMap.get("name").toString());
         pattern.setpConstraint(jsonMap.get("constraint").toString());
 
-        // Delete Pattern by name, if it exists in Repository
+        // Delete Pattern by name, if it exists in repository
         for(Iterator<Pattern> it = this.repository.findAll().iterator(); it.hasNext();) {
             Pattern refPattern = it.next();
             if(refPattern.getName().equals(pattern.getName())) {
@@ -47,4 +47,20 @@ public class PatternController {
         this.repository.save(pattern);
     }
 
+    @PostMapping(path = "/remove", consumes = "text/plain")
+    public void removePattern(@RequestBody String patternBody) throws IOException {
+
+        // Map patternBody in JSON format to object map
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> jsonMap = objectMapper.readValue(patternBody,
+                new TypeReference<Map<String, Object>>(){});
+
+        // Delete Pattern by name, if it exists in repository
+        for(Iterator<Pattern> it = this.repository.findAll().iterator(); it.hasNext();) {
+            Pattern refPattern = it.next();
+            if(refPattern.getName().equals(jsonMap.get("name"))) {
+                this.repository.delete(refPattern);
+            }
+        }
+    }
 }

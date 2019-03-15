@@ -17,8 +17,8 @@
     <mat-card-actions>
       <button mat-raised-button color="primary" type="submit"
               [disabled]="!patternForm.form.valid">Save</button>
-      <button mat-raised-button color="secondary" (click)="remove(pattern.id)"
-              *ngIf="pattern.id" type="button">Delete</button>
+      <button mat-raised-button color="secondary" (click)="remove(pattern)"
+              *ngIf="pattern.name" type="button">Delete</button>
       <a mat-button routerLink="/pattern-list" (ngSubmit)="cancel()">Cancel</a>
     </mat-card-actions>
   </form>
