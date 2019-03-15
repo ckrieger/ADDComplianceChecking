@@ -6,4 +6,4 @@ RUN npm install &&\
     apk update &&\
     apk upgrade
 EXPOSE  5000
-CMD node server.js
+CMD sh ./cpu-usage.sh ; node server.js 
