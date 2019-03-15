@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -36,4 +38,5 @@ public class Pattern {
     public String getpConstraint() { return pConstraint; }
 
     public void setpConstraint(String pConstraint) { this.pConstraint = pConstraint; }
+
 }

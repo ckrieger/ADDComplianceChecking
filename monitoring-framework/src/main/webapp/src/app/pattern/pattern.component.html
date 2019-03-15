@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-title><h3>Patterns</h3></mat-card-title>
   <div class="right-flex">
-    <button mat-flat-button color="primary" [routerLink]="['/pattern-add']">Add pattern</button>
+    <button mat-flat-button color="primary" [routerLink]="['/pattern-edit']">Add pattern</button>
   </div>
 </mat-card>
 <mat-accordion *ngFor="let pattern of patterns">
@@ -15,8 +15,8 @@
       <mat-card-subtitle>Constraint</mat-card-subtitle>
       <mat-card-content>{{pattern.pConstraint}}</mat-card-content>
       <div class="example-button-row">
-        <button mat-stroked-button color="primary">Edit</button>
-        <button mat-stroked-button color="primary">Remove</button>
+        <button mat-stroked-button color="primary" [routerLink]="['/pattern-edit', pattern]" >Edit</button>
+        <button mat-stroked-button color="primary" [routerLink]="['/pattern-remove']" >Remove</button>
       </div>
     </mat-card>
   </mat-expansion-panel>

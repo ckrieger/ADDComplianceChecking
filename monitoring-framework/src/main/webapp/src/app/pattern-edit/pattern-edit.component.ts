@@ -27,6 +27,7 @@ export class PatternEditComponent implements OnInit, OnDestroy {
         this.patternService.get(id).subscribe((pattern: any) => {
           if (pattern) {
             this.pattern = pattern;
+            console.log(pattern);
           } else {
             console.log(`Pattern with id '${id}' not found, returning to list`);
             //this.gotoList();
@@ -45,7 +46,7 @@ export class PatternEditComponent implements OnInit, OnDestroy {
   }
 
   save(form: NgForm) {
-    this.patternService.add(form).subscribe(result => {
+    this.patternService.add(JSON.stringify(form)).subscribe(result => {
       this.gotoList();
     }, error => console.error(error));
   }
@@ -54,6 +55,10 @@ export class PatternEditComponent implements OnInit, OnDestroy {
     this.patternService.remove(href).subscribe(result => {
       this.gotoList();
     }, error => console.error(error));
+  }
+
+  cancel() {
+    this.gotoList();
   }
 
 }

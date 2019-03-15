@@ -9,13 +9,17 @@
         <input matInput placeholder="Pattern Name" [(ngModel)]="pattern.name"
                required name="name" #name>
       </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Pattern Constraint" [(ngModel)]="pattern.pConstraint"
+               required name="constraint" #constraint>
+      </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" type="submit"
               [disabled]="!patternForm.form.valid">Save</button>
       <button mat-raised-button color="secondary" (click)="remove(pattern.id)"
               *ngIf="pattern.id" type="button">Delete</button>
-      <a mat-button routerLink="/pattern-list">Cancel</a>
+      <a mat-button routerLink="/pattern-list" (ngSubmit)="cancel()">Cancel</a>
     </mat-card-actions>
   </form>
 </mat-card>

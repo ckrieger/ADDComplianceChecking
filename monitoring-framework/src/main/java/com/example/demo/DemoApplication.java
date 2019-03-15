@@ -25,7 +25,7 @@ public class DemoApplication {
 			Stream.of("Watchdog", "Static Workload", "Circuit Breaker").forEach(name -> {
 				Pattern pattern = new Pattern();
 				pattern.setName(name);
-				pattern.setpConstraint("Create a CarRepository class to perform CRUD (create, read, update, and delete) on t");
+				//pattern.setpConstraint("This can be used for testing");
 				repository.save(pattern);
 			});
 		};
