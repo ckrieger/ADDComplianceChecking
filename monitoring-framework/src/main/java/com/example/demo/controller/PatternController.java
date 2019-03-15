@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.example.demo.model.Pattern;
 import com.example.demo.repository.PatternRepository;
+import com.example.demo.util.PatternMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
@@ -27,15 +28,12 @@ public class PatternController {
 
     @PostMapping(path = "/add", consumes = "text/plain")
     public void addPattern(@RequestBody String patternBody) throws IOException {
+        PatternMapper pm = new PatternMapper(patternBody);
 
-        // Map patternBody in JSON format to object map
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> jsonMap = objectMapper.readValue(patternBody,
-                new TypeReference<Map<String, Object>>(){});
-
-        Pattern pattern = new Pattern();
-        pattern.setName(jsonMap.get("name").toString());
-        pattern.setpConstraint(jsonMap.get("constraint").toString());
+        Pattern pattern = new Pattern(
+                pm.getPatternName(),
+                pm.getPatternConstraint()
+        );
 
         // Delete Pattern by name, if it exists in repository
         for(Iterator<Pattern> it = this.repository.findAll().iterator(); it.hasNext();) {
@@ -49,16 +47,12 @@ public class PatternController {
 
     @PostMapping(path = "/remove", consumes = "text/plain")
     public void removePattern(@RequestBody String patternBody) throws IOException {
-
-        // Map patternBody in JSON format to object map
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> jsonMap = objectMapper.readValue(patternBody,
-                new TypeReference<Map<String, Object>>(){});
+        PatternMapper pm = new PatternMapper(patternBody);
 
         // Delete Pattern by name, if it exists in repository
         for(Iterator<Pattern> it = this.repository.findAll().iterator(); it.hasNext();) {
             Pattern refPattern = it.next();
-            if(refPattern.getName().equals(jsonMap.get("name"))) {
+            if(refPattern.getName().equals(pm.getPatternName())) {
                 this.repository.delete(refPattern);
             }
         }

@@ -27,7 +27,6 @@ export class PatternEditComponent implements OnInit, OnDestroy {
         this.patternService.get(id).subscribe((pattern: any) => {
           if (pattern) {
             this.pattern = pattern;
-            console.log(pattern);
           } else {
             console.log(`Pattern with id '${id}' not found, returning to list`);
             //this.gotoList();

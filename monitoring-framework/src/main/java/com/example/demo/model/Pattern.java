@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
-import java.util.UUID;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -18,6 +16,11 @@ public class Pattern {
     private Long id;
     private @NonNull String name;
     private String pConstraint;
+
+    public Pattern(String name, String constraint) {
+        this.name = name;
+        this.pConstraint = constraint;
+    }
 
     public Long getId() {
         return id;
