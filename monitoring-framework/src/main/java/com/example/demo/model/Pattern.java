@@ -17,12 +17,6 @@ public class Pattern {
     private @NonNull String name;
     private String pConstraint;
 
-
-    public Pattern(String name, String constraint) {
-        this.name = name;
-        this.pConstraint = constraint;
-    }
-
     public Long getId() {
         return id;
     }
