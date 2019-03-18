@@ -4,6 +4,8 @@ import java.util.stream.Stream;
 
 import com.example.demo.model.Pattern;
 import com.example.demo.repository.PatternRepository;
+import com.example.demo.service.RabbitMqService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +16,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @SpringBootApplication
 public class DemoApplication {
+	@Autowired
+	RabbitMqService rabbitMqService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
@@ -22,6 +26,7 @@ public class DemoApplication {
 	@Bean
 	ApplicationRunner init(PatternRepository repository){
 		return args -> {
+			rabbitMqService.start();
 			Stream.of("Watchdog", "Static Workload", "Circuit Breaker").forEach(name -> {
 				Pattern pattern = new Pattern();
 				pattern.setName(name);
