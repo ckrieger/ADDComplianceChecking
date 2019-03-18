@@ -45,9 +45,13 @@ export class PatternEditComponent implements OnInit, OnDestroy {
   }
 
   save(form: NgForm) {
-    this.patternService.add(form).subscribe(result => {
-      this.gotoList();
-    }, error => console.error(error));
+    if (form.name.trim() != "") {
+      this.patternService.add(form).subscribe(result => {
+        this.gotoList();
+      }, error => console.error(error));
+    } else {
+      alert("Pattern name cannot be blank");
+    }
   }
 
   remove(href) {
