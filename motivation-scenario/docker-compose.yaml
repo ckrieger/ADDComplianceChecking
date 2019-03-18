@@ -5,6 +5,9 @@ services:
     image: ckrieger/inventory-service:latest
     ports:
      - "5000:5000"
+    restart: always 
+    depends_on: 
+     - rabbitmq 
     deploy: 
       mode: replicated
       replicas: 2
@@ -13,3 +16,12 @@ services:
     image: ckrieger/shipping-service:latest
     ports: 
      - "8088:8088"
+    restart: always 
+    depends_on: 
+     - rabbitmq 
+  rabbitmq:
+    hostname: "my-rabbit"
+    image: rabbitmq:3-management
+    ports:
+     - "8080:15672"
+     - "5672:5672"

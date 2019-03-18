@@ -18,10 +18,14 @@ exports.sendMessage = function sendMessage() {
         ch.sendToQueue(q, Buffer.from(JSON.stringify(data)));
         console.log(" [x] Sent %s", JSON.stringify(data));
       });
-
       setTimeout(function() {
         conn.close();
+        //process.exit(0);
       }, 500);
     }
   });
 }
+
+// export.startInterval = function startInterval() {
+  
+// }

@@ -1,9 +1,9 @@
 FROM node:9.4.0-alpine
 COPY server.js .
 COPY package.json .
-COPY cpu-usage.sh .
+COPY message-service.js .
 RUN npm install &&\
     apk update &&\
     apk upgrade
 EXPOSE  5000
-CMD sh ./cpu-usage.sh ; node server.js 
+CMD node server.js ; 
