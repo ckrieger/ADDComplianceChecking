@@ -1,15 +1,11 @@
 package com.example.demo.controller;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 import com.example.demo.model.Pattern;
 import com.example.demo.repository.PatternRepository;
-import com.example.demo.util.PatternMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,34 +22,28 @@ public class PatternController {
         return repository.findAll();
     }
 
-    @PostMapping(path = "/add", consumes = "text/plain")
-    public void addPattern(@RequestBody String patternBody) throws IOException {
-        PatternMapper pm = new PatternMapper(patternBody);
-
-        Pattern pattern = new Pattern(
-                pm.getPatternName(),
-                pm.getPatternConstraint()
-        );
-
-        // Delete Pattern by name, if it exists in repository
-        for(Iterator<Pattern> it = this.repository.findAll().iterator(); it.hasNext();) {
-            Pattern refPattern = it.next();
-            if(refPattern.getName().equals(pattern.getName())) {
-                this.repository.delete(refPattern);
-            }
-        }
+    @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addPattern(@RequestBody Pattern pattern) {
+        deleteFromRepository(pattern, this.repository);
         this.repository.save(pattern);
     }
 
-    @PostMapping(path = "/remove", consumes = "text/plain")
-    public void removePattern(@RequestBody String patternBody) throws IOException {
-        PatternMapper pm = new PatternMapper(patternBody);
+    @PostMapping(path = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void removePattern(@RequestBody Pattern pattern) {
+        deleteFromRepository(pattern, this.repository);
+    }
 
-        // Delete Pattern by name, if it exists in repository
-        for(Iterator<Pattern> it = this.repository.findAll().iterator(); it.hasNext();) {
+    /**
+     * Deletes existing pattern by name from passed repository.
+     * Maybe find a better place for this method...
+     * @param pattern Pattern that needs to be deleted from repository if existing
+     * @param repository Repository from which pattern will be deleted
+     */
+    private void deleteFromRepository(Pattern pattern, PatternRepository repository) {
+        for(Iterator<Pattern> it = repository.findAll().iterator(); it.hasNext();) {
             Pattern refPattern = it.next();
-            if(refPattern.getName().equals(pm.getPatternName())) {
-                this.repository.delete(refPattern);
+            if(refPattern.getName().equals(pattern.getName())) {
+                repository.delete(refPattern);
             }
         }
     }
