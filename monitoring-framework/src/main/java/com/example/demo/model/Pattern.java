@@ -3,6 +3,7 @@ package com.example.demo.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class Pattern {
     @Id @GeneratedValue
     private Long id;
     private @NonNull String name;
+    @Lob
     private String pConstraint;
 
     public Long getId() {

@@ -10,7 +10,7 @@ services:
      - rabbitmq 
     deploy: 
       mode: replicated
-      replicas: 2
+      replicas: 3
   shipping-service:
     hostname: "shippingService-{{.Task.ID}}"
     image: ckrieger/shipping-service:latest
@@ -23,5 +23,5 @@ services:
     hostname: "my-rabbit"
     image: rabbitmq:3-management
     ports:
-     - "8080:15672"
+     - "9090:15672"
      - "5672:5672"
