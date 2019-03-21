@@ -1,7 +1,7 @@
 <mat-toolbar color="primary">
-  <span>{{title}}</span>
+  <span routerLink="/home" class="navigation-button">{{title}}</span>
   <span class="toolbar-spacer"></span>
-  <button mat-button>Pattern Repo</button>
-  <button mat-button>Projects</button>
+  <button routerLink="/pattern-list" mat-button>Pattern Repo</button>
+  <!--<button routerLink="/" mat-button>Projects</button>-->
 </mat-toolbar>
 <router-outlet></router-outlet>

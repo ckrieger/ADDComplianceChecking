@@ -9,22 +9,21 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.example.demo.cepEngine.subscriber.SubscriberFactory;
+import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
 import com.example.demo.model.PatternInstance;
 import com.example.demo.model.PatternVariable;
+import com.example.demo.repository.MonitoringAreaRepository;
 import com.example.demo.repository.PatternInstanceRepository;
 import com.example.demo.repository.PatternRepository;
 import com.example.demo.repository.PatternVariableRepository;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -44,6 +43,8 @@ public class DemoApplication {
 	PatternVariableRepository patternVariableRepository;
 	@Autowired
 	PatternConstraintService patternConstraintService;
+	@Autowired
+    MonitoringAreaRepository monitoringAreaRepository;
 
 	private static final String BASE_PATH = "templates/";
 	public static void main(String[] args) {
@@ -53,12 +54,13 @@ public class DemoApplication {
 	@Bean
 	ApplicationRunner init(){
 		return args -> {
-			rabbitMqService.start();
+			//rabbitMqService.start();
 			Stream.of("Watchdog").forEach(name -> {
 				try {
 					addPattern(name);
-					PatternInstance savedPatternInstance = addPatternInstance(name);
-					patternConstraintService.activatePattern(savedPatternInstance);
+					PatternInstance patternInstance = createPatternInstance(name);
+					MonitoringArea monitoringArea = addMonitoringArea(patternInstance);
+					patternConstraintService.activatePattern(patternInstance);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -73,23 +75,33 @@ public class DemoApplication {
 		patternRepository.save(pattern);
 	}
 
-	private PatternInstance addPatternInstance(String patternName) throws IOException {
+	private PatternInstance createPatternInstance(String patternName) throws IOException {
 		Set<PatternVariable> variables = new HashSet<>();
 		PatternVariable patternVariable = new PatternVariable();
-		patternVariable.setKey("x");
+		patternVariable.setKey("timeThreshold");
 		patternVariable.setValue("1000");
-		PatternVariable pSaved = patternVariableRepository.save(patternVariable);
-		variables.add(pSaved);
+		//PatternVariable pSaved = patternVariableRepository.save(patternVariable);
+		variables.add(patternVariable);
 
 		PatternInstance patternInstance = new PatternInstance();
 		patternInstance.setName(patternName);
 		patternInstance.setConstraintStatement(fetchStatementFromFile(patternName));
-		patternInstance.setActive(false);
-		patternInstance.setViolated(false);
+		patternInstance.setIsActive(false);
+		patternInstance.setIsViolated(false);
 		patternInstance.setVariables(variables);
 
-	   return patternInstanceRepository.save(patternInstance);
+		return patternInstance;
 	}
+
+	private MonitoringArea addMonitoringArea(PatternInstance patternInstance) {
+	    MonitoringArea monitoringArea = new MonitoringArea();
+	    monitoringArea.setName("motivation-scenario");
+	    HashSet<PatternInstance> patternInstances = new HashSet<>();
+	    patternInstances.add(patternInstance);
+	    monitoringArea.setPatternInstances(patternInstances);
+	    monitoringAreaRepository.save(monitoringArea);
+	    return monitoringArea;
+    }
 
 	private String fetchStatementFromFile(String filename) throws FileNotFoundException, IOException {
 		BufferedReader br = new BufferedReader(new FileReader(ResourceUtils.getFile("classpath:" + filename + ".epl")));
@@ -107,7 +119,9 @@ public class DemoApplication {
 		return new WebMvcConfigurerAdapter() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:4200");
+				registry.addMapping("/**")
+						.allowedOrigins("http://localhost:4200")
+						.allowedMethods("*");
 			}
 		};
 	}

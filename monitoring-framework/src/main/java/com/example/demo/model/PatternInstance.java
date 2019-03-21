@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,10 +15,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -37,7 +42,8 @@ public class PatternInstance implements Serializable {
     private String name;
 
     @NotNull
-    @Column(name = "active", nullable = false)
+    @Column(name = "isActive", nullable = false)
+    @JsonProperty(value="isActive")
     private Boolean isActive;
 
     @NotNull
@@ -45,14 +51,12 @@ public class PatternInstance implements Serializable {
     @Column(name = "constraintStatement", nullable = false)
     private String constraintStatement;
 
-    @Column(name = "violated")
+    @Column(name = "isViolated")
+    @JsonProperty(value="isViolated")
     private Boolean isViolated;
 
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "pattern_instance_variables",
-            joinColumns = @JoinColumn(name="pattern_instances_id", referencedColumnName="id"),
-            inverseJoinColumns = @JoinColumn(name="variables_id", referencedColumnName="id"))
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PatternVariable> variables = new HashSet<>();
 
     public Long getId() {
@@ -71,11 +75,11 @@ public class PatternInstance implements Serializable {
         this.name = name;
     }
 
-    public Boolean getActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setIsActive(Boolean active) {
         isActive = active;
     }
 
@@ -87,11 +91,11 @@ public class PatternInstance implements Serializable {
         this.constraintStatement = constraintStatement;
     }
 
-    public Boolean getViolated() {
+    public Boolean getIsViolated() {
         return isViolated;
     }
 
-    public void setViolated(Boolean violated) {
+    public void setIsViolated(Boolean violated) {
         isViolated = violated;
     }
 

@@ -7,23 +7,28 @@ import { HttpClientModule } from '@angular/common/http';
 import { PatternComponent } from './pattern/pattern.component';
 import {
   MatButtonModule,
-  MatCardModule,
-  MatExpansionModule,
+  MatCardModule, MatDialogModule,
+  MatExpansionModule, MatIconModule,
   MatInputModule,
   MatListModule,
+  MatOptionModule, MatSelectModule,
   MatToolbarModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PatternEditComponent } from './pattern-edit/pattern-edit.component';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { FormsModule } from '@angular/forms';
+import { MonitoringAreaComponent } from './monitoring-area/monitoring-area.component';
+import { AddPatternDialogComponent } from './add-pattern-dialog/add-pattern-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PatternComponent,
     PatternEditComponent,
-    ProjectListComponent
+    ProjectListComponent,
+    MonitoringAreaComponent,
+    AddPatternDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -36,9 +41,14 @@ import { FormsModule } from '@angular/forms';
     MatListModule,
     MatToolbarModule,
     FormsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatIconModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [AddPatternDialogComponent]
 })
 export class AppModule { }

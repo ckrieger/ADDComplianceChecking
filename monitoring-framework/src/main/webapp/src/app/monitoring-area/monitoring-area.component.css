@@ -1,0 +1,24 @@
+.right-flex {
+  display: flex; justify-content: flex-end;
+}
+
+.add-button {
+  margin-right: 1%;
+}
+
+.example-button-row button,
+.example-button-row a {
+  margin-right: 8px;
+}
+
+.pattern-name {
+  margin-right: 2%;
+}
+
+.pattern-instance-item{
+  margin-top: 2%
+}
+
+.card-pattern-list{
+  margin-top: 2%;
+}

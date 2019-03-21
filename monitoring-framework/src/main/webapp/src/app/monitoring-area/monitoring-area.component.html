@@ -1,0 +1,50 @@
+<mat-card>
+  <mat-card-title>Monitor Settings</mat-card-title>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item>
+        Application: {{monitoringArea?.name}}
+      </mat-list-item>
+      <mat-list-item>
+        QueueUrl: nafa
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+  <mat-card-actions class="right-flex">
+    <button mat-stroked-button color="primary">
+      Start Monitor
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+
+<mat-card class="card-pattern-list">
+  <mat-card-title>Pattern Instances</mat-card-title>
+  <mat-card-content>
+    <mat-list>
+      <div *ngFor="let patternInstance of monitoringArea?.patternInstances" class="pattern-instance-item">
+        <mat-list-item>
+          <div class="pattern-name">
+            Name: {{patternInstance.name}}
+          </div>
+
+          <mat-form-field *ngFor="let variable of patternInstance.variables" class="example-full-width">
+            <input matInput [placeholder]="variable.key" [value]="variable.value">
+          </mat-form-field>
+          <button mat-button (click)="deletePatternInstance(patternInstance)">
+             <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+      </div>
+    </mat-list>
+  </mat-card-content>
+  <div class="right-flex">
+    <button class="add-button" mat-fab color="primary" (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</mat-card>
+
+
+

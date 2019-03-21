@@ -41,7 +41,7 @@ public class PatternConstraintService {
             this.patterns.put(pattern, subscriber);
         } else {
             PatternInstance p = this.findPatternById(pattern.getId());
-            p.setActive(true);
+            p.setIsActive(true);
             this.patterns.get(p).setActive(true);
         }
     }
@@ -50,7 +50,7 @@ public class PatternConstraintService {
         log.debug("deactivating pattern " + pattern.getName());
         PatternInstance key = findPatternById(pattern.getId());
         if (key != null) {
-            key.setActive(false);
+            key.setIsActive(false);
             this.patterns.get(key).setActive(false);
         }
     }
@@ -98,7 +98,7 @@ public class PatternConstraintService {
     private PatternViolationStatementSubscriber.Callback createCallback(PatternInstance pattern) {
         return (violation) -> {
             PatternInstance patternInstance = findPatternById(pattern.getId());
-            patternInstance.setViolated(true);
+            patternInstance.setIsViolated(true);
             patternInstanceRepository.save(patternInstance);
          //   messagingTemplate.convertAndSend("/topic/violation", new PatternInstanceMessage(pattern, violation));
             log.debug("Set patter " + patternInstance.getName() + " as violated and saved it");

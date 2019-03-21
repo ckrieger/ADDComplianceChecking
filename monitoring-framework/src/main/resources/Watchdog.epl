@@ -14,4 +14,4 @@ insert into ReduceCountEvent select se.number as number from pattern [ every fe=
 
 insert into IncreaseCountEvent select see.number as number from pattern [ every fee=VMCount -> see=VMCount(fee.number < see.number)];
 
-@Name('Watchdog Violation')select * from pattern [ every re=ReduceCountEvent -> not ie=IncreaseCountEvent(re.number < ie.number) and timer:interval(1000 milliseconds)];
+@Name('Watchdog Violation')select * from pattern [ every re=ReduceCountEvent -> not ie=IncreaseCountEvent(re.number < ie.number) and timer:interval(${timeThreshold} milliseconds)];
