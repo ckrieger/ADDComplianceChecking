@@ -41,7 +41,7 @@ function sendRequestToShippingService(response){
 }
 
 // start sending messages to queue
-//setInterval(sender.sendMessage, 1500);
+ setInterval(sender.sendMessage, 1500);
 
 //serve static file (index.html, images, css)
 app.use(express.static(__dirname + '/views'));

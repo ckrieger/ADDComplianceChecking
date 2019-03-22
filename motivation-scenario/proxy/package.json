@@ -1,0 +1,13 @@
+{
+  "name": "proxy",
+  "private": false,
+  "version": "0.0.1",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "3.x",
+    "http-proxy": "^1.17.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
+  }
+}
