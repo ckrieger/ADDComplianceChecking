@@ -6,6 +6,8 @@
   "dependencies": {
     "amqplib": "^0.5.3",
     "body-parser": "^1.18.3",
-    "express": "3.x"
+    "express": "3.x",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
   }
 }
