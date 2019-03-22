@@ -10,3 +10,9 @@ docker stack deploy -c docker-compose.yaml motivation-scenario
 
 docker stack ps motivation-scenario
 docker stack rm motivation-scenario
+
+docker service scale SERVICENAME=5
+
+## Rabbit Mq
+
+guest/ guest
