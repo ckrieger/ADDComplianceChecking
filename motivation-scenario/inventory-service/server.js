@@ -11,7 +11,7 @@ const port = 5000;
 let failureCount = 0;
 
 //const shippinServiceUri = 'http://motivation-scenario_shipping-service:8088';
-const shippinServiceUri = 'http://localhost:8088';
+const shippinServiceUri = 'http://localhost:5050';
 
 // parse application/json
 app.use(bodyParser.json())
