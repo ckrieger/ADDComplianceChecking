@@ -10,8 +10,8 @@ const port = 5000;
 
 let failureCount = 0;
 
-//const shippinServiceUri = 'http://motivation-scenario_shipping-service:8088';
-const shippinServiceUri = 'http://localhost:5050';
+const proxyUri = 'http://proxy:5050';
+//const shippinServiceUri = 'http://localhost:5050';
 
 // parse application/json
 app.use(bodyParser.json())
@@ -23,7 +23,10 @@ app.post('/sendRequest', function(req, res) {
 function sendRequestToShippingService(response){
   var options = {
       method: 'GET',
-      uri: shippinServiceUri,
+      uri: proxyUri,
+      headers:{
+        'Origin': os.hostname()
+      },
       json: true 
   };
    

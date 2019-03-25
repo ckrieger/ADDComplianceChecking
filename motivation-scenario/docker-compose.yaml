@@ -19,6 +19,13 @@ services:
     restart: always 
     depends_on: 
      - rabbitmq 
+  proxy:
+    hostname: "proxy"
+    image: ckrieger/proxy:latest
+    ports:
+     - "5050:5050"
+    depends_on: 
+     - "rabbitmq"    
   rabbitmq:
     hostname: "my-rabbit"
     image: rabbitmq:3-management
