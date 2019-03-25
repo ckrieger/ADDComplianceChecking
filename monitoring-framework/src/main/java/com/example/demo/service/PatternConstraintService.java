@@ -101,7 +101,7 @@ public class PatternConstraintService {
             patternInstance.setIsViolated(true);
             patternInstanceRepository.save(patternInstance);
          //   messagingTemplate.convertAndSend("/topic/violation", new PatternInstanceMessage(pattern, violation));
-            log.debug("Set patter " + patternInstance.getName() + " as violated and saved it");
+            log.debug("Set pattern " + patternInstance.getName() + " as violated and saved it");
         };
     }
 

@@ -29,15 +29,15 @@ public class MonitoringAreaController {
         return repository.findAll();
     }
 
-    @PostMapping(path= "/")
-    public MonitoringArea addMonitoringArea(@RequestBody MonitoringArea monitoringArea){
-        return this.repository.save(monitoringArea);
-    }
-
     @PutMapping(path= "/{id}")
     public MonitoringArea updateMonitoringArea(@RequestBody MonitoringArea monitoringArea, @PathVariable Long id){
         return this.repository.save(monitoringArea);
     }
+
+//    @PostMapping(path= "/")
+//    public MonitoringArea addMonitoringArea(@RequestBody MonitoringArea monitoringArea){
+//        return this.repository.save(monitoringArea);
+//    }
 
 //    @PostMapping(path="/{id}/addPatternInstance")
 //    public MonitoringArea addPatternInstanceToMonitoringArea(@RequestBody Pattern pattern){
