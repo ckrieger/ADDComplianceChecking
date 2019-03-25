@@ -12,7 +12,8 @@ import {
   MatInputModule,
   MatListModule,
   MatOptionModule, MatSelectModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatTooltipModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PatternEditComponent } from './pattern-edit/pattern-edit.component';
@@ -45,7 +46,8 @@ import { AddPatternDialogComponent } from './add-pattern-dialog/add-pattern-dial
     MatOptionModule,
     MatSelectModule,
     MatDialogModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent],
