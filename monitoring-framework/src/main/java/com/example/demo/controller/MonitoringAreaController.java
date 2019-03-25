@@ -26,7 +26,6 @@ public class MonitoringAreaController {
 
     @GetMapping(path = "/")
     public Collection<MonitoringArea> getMonitoringAreas(){
-
         return repository.findAll();
     }
 
@@ -37,7 +36,6 @@ public class MonitoringAreaController {
 
     @PutMapping(path= "/{id}")
     public MonitoringArea updateMonitoringArea(@RequestBody MonitoringArea monitoringArea, @PathVariable Long id){
-
         return this.repository.save(monitoringArea);
     }
 
