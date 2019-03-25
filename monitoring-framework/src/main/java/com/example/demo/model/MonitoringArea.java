@@ -30,6 +30,16 @@ public class MonitoringArea {
    // @JoinColumn(name = "pattern_instance_id")
     private Set<PatternInstance> patternInstances = new HashSet<>();
 
+    private String queueUrl;
+
+    public String getQueueUrl() {
+        return queueUrl;
+    }
+
+    public void setQueueUrl(String queueUrl) {
+        this.queueUrl = queueUrl;
+    }
+
     public Long getId() {
         return id;
     }

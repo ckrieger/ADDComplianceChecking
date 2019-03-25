@@ -37,12 +37,17 @@ export class MonitoringAreaComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       let patternInstance: PatternInstance = this.createPatternInstance(result);
       this.monitoringArea.patternInstances.push(patternInstance);
       this.monitoringAreaService.update(this.monitoringArea).subscribe(result =>{
         console.log('updated ' + result);
       })
+    });
+  }
+
+  private updateMonitoringArea() {
+    this.monitoringAreaService.update(this.monitoringArea).subscribe(result =>{
+      console.log('updated ' + result);
     });
   }
 
@@ -75,5 +80,4 @@ export class MonitoringAreaComponent implements OnInit {
       console.log('updated ' + result);
     })
   }
-
 }

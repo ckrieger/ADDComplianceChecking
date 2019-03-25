@@ -5,7 +5,10 @@ import java.util.Iterator;
 
 import com.example.demo.model.Pattern;
 import com.example.demo.repository.PatternRepository;
+import com.google.gson.JsonObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,34 +20,31 @@ public class PatternController {
         this.repository = repository;
     }
 
-    @GetMapping(path = "/get")
+    @GetMapping(path = "/")
     public Collection<Pattern> getPatterns(){
         return repository.findAll();
     }
 
-    @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addPattern(@RequestBody Pattern pattern) {
-        deleteFromRepository(pattern, this.repository);
+//    @PutMapping(path = "/")
+//    public ResponseEntity<Object> addPattern(@RequestBody Pattern pattern) {
+//        if(this.repository.findByName(pattern.getName()).isEmpty()) {
+//            this.repository.save(pattern);
+//            return ResponseEntity.status(HttpStatus.OK).build();
+//        } else {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+//        }
+//    }
+
+    @PutMapping(path = "/")
+    public ResponseEntity<Object> addPattern(@RequestBody Pattern pattern) {
+        this.repository.deleteByName(pattern.getName());
         this.repository.save(pattern);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping(path = "/remove", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void removePattern(@RequestBody Pattern pattern) {
-        deleteFromRepository(pattern, this.repository);
-    }
-
-    /**
-     * Deletes existing pattern by name from passed repository.
-     * Maybe find a better place for this method...
-     * @param pattern Pattern that needs to be deleted from repository if existing
-     * @param repository Repository from which pattern will be deleted
-     */
-    private void deleteFromRepository(Pattern pattern, PatternRepository repository) {
-        for(Iterator<Pattern> it = repository.findAll().iterator(); it.hasNext();) {
-            Pattern refPattern = it.next();
-            if(refPattern.getName().equals(pattern.getName())) {
-                repository.delete(refPattern);
-            }
-        }
+    @PostMapping(path = "/delete")
+    public ResponseEntity<Object> removePattern(@RequestBody Pattern pattern) {
+        this.repository.deleteByName(pattern.getName());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

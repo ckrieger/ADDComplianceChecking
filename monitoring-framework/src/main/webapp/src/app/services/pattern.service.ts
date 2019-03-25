@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,22 +16,22 @@ export class PatternService {
   }
 
   getAll(): Observable<any> {
-    return this.http.get(this.patternApi + "/get");
+    return this.http.get(this.patternApi + "/");
   }
 
   get(id: string) {
-    return this.http.get(this.patternApi + '/' + id)
+    return this.http.get(this.patternApi + '/' + id);
   }
 
   add(pattern: any): Observable<any> {
-    return this.http.post(this.patternApi + "/add", pattern);
+    return this.http.put(this.patternApi + "/", pattern, {observe: 'response'});
   }
 
   update(pattern: any): Observable<any> {
-    return this.http.put(this.patternApi + '/' + pattern.id, pattern)
+    return this.http.put(this.patternApi + '/', pattern, {observe: 'response'});
   }
 
   remove(pattern: any): Observable<any> {
-    return this.http.post(this.patternApi + '/remove', pattern);
+    return this.http.post(this.patternApi + "/delete", pattern)
   }
 }
