@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import com.example.demo.cepEngine.handler.CEPEventHandler;
+import com.example.demo.cepEngine.model.HttpRequestEvent;
 import com.example.demo.cepEngine.model.VirtualMachine;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -21,30 +23,20 @@ public class RabbitMqService {
     private CEPEventHandler eventHandler;
 
 
-    private final static String QUEUE_NAME = "virtualMachineEvents";
+   // private final static String QUEUE_NAME = "virtualMachineEvents";
     private final static String HOST = "localhost";
 
-    public void start() throws IOException, TimeoutException {
+
+    public void start(String queueName, DeliverCallback deliverCallback) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(HOST);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+        channel.queueDeclare(queueName, false, false, false, null);
 
-        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), "UTF-8");
-            onMessage(message);
-        };
-        channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> {
+        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
         });
     }
 
-    private void onMessage(String message) {
-        System.out.println(" [x] Received '" + message + "'");
-        Gson g = new Gson();
-        VirtualMachine vmEvent =  g.fromJson(message, VirtualMachine.class);
-        eventHandler.handle(vmEvent);
-    }
 }
