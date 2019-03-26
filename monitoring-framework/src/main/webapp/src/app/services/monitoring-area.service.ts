@@ -31,6 +31,10 @@ export class MonitoringAreaService {
     return this.http.put(this.patternApi + '/' + monitoringArea.id, monitoringArea)
   }
 
+  start(monitoringArea: any): Observable<any> {
+    return this.http.post(this.patternApi + '/start',  monitoringArea)
+  }
+
   remove(monitoringArea: any): Observable<any> {
     return this.http.post(this.patternApi + '/remove', monitoringArea);
   }

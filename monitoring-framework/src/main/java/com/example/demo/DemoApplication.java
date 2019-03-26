@@ -1,18 +1,15 @@
 package com.example.demo;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import com.example.demo.cepEngine.handler.CEPEventHandler;
-import com.example.demo.cepEngine.model.CircuitBreaker;
 import com.example.demo.cepEngine.model.HttpRequestEvent;
 import com.example.demo.cepEngine.model.VirtualMachine;
 import com.example.demo.model.MonitoringArea;
@@ -26,13 +23,11 @@ import com.example.demo.repository.PatternVariableRepository;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.rabbitmq.client.DeliverCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.util.ResourceUtils;
@@ -87,7 +82,9 @@ public class DemoApplication {
 					addPattern(name);
 					PatternInstance patternInstance = createPatternInstance(name);
 					MonitoringArea monitoringArea = addMonitoringArea(patternInstance);
-					patternConstraintService.activatePattern(patternInstance);
+                    Set<PatternInstance> patternInstances = new HashSet<>();
+                    patternInstances.add(patternInstance);
+					patternConstraintService.activatePatternInstances(patternInstances);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

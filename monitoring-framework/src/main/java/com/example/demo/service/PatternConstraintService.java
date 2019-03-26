@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
@@ -38,15 +35,17 @@ public class PatternConstraintService {
 
     private Map<PatternInstance, PatternViolationStatementSubscriber> patterns = new HashMap<PatternInstance, PatternViolationStatementSubscriber>();
 
-    public void activatePattern(PatternInstance pattern) {
-        log.debug("activating pattern " + pattern.getName());
-        if (this.findPatternById(pattern.getId()) == null) {
-            PatternViolationStatementSubscriber subscriber = createAndPrepareSubscriberFromConstraint(pattern);
-            this.patterns.put(pattern, subscriber);
-        } else {
-            PatternInstance p = this.findPatternById(pattern.getId());
-            p.setIsActive(true);
-            this.patterns.get(p).setActive(true);
+    public void activatePatternInstances(Set<PatternInstance> patternInstances) {
+        Iterator<PatternInstance> itr = patternInstances.iterator();
+        while(itr.hasNext()) {
+            PatternInstance patternInstance = itr.next();
+            log.debug("activating pattern " + patternInstance.getName());
+            if (this.findPatternById(patternInstance.getId()) == null) {
+                PatternViolationStatementSubscriber subscriber = createAndPrepareSubscriberFromConstraint(patternInstance);
+                patternInstance.setIsActive(true);
+                subscriber.setActive(true);
+                this.patterns.put(patternInstance, subscriber);
+            }
         }
     }
 

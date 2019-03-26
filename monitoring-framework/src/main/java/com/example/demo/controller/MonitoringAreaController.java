@@ -5,6 +5,8 @@ import java.util.Collection;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
 import com.example.demo.repository.MonitoringAreaRepository;
+import com.example.demo.service.PatternConstraintService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,9 @@ public class MonitoringAreaController {
 
     private MonitoringAreaRepository repository;
 
+    @Autowired
+    PatternConstraintService patternConstraintService;
+
     public MonitoringAreaController(MonitoringAreaRepository repository){
         this.repository = repository;
     }
@@ -27,11 +32,6 @@ public class MonitoringAreaController {
     @GetMapping(path = "/")
     public Collection<MonitoringArea> getMonitoringAreas(){
         return repository.findAll();
-    }
-
-    @PostMapping(path= "/")
-    public MonitoringArea addMonitoringArea(@RequestBody MonitoringArea monitoringArea){
-        return this.repository.save(monitoringArea);
     }
 
     @PutMapping(path= "/{id}")
@@ -43,6 +43,17 @@ public class MonitoringAreaController {
     public MonitoringArea getMonitoringAreaById(@PathVariable Long id){
         return repository.findById(id).get();
     }
+
+    @PostMapping(path= "/start")
+    public MonitoringArea startMonitoring(@RequestBody MonitoringArea monitoringArea){
+        patternConstraintService.activatePatternInstances(monitoringArea.getPatternInstances());
+        return this.repository.save(monitoringArea);
+    }
+
+//    @PostMapping(path= "/")
+//    public MonitoringArea addMonitoringArea(@RequestBody MonitoringArea monitoringArea){
+//        return this.repository.save(monitoringArea);
+//    }
 
 //    @PostMapping(path="/{id}/addPatternInstance")
 //    public MonitoringArea addPatternInstanceToMonitoringArea(@RequestBody Pattern pattern){
