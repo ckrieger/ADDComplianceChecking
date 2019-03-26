@@ -1,13 +1,15 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeoutException;
 
 import com.example.demo.model.MonitoringArea;
-import com.example.demo.model.Pattern;
 import com.example.demo.repository.MonitoringAreaRepository;
+import com.example.demo.service.EventHandlerService;
 import com.example.demo.service.PatternConstraintService;
+import com.example.demo.service.RabbitMqService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,10 @@ public class MonitoringAreaController {
 
     @Autowired
     PatternConstraintService patternConstraintService;
+    @Autowired
+    RabbitMqService rabbitMqService;
+    @Autowired
+    EventHandlerService eventHandlerService;
 
     public MonitoringAreaController(MonitoringAreaRepository repository){
         this.repository = repository;
@@ -45,8 +51,9 @@ public class MonitoringAreaController {
     }
 
     @PostMapping(path= "/start")
-    public MonitoringArea startMonitoring(@RequestBody MonitoringArea monitoringArea){
+    public MonitoringArea startMonitoring(@RequestBody MonitoringArea monitoringArea) throws IOException, TimeoutException {
         patternConstraintService.activatePatternInstances(monitoringArea.getPatternInstances());
+        rabbitMqService.start("applicationEvents", eventHandlerService.deliverCallback);
         return this.repository.save(monitoringArea);
     }
 

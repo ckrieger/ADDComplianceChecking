@@ -9,9 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.example.demo.cepEngine.handler.CEPEventHandler;
-import com.example.demo.cepEngine.model.HttpRequestEvent;
-import com.example.demo.cepEngine.model.VirtualMachine;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
 import com.example.demo.model.PatternInstance;
@@ -22,8 +19,6 @@ import com.example.demo.repository.PatternRepository;
 import com.example.demo.repository.PatternVariableRepository;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
-import com.google.gson.Gson;
-import com.rabbitmq.client.DeliverCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -50,33 +45,17 @@ public class DemoApplication {
 	PatternConstraintService patternConstraintService;
 	@Autowired
     MonitoringAreaRepository monitoringAreaRepository;
-	@Autowired
-	private CEPEventHandler eventHandler;
 
 	private static final String BASE_PATH = "templates/";
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-		String message = new String(delivery.getBody(), "UTF-8");
-		Gson g = new Gson();
-
-		// hardcoded checking for message type
-		if(message.indexOf("statusCode") > 0){
-			HttpRequestEvent httpEvent =  g.fromJson(message, HttpRequestEvent.class);
-			eventHandler.handle(httpEvent);
-		} else {
-			VirtualMachine vmEvent = g.fromJson(message, VirtualMachine.class);
-			eventHandler.handle(vmEvent);
-		}
-	};
 
 	@Bean
 	ApplicationRunner init(){
 		return args -> {
 			ArrayList<String> queueNames = new ArrayList<>();
-		    rabbitMqService.start("applicationEvents", deliverCallback);
 			Stream.of("Watchdog").forEach(name -> {
 				try {
 					addPattern(name);
