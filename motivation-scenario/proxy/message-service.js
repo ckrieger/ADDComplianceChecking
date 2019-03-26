@@ -9,7 +9,7 @@ exports.sendMessage = function sendMessage(serviceId, statusCode) {
       console.log(err);
     } else {
       conn.createChannel(function(err, ch) {
-        var q = "httpEvents";
+        var q = "applicationEvents";
         ch.assertQueue(q, { durable: false });
         var data = {
           serviceId: serviceId,
