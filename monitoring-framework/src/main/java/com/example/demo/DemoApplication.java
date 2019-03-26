@@ -26,11 +26,13 @@ import com.example.demo.repository.PatternVariableRepository;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.rabbitmq.client.DeliverCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.util.ResourceUtils;
@@ -61,27 +63,25 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	DeliverCallback deliverCallbackHttpEvent = (consumerTag, delivery) -> {
+	DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 		String message = new String(delivery.getBody(), "UTF-8");
 		Gson g = new Gson();
-		HttpRequestEvent vmEvent =  g.fromJson(message, HttpRequestEvent.class);
-		eventHandler.handle(vmEvent);
-	};
 
-	DeliverCallback deliverCallbackVirtualMachineEvent = (consumerTag, delivery) -> {
-		String message = new String(delivery.getBody(), "UTF-8");
-		Gson g = new Gson();
-		VirtualMachine vmEvent =  g.fromJson(message, VirtualMachine.class);
-		eventHandler.handle(vmEvent);
+		// hardcoded checking for message type
+		if(message.indexOf("statusCode") > 0){
+			HttpRequestEvent httpEvent =  g.fromJson(message, HttpRequestEvent.class);
+			eventHandler.handle(httpEvent);
+		} else {
+			VirtualMachine vmEvent = g.fromJson(message, VirtualMachine.class);
+			eventHandler.handle(vmEvent);
+		}
 	};
-
 
 	@Bean
 	ApplicationRunner init(){
 		return args -> {
 			ArrayList<String> queueNames = new ArrayList<>();
-			rabbitMqService.start("httpEvents", deliverCallbackHttpEvent);
-			rabbitMqService.start("virtualMachineEvents", deliverCallbackVirtualMachineEvent);
+		    rabbitMqService.start("applicationEvents", deliverCallback);
 			Stream.of("Watchdog").forEach(name -> {
 				try {
 					addPattern(name);
@@ -105,10 +105,15 @@ public class DemoApplication {
 
 	private PatternInstance createPatternInstance(String patternName) throws IOException {
 		Set<PatternVariable> variables = new HashSet<>();
-		PatternVariable patternVariable = new PatternVariable();
-		patternVariable.setKey("timeThreshold");
-		patternVariable.setValue("1000");
-		variables.add(patternVariable);
+		PatternVariable timeThreshold = new PatternVariable();
+		timeThreshold.setKey("timeThreshold");
+		timeThreshold.setValue("1000");
+		PatternVariable scalingGroupId = new PatternVariable();
+		scalingGroupId.setKey("scalingGroupId");
+		scalingGroupId.setValue("inventoryService");
+
+		variables.add(scalingGroupId);
+		variables.add(timeThreshold);
 
 		PatternInstance patternInstance = new PatternInstance();
 		patternInstance.setName(patternName);

@@ -17,7 +17,7 @@ exports.sendMessage = function sendMessage() {
       console.log(err);
     } else {
       conn.createChannel(function(err, ch) {
-        var q = "virtualMachineEvents";
+        var q = "applicationEvents";
         ch.assertQueue(q, { durable: false });
         var data = {
           vmId: getVMId(),
