@@ -5,6 +5,8 @@ import java.util.Collection;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
 import com.example.demo.repository.MonitoringAreaRepository;
+import com.example.demo.service.PatternConstraintService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,9 @@ public class MonitoringAreaController {
 
     private MonitoringAreaRepository repository;
 
+    @Autowired
+    PatternConstraintService patternConstraintService;
+
     public MonitoringAreaController(MonitoringAreaRepository repository){
         this.repository = repository;
     }
@@ -31,6 +36,12 @@ public class MonitoringAreaController {
 
     @PutMapping(path= "/{id}")
     public MonitoringArea updateMonitoringArea(@RequestBody MonitoringArea monitoringArea, @PathVariable Long id){
+        return this.repository.save(monitoringArea);
+    }
+
+    @PostMapping(path= "/start")
+    public MonitoringArea startMonitoring(@RequestBody MonitoringArea monitoringArea){
+        patternConstraintService.activatePatternInstances(monitoringArea.getPatternInstances());
         return this.repository.save(monitoringArea);
     }
 

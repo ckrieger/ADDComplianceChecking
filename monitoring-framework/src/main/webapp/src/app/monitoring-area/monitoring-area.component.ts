@@ -24,6 +24,10 @@ export class MonitoringAreaComponent implements OnInit {
     this.patternService.getAll().subscribe(data =>{
       this.patternList = data;
     });
+    this.refreshMonitoringComponent();
+  }
+
+  refreshMonitoringComponent() {
     this.monitoringAreaService.getAll().subscribe(data => {
       this.monitoringArea = data[0];
       console.log(this.monitoringArea)
@@ -45,8 +49,16 @@ export class MonitoringAreaComponent implements OnInit {
 
   private updateMonitoringArea() {
     this.monitoringAreaService.update(this.monitoringArea).subscribe(result =>{
+      this.refreshMonitoringComponent();
       console.log('updated ' + result);
     });
+  }
+
+  private startMonitoring() {
+    this.monitoringAreaService.start(this.monitoringArea).subscribe(result => {
+      console.log('started monitoring ' + result);
+      }
+    )
   }
 
   private createPatternInstance(pattern: any) {
