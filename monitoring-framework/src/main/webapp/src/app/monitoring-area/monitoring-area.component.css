@@ -22,3 +22,32 @@
 .card-pattern-list{
   margin-top: 2%;
 }
+
+
+.violationStatusIconGreen {
+  height: 25px;
+  width: 25px;
+  background-color: green;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.violationStatusIconRed {
+  height: 25px;
+  width: 25px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.violationStatus{
+  margin-left: 2%
+}
+
+.statusCompliant{
+   color: green;
+}
+
+.statusViolated{
+  color: red;
+}

@@ -19,7 +19,7 @@ export class MonitoringAreaService {
     return this.http.get(this.patternApi + "/");
   }
 
-  get(id: string) {
+  get(id: number) {
     return this.http.get(this.patternApi + '/' + id)
   }
 

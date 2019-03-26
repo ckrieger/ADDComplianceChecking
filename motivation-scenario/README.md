@@ -11,8 +11,7 @@ docker stack deploy -c docker-compose.yaml motivation-scenario
 docker stack ps motivation-scenario
 docker stack rm motivation-scenario
 
-docker service scale SERVICENAME=3
-
+docker service scale motivation-scenario_inventory-service=INSTANCE_Count
 ## Rabbit Mq
 
 guest/ guest

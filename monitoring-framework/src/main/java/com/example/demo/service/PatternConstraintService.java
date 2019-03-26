@@ -10,12 +10,14 @@ import com.example.demo.cepEngine.handler.CEPStatementHandler;
 import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternViolationStatementSubscriber;
 import com.example.demo.cepEngine.subscriber.SubscriberFactory;
+import com.example.demo.dto.PatternInstanceMessage;
 import com.example.demo.model.PatternInstance;
 import com.example.demo.model.PatternVariable;
 import com.example.demo.repository.PatternInstanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,6 +33,8 @@ public class PatternConstraintService {
     private StatementViolationService violationService;
     @Autowired
     private PatternInstanceRepository patternInstanceRepository;
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
 
     private Map<PatternInstance, PatternViolationStatementSubscriber> patterns = new HashMap<PatternInstance, PatternViolationStatementSubscriber>();
 
@@ -100,7 +104,7 @@ public class PatternConstraintService {
             PatternInstance patternInstance = findPatternById(pattern.getId());
             patternInstance.setIsViolated(true);
             patternInstanceRepository.save(patternInstance);
-         //   messagingTemplate.convertAndSend("/topic/violation", new PatternInstanceMessage(pattern, violation));
+            messagingTemplate.convertAndSend("/topic/violation", patternInstance);
             log.debug("Set patter " + patternInstance.getName() + " as violated and saved it");
         };
     }

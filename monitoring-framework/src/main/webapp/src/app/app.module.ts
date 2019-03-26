@@ -11,7 +11,7 @@ import {
   MatExpansionModule, MatIconModule,
   MatInputModule,
   MatListModule,
-  MatOptionModule, MatSelectModule,
+  MatOptionModule, MatSelectModule, MatSnackBarModule,
   MatToolbarModule,
   MatTooltipModule
 } from '@angular/material';
@@ -21,6 +21,8 @@ import { ProjectListComponent } from './project-list/project-list.component';
 import { FormsModule } from '@angular/forms';
 import { MonitoringAreaComponent } from './monitoring-area/monitoring-area.component';
 import { AddPatternDialogComponent } from './add-pattern-dialog/add-pattern-dialog.component';
+import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
+import { rxStompConfig } from './rx-stomp.config';
 
 @NgModule({
   declarations: [
@@ -47,9 +49,20 @@ import { AddPatternDialogComponent } from './add-pattern-dialog/add-pattern-dial
     MatSelectModule,
     MatDialogModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: InjectableRxStompConfig,
+      useValue: rxStompConfig
+    },
+    {
+      provide: RxStompService,
+      useFactory: rxStompServiceFactory,
+      deps: [InjectableRxStompConfig]
+    }
+  ],
   bootstrap: [AppComponent],
   entryComponents: [AddPatternDialogComponent]
 })

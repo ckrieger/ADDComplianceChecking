@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MonitoringAreaService } from '../services/monitoring-area.service';
 import { AddPatternDialogComponent } from '../add-pattern-dialog/add-pattern-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { PatternService } from '../services/pattern.service';
 import { PatternInstance } from '../models/PatternInstance';
+import { RxStompService } from '@stomp/ng2-stompjs';
+import { Message } from '@stomp/stompjs';
+import { MonitoringArea } from '../models/monitoring-area';
 
 @Component({
   selector: 'app-monitoring-area',
@@ -12,13 +15,19 @@ import { PatternInstance } from '../models/PatternInstance';
 })
 export class MonitoringAreaComponent implements OnInit {
 
-  monitoringArea: any;
+  // private serverUrl = 'http:localhost:8080/socket';
+  // private stompClient;
+
+  monitoringArea: MonitoringArea;
   patternList: any;
+
   constructor(
     private patternService: PatternService,
     private monitoringAreaService: MonitoringAreaService,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private rxStompService: RxStompService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.patternService.getAll().subscribe(data =>{
@@ -28,6 +37,33 @@ export class MonitoringAreaComponent implements OnInit {
       this.monitoringArea = data[0];
       console.log(this.monitoringArea)
     })
+    this.rxStompService.watch('/topic/violation').subscribe((message: Message) => {
+      let patternInstance: PatternInstance = JSON.parse(message.body);
+      console.log(message.body);
+      this.openSnackBar(patternInstance.name + ' is violated', 'close');
+      this.monitoringAreaService.get(this.monitoringArea.id).subscribe(data => {
+        this.monitoringArea = data;
+        console.log(data);
+      })
+    });
+  }
+
+
+  // initializeWebSocketConnection(){
+  //   let ws = new SockJS(this.serverUrl);
+  //   this.stompClient = Stomp.over(ws);
+  //   let that = this;
+  //   this.stompClient.connect({}, function(frame) {
+  //     that.stompClient.subscribe("/topic/violation", message => {
+  //       console.log(message.body);
+  //     })
+  //   });
+  // }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 20000,
+    });
   }
 
   openDialog(): void {
@@ -78,6 +114,15 @@ export class MonitoringAreaComponent implements OnInit {
     this.monitoringArea.patternInstances = patternInstances;
     this.monitoringAreaService.update(this.monitoringArea).subscribe(result =>{
       console.log('updated ' + result);
+    })
+  }
+
+  private resetViolationsOfMonitoringArea(){
+    this.monitoringArea.patternInstances.forEach(patternInstance => {
+      patternInstance.isViolated = false;
+    })
+    this.monitoringAreaService.update(this.monitoringArea).subscribe(data => {
+      this.monitoringArea = data;
     })
   }
 }

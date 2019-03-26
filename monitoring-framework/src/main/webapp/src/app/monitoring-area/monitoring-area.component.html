@@ -25,6 +25,10 @@
                   matTooltip="Update changes made in pattern instances and queue URL">
             <mat-icon>update</mat-icon> Update Monitor
           </button>
+          <button mat-stroked-button color="primary" (click)="resetViolationsOfMonitoringArea()"
+                  matTooltip="Reset all Violations">
+            Reset Violations
+          </button>
         </mat-card-actions>
       </mat-toolbar-row>
     </mat-toolbar>
@@ -43,10 +47,17 @@
           <mat-form-field *ngFor="let variable of patternInstance.variables; let index = index;" class="example-full-width">
             <input name="{{index}}" [(ngModel)]="variable.value" matInput [placeholder]="variable.key" [value]="variable.value">
           </mat-form-field>
-          <button mat-button (click)="deletePatternInstance(patternInstance)"
-                  matTooltip="Delete pattern instance from this application">
-             <mat-icon>delete</mat-icon>
-          </button>
+          <div class="violationStatus">
+            <p *ngIf="!patternInstance.isViolated" class="statusCompliant">compliant</p>
+            <p *ngIf="patternInstance.isViolated" class="statusViolated">violated</p>
+            <!--<span [ngClass]="{'violationStatusIconGreen': !patternInstance.isViolated, 'violationStatusIconRed': patternInstance.isViolated}"></span>-->
+          </div>
+          <div>
+            <button mat-button (click)="deletePatternInstance(patternInstance)"
+                    matTooltip="Delete pattern instance from this application">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </mat-list-item>
         <mat-divider></mat-divider>
       </div>

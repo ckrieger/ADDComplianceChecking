@@ -39,6 +39,11 @@ public class MonitoringAreaController {
         return this.repository.save(monitoringArea);
     }
 
+    @GetMapping(path = "/{id}")
+    public MonitoringArea getMonitoringAreaById(@PathVariable Long id){
+        return repository.findById(id).get();
+    }
+
 //    @PostMapping(path="/{id}/addPatternInstance")
 //    public MonitoringArea addPatternInstanceToMonitoringArea(@RequestBody Pattern pattern){
 //
