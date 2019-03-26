@@ -5,10 +5,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import com.example.demo.cepEngine.handler.CEPEventHandler;
+import com.example.demo.cepEngine.model.CircuitBreaker;
+import com.example.demo.cepEngine.model.HttpRequestEvent;
+import com.example.demo.cepEngine.model.VirtualMachine;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
 import com.example.demo.model.PatternInstance;
@@ -19,6 +25,8 @@ import com.example.demo.repository.PatternRepository;
 import com.example.demo.repository.PatternVariableRepository;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
+import com.google.gson.Gson;
+import com.rabbitmq.client.DeliverCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -45,16 +53,35 @@ public class DemoApplication {
 	PatternConstraintService patternConstraintService;
 	@Autowired
     MonitoringAreaRepository monitoringAreaRepository;
+	@Autowired
+	private CEPEventHandler eventHandler;
 
 	private static final String BASE_PATH = "templates/";
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
+	DeliverCallback deliverCallbackHttpEvent = (consumerTag, delivery) -> {
+		String message = new String(delivery.getBody(), "UTF-8");
+		Gson g = new Gson();
+		HttpRequestEvent vmEvent =  g.fromJson(message, HttpRequestEvent.class);
+		eventHandler.handle(vmEvent);
+	};
+
+	DeliverCallback deliverCallbackVirtualMachineEvent = (consumerTag, delivery) -> {
+		String message = new String(delivery.getBody(), "UTF-8");
+		Gson g = new Gson();
+		VirtualMachine vmEvent =  g.fromJson(message, VirtualMachine.class);
+		eventHandler.handle(vmEvent);
+	};
+
+
 	@Bean
 	ApplicationRunner init(){
 		return args -> {
-			//rabbitMqService.start();
+			ArrayList<String> queueNames = new ArrayList<>();
+			rabbitMqService.start("httpEvents", deliverCallbackHttpEvent);
+			rabbitMqService.start("virtualMachineEvents", deliverCallbackVirtualMachineEvent);
 			Stream.of("Watchdog").forEach(name -> {
 				try {
 					addPattern(name);
@@ -68,6 +95,7 @@ public class DemoApplication {
 		};
 	}
 
+
 	private void addPattern(String patternName) throws IOException {
 		Pattern pattern = new Pattern();
 		pattern.setName(patternName);
@@ -80,7 +108,6 @@ public class DemoApplication {
 		PatternVariable patternVariable = new PatternVariable();
 		patternVariable.setKey("timeThreshold");
 		patternVariable.setValue("1000");
-		//PatternVariable pSaved = patternVariableRepository.save(patternVariable);
 		variables.add(patternVariable);
 
 		PatternInstance patternInstance = new PatternInstance();

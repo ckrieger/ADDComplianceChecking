@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.example.demo.cepEngine.handler.CEPEventHandler;
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
 import com.example.demo.cepEngine.model.CircuitBreaker;
+import com.example.demo.cepEngine.model.HttpRequestEvent;
 import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternStatementSubscriber;
 import com.example.demo.cepEngine.utils.PatternStatementUtils;
@@ -48,6 +49,13 @@ public class CircuitBreakerTest {
     public void setup() {
         statementHandler.deleteAllSubscribers();
         violationService.deleteStatementsAndViolations();
+    }
+
+    @Test
+    public void httpRequestEvent() throws IOException{
+        PatternStatementSubscriber subscriber = patternUtils.preparePattern("CircuitBreakerHttp");
+        eventHandler.handle(new HttpRequestEvent("1", "failed"));
+        assertEquals(1, this.violationService.getViolationsFor(subscriber));
     }
 
     @Test

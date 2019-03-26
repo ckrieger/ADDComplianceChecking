@@ -17,7 +17,7 @@ public class VirtualMachine implements EventType {
         this.scalingGroupId = scalingGroupId;
     }
     public String getEventName() {
-        return "NodeEvent";
+        return "VirtualMachine";
     }
 
     @Override
