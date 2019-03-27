@@ -35,7 +35,7 @@
         },
         {
           "id": null,
-          "key": "openDuration",
+          "key": "timeoutDuration",
           "value": "10000"
         }
       ],

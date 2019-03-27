@@ -2,22 +2,22 @@ package com.example.demo.dto;
 
 import com.example.demo.model.PatternInstance;
 
-public class PatternInstanceMessage {
+public class PatternInstanceViolationMessage {
 
-    private PatternInstance pattern;
+    private PatternInstance patternInstance;
     private String violation;
 
-    public PatternInstanceMessage(PatternInstance pattern, String violation) {
-        this.setPattern(pattern);
+    public PatternInstanceViolationMessage(PatternInstance pattern, String violation) {
+        this.setPatternInstance(pattern);
         this.setViolation(violation);
     }
 
-    public PatternInstance getPattern() {
-        return pattern;
+    public PatternInstance getPatternInstance() {
+        return patternInstance;
     }
 
-    public void setPattern(PatternInstance pattern) {
-        this.pattern = pattern;
+    public void setPatternInstance(PatternInstance patternInstance) {
+        this.patternInstance = patternInstance;
     }
 
     public String getViolation() {

@@ -7,7 +7,7 @@ import com.example.demo.cepEngine.handler.CEPStatementHandler;
 import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternViolationStatementSubscriber;
 import com.example.demo.cepEngine.subscriber.SubscriberFactory;
-import com.example.demo.dto.PatternInstanceMessage;
+import com.example.demo.dto.PatternInstanceViolationMessage;
 import com.example.demo.model.PatternInstance;
 import com.example.demo.model.PatternVariable;
 import com.example.demo.repository.PatternInstanceRepository;
@@ -70,7 +70,9 @@ public class PatternConstraintService {
     }
 
     public void deleteAllEplStatements() {
+
         this.statementHandler.deleteAllSubscribers();
+        this.patterns = new HashMap<PatternInstance, PatternViolationStatementSubscriber>();
     }
 
     private String prepareConstraint(PatternInstance pattern) {
@@ -103,7 +105,7 @@ public class PatternConstraintService {
             PatternInstance patternInstance = findPatternById(pattern.getId());
             patternInstance.setIsViolated(true);
             patternInstanceRepository.save(patternInstance);
-            messagingTemplate.convertAndSend("/topic/violation", patternInstance);
+            messagingTemplate.convertAndSend("/topic/violation", new PatternInstanceViolationMessage(patternInstance, violation));
             log.debug("Set patter " + patternInstance.getName() + " as violated and saved it");
         };
     }

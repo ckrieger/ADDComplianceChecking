@@ -7,6 +7,7 @@ import { PatternInstance } from '../models/PatternInstance';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
 import { MonitoringArea } from '../models/monitoring-area';
+import { PatternInstanceViolationMessage } from '../models/pattern-instance-violation-message';
 
 @Component({
   selector: 'app-monitoring-area',
@@ -42,9 +43,12 @@ export class MonitoringAreaComponent implements OnInit {
       console.log(this.monitoringArea)
     })
     this.rxStompService.watch('/topic/violation').subscribe((message: Message) => {
-      let patternInstance: PatternInstance = JSON.parse(message.body);
-      console.log(message.body);
-      this.openSnackBar(patternInstance.name + ' is violated', 'close', 2000);
+      let violationMessage: PatternInstanceViolationMessage = JSON.parse(message.body);
+      if(violationMessage.patternInstance.name == 'CircuitBreaker'){
+        this.openSnackBar(violationMessage.patternInstance.name + ' is violated. Caused by service with ' + violationMessage.violation , 'close', 2000);
+      } else {
+        this.openSnackBar(violationMessage.patternInstance.name + ' is violated', 'close', 2000);
+      }
       this.monitoringAreaService.get(this.monitoringArea.id).subscribe(data => {
         this.monitoringArea = data;
         console.log(data);
