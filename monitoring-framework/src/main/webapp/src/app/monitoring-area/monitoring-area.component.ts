@@ -80,12 +80,26 @@ export class MonitoringAreaComponent implements OnInit {
   }
 
   private startMonitoring() {
-    this.monitoringAreaService.start(this.monitoringArea).subscribe(result => {
-      this.openSnackBar("started monitor", "close", 2000);
-      this.monitoringArea = result;
+    if(this.isFormComplete()) {
+      this.monitoringAreaService.start(this.monitoringArea).subscribe(result => {
+        this.openSnackBar("started monitor", "close", 2000);
+        this.monitoringArea = result;
       }, error => {
-      this.openSnackBar(error.error.message, 'close', 2000)
-    })
+        this.openSnackBar(error.error.message, 'close', 2000)
+      })
+    } else {
+      this.openSnackBar('Please fill out all variable fields of the pattern instances and start monitoring again', 'close', 2000)
+    }
+  }
+
+  private isFormComplete() {
+    let formComplete: boolean = true;
+    for (let instance of this.monitoringArea.patternInstances) {
+      for (let variable of instance.variables) {
+        formComplete = (variable.value.trim() == "") ? false : formComplete;
+      }
+    }
+    return formComplete;
   }
 
   private stopMonitoring() {
