@@ -12,20 +12,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class RabbitMqService {
 
-   // private final static String QUEUE_NAME = "virtualMachineEvents";
     private final static String HOST = "localhost";
 
+    private Connection connection;
+    private Channel channel;
 
-    public void start(String queueName, DeliverCallback deliverCallback) throws IOException, TimeoutException {
+    public void start(String host, String queueName, DeliverCallback deliverCallback) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(HOST);
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
+        connection = factory.newConnection();
+        channel = connection.createChannel();
 
         channel.queueDeclare(queueName, false, false, false, null);
 
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
         });
+    }
+
+    public void stop() throws IOException, TimeoutException {
+        connection.close();
     }
 
 }

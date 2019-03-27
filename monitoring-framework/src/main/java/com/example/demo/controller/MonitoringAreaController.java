@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
+import com.example.demo.cepEngine.handler.CEPStatementHandler;
+import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.repository.MonitoringAreaRepository;
 import com.example.demo.service.EventHandlerService;
@@ -30,6 +32,10 @@ public class MonitoringAreaController {
     RabbitMqService rabbitMqService;
     @Autowired
     EventHandlerService eventHandlerService;
+    @Autowired
+    private CEPStatementHandler statementHandler;
+    @Autowired
+    private StatementViolationService violationService;
 
     public MonitoringAreaController(MonitoringAreaRepository repository){
         this.repository = repository;
@@ -53,7 +59,20 @@ public class MonitoringAreaController {
     @PostMapping(path= "/start")
     public MonitoringArea startMonitoring(@RequestBody MonitoringArea monitoringArea) throws IOException, TimeoutException {
         patternConstraintService.activatePatternInstances(monitoringArea.getPatternInstances());
-        rabbitMqService.start("applicationEvents", eventHandlerService.deliverCallback);
+        rabbitMqService.start(monitoringArea.getQueueHost(), monitoringArea.getQueueName(), eventHandlerService.deliverCallback);
+        monitoringArea.setIsActive(true);
+        return this.repository.save(monitoringArea);
+    }
+
+    @PostMapping(path="/stop")
+    public MonitoringArea stopMonitoring(@RequestBody MonitoringArea monitoringArea) throws IOException, TimeoutException {
+        statementHandler.deleteAllSubscribers();
+        violationService.deleteStatementsAndViolations();
+        rabbitMqService.stop();
+        monitoringArea.getPatternInstances().forEach(patternInstance -> {
+            patternInstance.setIsViolated(false);
+        });
+        monitoringArea.setIsActive(false);
         return this.repository.save(monitoringArea);
     }
 

@@ -35,6 +35,10 @@ export class MonitoringAreaService {
     return this.http.post(this.patternApi + '/start',  monitoringArea)
   }
 
+  stop(monitoringArea: any): Observable<any> {
+    return this.http.post(this.patternApi + '/stop',  monitoringArea)
+  }
+
   remove(monitoringArea: any): Observable<any> {
     return this.http.post(this.patternApi + '/remove', monitoringArea);
   }

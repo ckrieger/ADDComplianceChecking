@@ -104,6 +104,9 @@ public class DemoApplication {
 	private MonitoringArea addMonitoringArea(PatternInstance patternInstance) {
 	    MonitoringArea monitoringArea = new MonitoringArea();
 	    monitoringArea.setName("motivation-scenario");
+	    monitoringArea.setQueueHost("localhost");
+	    monitoringArea.setQueueName("applicationEvents");
+	    monitoringArea.setIsActive(false);
 	    HashSet<PatternInstance> patternInstances = new HashSet<>();
 	    patternInstances.add(patternInstance);
 	    monitoringArea.setPatternInstances(patternInstances);

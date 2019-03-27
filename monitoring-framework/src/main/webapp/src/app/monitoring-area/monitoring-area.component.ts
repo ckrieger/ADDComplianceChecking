@@ -44,7 +44,7 @@ export class MonitoringAreaComponent implements OnInit {
     this.rxStompService.watch('/topic/violation').subscribe((message: Message) => {
       let patternInstance: PatternInstance = JSON.parse(message.body);
       console.log(message.body);
-      this.openSnackBar(patternInstance.name + ' is violated', 'close');
+      this.openSnackBar(patternInstance.name + ' is violated', 'close', 2000);
       this.monitoringAreaService.get(this.monitoringArea.id).subscribe(data => {
         this.monitoringArea = data;
         console.log(data);
@@ -53,20 +53,9 @@ export class MonitoringAreaComponent implements OnInit {
   }
 
 
-  // initializeWebSocketConnection(){
-  //   let ws = new SockJS(this.serverUrl);
-  //   this.stompClient = Stomp.over(ws);
-  //   let that = this;
-  //   this.stompClient.connect({}, function(frame) {
-  //     that.stompClient.subscribe("/topic/violation", message => {
-  //       console.log(message.body);
-  //     })
-  //   });
-  // }
-
-  openSnackBar(message: string, action: string) {
+  openSnackBar(message: string, action: string, duration: number) {
     this.snackBar.open(message, action, {
-      duration: 20000,
+      duration: duration,
     });
   }
 
@@ -92,9 +81,20 @@ export class MonitoringAreaComponent implements OnInit {
 
   private startMonitoring() {
     this.monitoringAreaService.start(this.monitoringArea).subscribe(result => {
-      console.log('started monitoring ' + result);
-      }
-    )
+      this.openSnackBar("started monitor", "close", 2000);
+      this.monitoringArea = result;
+      }, error => {
+      this.openSnackBar(error.error.message, 'close', 2000)
+    })
+  }
+
+  private stopMonitoring() {
+    this.monitoringAreaService.stop(this.monitoringArea).subscribe(result => {
+      this.openSnackBar("stopped monitor", "close", 2000);
+      this.monitoringArea = result;
+    }, err =>{
+      this.openSnackBar(err.error.message, 'close', 2000);
+    })
   }
 
   private createPatternInstance(pattern: any) {

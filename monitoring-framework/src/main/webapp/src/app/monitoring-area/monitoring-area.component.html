@@ -10,16 +10,24 @@
           <div *ngIf="monitoringArea">
             <mat-form-field class="example-full-width">
               <input name="queue-url" matInput
-                     placeholder="Queue URL" [value]="monitoringArea.queueUrl" [(ngModel)]="monitoringArea.queueUrl">
+                     placeholder="Queue Host" [value]="monitoringArea.queueHost" [(ngModel)]="monitoringArea.queueHost">
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+              <input name="queue-url" matInput
+                     placeholder="Queue Name" [value]="monitoringArea.queueName" [(ngModel)]="monitoringArea.queueName">
             </mat-form-field>
           </div>
         </span>
       </mat-toolbar-row>
       <mat-toolbar-row>
         <mat-card-actions class="right-flex">
-          <button mat-stroked-button color="primary" (click)="startMonitoring()"
+          <button *ngIf="!monitoringArea.isActive" mat-stroked-button color="primary" (click)="startMonitoring()"
                   matTooltip="Start monitoring the pattern instances">
             <mat-icon>desktop_windows</mat-icon> Start Monitor
+          </button>
+          <button *ngIf="monitoringArea.isActive" mat-stroked-button color="primary" (click)="stopMonitoring()"
+                  matTooltip="Start monitoring the pattern instances">
+            <mat-icon>desktop_windows</mat-icon> Stop Monitor
           </button>
           <button mat-stroked-button color="primary" (click)="updateMonitoringArea()"
                   matTooltip="Update changes made in pattern instances and queue URL">

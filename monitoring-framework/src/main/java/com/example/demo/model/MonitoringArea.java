@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -26,19 +27,16 @@ public class MonitoringArea {
 
     private @NonNull String name;
 
+    private String queueHost;
+
+    private String queueName;
+
+    @JsonProperty(value="isActive")
+    private Boolean isActive;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
    // @JoinColumn(name = "pattern_instance_id")
     private Set<PatternInstance> patternInstances = new HashSet<>();
-
-    private String queueUrl;
-
-    public String getQueueUrl() {
-        return queueUrl;
-    }
-
-    public void setQueueUrl(String queueUrl) {
-        this.queueUrl = queueUrl;
-    }
 
     public Long getId() {
         return id;
@@ -62,5 +60,29 @@ public class MonitoringArea {
 
     public void setPatternInstances(Set<PatternInstance> patternInstances) {
         this.patternInstances = patternInstances;
+    }
+
+    public String getQueueHost() {
+        return queueHost;
+    }
+
+    public void setQueueHost(String queueHost) {
+        this.queueHost = queueHost;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public void setQueueName(String queueName) {
+        this.queueName = queueName;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 }

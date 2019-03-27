@@ -5,7 +5,9 @@ export class MonitoringArea {
     public id?: number,
     public name?: string,
     public patternInstances?: PatternInstance[],
-    public  queueUrl?: string
+    public  queueName?: string,
+    public queueHost?: string,
+    public isActive?: string
   ){
 
   }
