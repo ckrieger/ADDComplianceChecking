@@ -91,10 +91,21 @@ export class MonitoringAreaComponent implements OnInit {
   }
 
   private startMonitoring() {
-    this.monitoringAreaService.start(this.monitoringArea).subscribe(result => {
-      console.log('started monitoring ' + result);
+    let formComplete: boolean = true;
+    for (let instance of this.monitoringArea.patternInstances) {
+      for (let variable of instance.variables) {
+        formComplete = (variable.value.trim() == "") ? false : formComplete;
       }
-    )
+    }
+    if(formComplete) {
+      this.monitoringAreaService.start(this.monitoringArea).subscribe(result => {
+          console.log('started monitoring ' + result);
+        }
+      )
+    } else {
+      alert("Please fill out all variable fields of the pattern instances and start monitoring again");
+    }
+
   }
 
   private createPatternInstance(pattern: any) {
