@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -19,6 +20,7 @@ import com.example.demo.repository.PatternRepository;
 import com.example.demo.repository.PatternVariableRepository;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -55,67 +57,37 @@ public class DemoApplication {
 	@Bean
 	ApplicationRunner init(){
 		return args -> {
-			ArrayList<String> queueNames = new ArrayList<>();
-			Stream.of("Watchdog").forEach(name -> {
+			this.initPatternRepo();
+			MonitoringArea monitoringArea = new Gson().fromJson(fetchStatementFromFile("json/monitoring-area.json"), MonitoringArea.class);
+			monitoringArea.getPatternInstances().forEach(patternInstance -> {
+				String filePath = patternInstance.getName() + ".epl";
 				try {
-					addPattern(name);
-					PatternInstance patternInstance = createPatternInstance(name);
-					MonitoringArea monitoringArea = addMonitoringArea(patternInstance);
-                    Set<PatternInstance> patternInstances = new HashSet<>();
-                    patternInstances.add(patternInstance);
-					patternConstraintService.activatePatternInstances(patternInstances);
+					patternInstance.setConstraintStatement(fetchStatementFromFile(filePath));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			});
+			this.monitoringAreaRepository.save(monitoringArea);
 		};
 	}
 
 
-	private void addPattern(String patternName) throws IOException {
-		Pattern pattern = new Pattern();
-		pattern.setName(patternName);
-		pattern.setpConstraint(fetchStatementFromFile(patternName));
-		patternRepository.save(pattern);
+	private void initPatternRepo() throws IOException {
+		Stream.of("Watchdog", "CircuitBreaker").forEach(name -> {
+			Pattern pattern = new Pattern();
+			pattern.setName(name);
+			String filePath = name + ".epl";
+			try {
+				pattern.setpConstraint(fetchStatementFromFile(filePath));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			patternRepository.save(pattern);
+		});
 	}
-
-	private PatternInstance createPatternInstance(String patternName) throws IOException {
-		Set<PatternVariable> variables = new HashSet<>();
-		PatternVariable timeThreshold = new PatternVariable();
-		timeThreshold.setKey("timeThreshold");
-		timeThreshold.setValue("1000");
-		PatternVariable scalingGroupId = new PatternVariable();
-		scalingGroupId.setKey("scalingGroupId");
-		scalingGroupId.setValue("inventoryService");
-
-		variables.add(scalingGroupId);
-		variables.add(timeThreshold);
-
-		PatternInstance patternInstance = new PatternInstance();
-		patternInstance.setName(patternName);
-		patternInstance.setConstraintStatement(fetchStatementFromFile(patternName));
-		patternInstance.setIsActive(false);
-		patternInstance.setIsViolated(false);
-		patternInstance.setVariables(variables);
-
-		return patternInstance;
-	}
-
-	private MonitoringArea addMonitoringArea(PatternInstance patternInstance) {
-	    MonitoringArea monitoringArea = new MonitoringArea();
-	    monitoringArea.setName("motivation-scenario");
-	    monitoringArea.setQueueHost("localhost");
-	    monitoringArea.setQueueName("applicationEvents");
-	    monitoringArea.setIsActive(false);
-	    HashSet<PatternInstance> patternInstances = new HashSet<>();
-	    patternInstances.add(patternInstance);
-	    monitoringArea.setPatternInstances(patternInstances);
-	    monitoringAreaRepository.save(monitoringArea);
-	    return monitoringArea;
-    }
 
 	private String fetchStatementFromFile(String filename) throws FileNotFoundException, IOException {
-		BufferedReader br = new BufferedReader(new FileReader(ResourceUtils.getFile("classpath:" + filename + ".epl")));
+		BufferedReader br = new BufferedReader(new FileReader(ResourceUtils.getFile("classpath:" + filename)));
 		StringBuilder statementBuilder = new StringBuilder();
 		String next;
 		while ((next = br.readLine()) != null) {
