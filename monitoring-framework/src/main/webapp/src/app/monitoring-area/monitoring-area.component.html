@@ -47,18 +47,12 @@
       <mat-list *ngFor="let patternInstance of monitoringArea?.patternInstances" class="horizontal-spaced-item">
         <mat-toolbar>
           <mat-toolbar-row *ngIf="!patternInstance.isViolated" class="statusCompliant">
-            <span>
-              <h1 matTooltip="{{patternInstance.name}} is compliant">{{patternInstance.name}}</h1>
-              <!--<span [ngClass]="{'violationStatusIconGreen': !patternInstance.isViolated, 'violationStatusIconRed': patternInstance.isViolated}"></span>-->
-            </span>
+            <span><h1 matTooltip="{{patternInstance.name}} is compliant">{{patternInstance.name}}</h1></span>
             <span class="spacer"></span>
             <span><mat-icon>check</mat-icon></span>
           </mat-toolbar-row>
           <mat-toolbar-row *ngIf="patternInstance.isViolated" class="statusViolated">
-            <span>
-              <h1 matTooltip="{{patternInstance.name}} is violated">{{patternInstance.name}}</h1>
-              <!--<span [ngClass]="{'violationStatusIconGreen': !patternInstance.isViolated, 'violationStatusIconRed': patternInstance.isViolated}"></span>-->
-            </span>
+            <span><h1 matTooltip="{{patternInstance.name}} is violated">{{patternInstance.name}}</h1></span>
             <span class="spacer"></span>
             <span><mat-icon>warning</mat-icon></span>
           </mat-toolbar-row>
