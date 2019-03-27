@@ -66,7 +66,7 @@ public class MonitoringAreaController {
 
     @PostMapping(path="/stop")
     public MonitoringArea stopMonitoring(@RequestBody MonitoringArea monitoringArea) throws IOException, TimeoutException {
-        statementHandler.deleteAllSubscribers();
+        patternConstraintService.deleteAllEplStatements();
         violationService.deleteStatementsAndViolations();
         rabbitMqService.stop();
         monitoringArea.getPatternInstances().forEach(patternInstance -> {
