@@ -46,15 +46,13 @@
 }
 
 .statusViolated{
-  background-color: red;
-  color: #333333;
+  color: red;
   text-align: left;
   padding-left: 10px;
 }
 
 .statusCompliant{
-  background-color: chartreuse;
-  color: black;
+  color: green;
   text-align: left;
   padding-left: 10px;
 }
@@ -64,10 +62,14 @@
   left: 5px;
 }
 
-.delete-btn {
-  text-align: right;
+.small-text {
+  font-size: small;
 }
 
 .input-cls {
   margin-left: 10px;
+}
+
+.spacer {
+  flex: 1 1 auto;
 }

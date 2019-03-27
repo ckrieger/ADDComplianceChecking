@@ -47,22 +47,29 @@
   <mat-card-title>Pattern Instances</mat-card-title>
     <mat-card-content>
       <mat-list *ngFor="let patternInstance of monitoringArea?.patternInstances" class="pattern-instance-item">
-        <div>
-          <div>
-            <h2 *ngIf="!patternInstance.isViolated" class="statusCompliant" matTooltip="Pattern is compliant">{{patternInstance.name}}</h2>
-            <h2 *ngIf="patternInstance.isViolated" class="statusViolated" matTooltip="Pattern is violated">{{patternInstance.name}}</h2>
-            <!--<span [ngClass]="{'violationStatusIconGreen': !patternInstance.isViolated, 'violationStatusIconRed': patternInstance.isViolated}"></span>-->
-          </div>
-          <div class="delete-btn">
-            <button mat-button (click)="deletePatternInstance(patternInstance)"
-                    matTooltip="Delete pattern instance from this application">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </div>
-        <mat-form-field matLine *ngFor="let variable of patternInstance.variables; let index = index;" class="input-cls">
-          <input name="{{index}}" [(ngModel)]="variable.value" matInput [placeholder]="variable.key" [value]="variable.value">
-        </mat-form-field>
+        <mat-toolbar>
+          <mat-toolbar-row>
+            <span>
+              <h1 *ngIf="!patternInstance.isViolated" class="statusCompliant" matTooltip="Pattern is compliant">{{patternInstance.name}}</h1>
+              <h1 *ngIf="patternInstance.isViolated" class="statusViolated" matTooltip="Pattern is violated">{{patternInstance.name}}<mat-icon>warning</mat-icon></h1>
+              <!--<span [ngClass]="{'violationStatusIconGreen': !patternInstance.isViolated, 'violationStatusIconRed': patternInstance.isViolated}"></span>-->
+            </span>
+          </mat-toolbar-row>
+          <mat-toolbar-row class="small-text">
+            <span>
+              <mat-form-field matLine *ngFor="let variable of patternInstance.variables; let index = index;" class="input-cls">
+                <input name="{{index}}" [(ngModel)]="variable.value" matInput [placeholder]="variable.key" [value]="variable.value">
+              </mat-form-field>
+            </span>
+            <span class="spacer"></span>
+            <span class="delete-btn">
+              <button mat-button (click)="deletePatternInstance(patternInstance)"
+                      matTooltip="Remove {{patternInstance.name}} from this application">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </span>
+          </mat-toolbar-row>
+        </mat-toolbar>
       </mat-list>
   </mat-card-content>
   <div class="right-flex">
