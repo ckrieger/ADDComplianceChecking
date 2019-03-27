@@ -6,17 +6,15 @@
         <span matTooltip="Application name">{{monitoringArea?.name}}</span>
       </mat-toolbar-row>
       <mat-toolbar-row>
-        <span>
-          <div *ngIf="monitoringArea">
-            <mat-form-field class="example-full-width">
-              <input name="queue-url" matInput
-                     placeholder="Queue Host" [value]="monitoringArea.queueHost" [(ngModel)]="monitoringArea.queueHost">
-            </mat-form-field>
-            <mat-form-field class="example-full-width">
-              <input name="queue-url" matInput
-                     placeholder="Queue Name" [value]="monitoringArea.queueName" [(ngModel)]="monitoringArea.queueName">
-            </mat-form-field>
-          </div>
+        <span *ngIf="monitoringArea" class="small-text">
+          <mat-form-field class="example-full-width">
+            <input name="queue-url" matInput
+                   placeholder="Queue Host" [value]="monitoringArea.queueHost" [(ngModel)]="monitoringArea.queueHost">
+          </mat-form-field>
+          <mat-form-field class="horizontal-spaced-item">
+            <input name="queue-url" matInput
+                   placeholder="Queue Name" [value]="monitoringArea.queueName" [(ngModel)]="monitoringArea.queueName">
+          </mat-form-field>
         </span>
       </mat-toolbar-row>
       <mat-toolbar-row>
@@ -46,14 +44,23 @@
 <mat-card class="card-pattern-list">
   <mat-card-title>Pattern Instances</mat-card-title>
     <mat-card-content>
-      <mat-list *ngFor="let patternInstance of monitoringArea?.patternInstances" class="pattern-instance-item">
+      <mat-list *ngFor="let patternInstance of monitoringArea?.patternInstances" class="horizontal-spaced-item">
         <mat-toolbar>
-          <mat-toolbar-row>
+          <mat-toolbar-row *ngIf="!patternInstance.isViolated" class="statusCompliant">
             <span>
-              <h1 *ngIf="!patternInstance.isViolated" class="statusCompliant" matTooltip="Pattern is compliant">{{patternInstance.name}}</h1>
-              <h1 *ngIf="patternInstance.isViolated" class="statusViolated" matTooltip="Pattern is violated">{{patternInstance.name}}<mat-icon>warning</mat-icon></h1>
+              <h1 matTooltip="{{patternInstance.name}} is compliant">{{patternInstance.name}}</h1>
               <!--<span [ngClass]="{'violationStatusIconGreen': !patternInstance.isViolated, 'violationStatusIconRed': patternInstance.isViolated}"></span>-->
             </span>
+            <span class="spacer"></span>
+            <span><mat-icon>check</mat-icon></span>
+          </mat-toolbar-row>
+          <mat-toolbar-row *ngIf="patternInstance.isViolated" class="statusViolated">
+            <span>
+              <h1 matTooltip="{{patternInstance.name}} is violated">{{patternInstance.name}}</h1>
+              <!--<span [ngClass]="{'violationStatusIconGreen': !patternInstance.isViolated, 'violationStatusIconRed': patternInstance.isViolated}"></span>-->
+            </span>
+            <span class="spacer"></span>
+            <span><mat-icon>warning</mat-icon></span>
           </mat-toolbar-row>
           <mat-toolbar-row class="small-text">
             <span>
@@ -62,7 +69,7 @@
               </mat-form-field>
             </span>
             <span class="spacer"></span>
-            <span class="delete-btn">
+            <span>
               <button mat-button (click)="deletePatternInstance(patternInstance)"
                       matTooltip="Remove {{patternInstance.name}} from this application">
                 <mat-icon>delete</mat-icon>
