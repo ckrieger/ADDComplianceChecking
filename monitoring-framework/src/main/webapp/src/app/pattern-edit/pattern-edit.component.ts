@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatternService } from '../services/pattern.service';
 import { NgForm } from '@angular/forms';
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-pattern-edit',
@@ -18,6 +19,7 @@ export class PatternEditComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private patternService: PatternService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -44,6 +46,12 @@ export class PatternEditComponent implements OnInit, OnDestroy {
     this.router.navigate(['/pattern-list']);
   }
 
+  openSnackBar(message: string, action: string, duration: number) {
+    this.snackBar.open(message, action, {
+      duration: duration,
+    });
+  }
+
   save(form: NgForm) {
     if (form.name.trim() != "") {
       this.patternService.add(form).subscribe(response => {
@@ -52,7 +60,7 @@ export class PatternEditComponent implements OnInit, OnDestroy {
         console.error(error);
       });
     } else {
-      alert("Pattern name cannot be blank");
+      this.openSnackBar('Pattern name must not be empty', 'close', 2000)
     }
   }
 

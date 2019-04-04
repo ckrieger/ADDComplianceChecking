@@ -98,6 +98,7 @@ export class MonitoringAreaComponent implements OnInit {
 
   private isFormComplete() {
     let formComplete: boolean = true;
+    formComplete = (this.monitoringArea.queueHost.trim() == "" || this.monitoringArea.queueName.trim() == "") ? false : formComplete;
     for (let instance of this.monitoringArea.patternInstances) {
       for (let variable of instance.variables) {
         formComplete = (variable.value.trim() == "") ? false : formComplete;
