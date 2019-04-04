@@ -1,8 +1,10 @@
-create context SegmentedByCircuitBreaker partition by id from CircuitBreaker;
+create schema TimeoutPeriodElapsedEvent(serviceId string, statusCode string);
+create context SegmentedByCircuitBreaker partition by serviceId from HttpRequestEvent;
 
-context SegmentedByCircuitBreaker insert into CircuitBreakerFailureRateExcessEvent select * from CircuitBreaker.win:length(3) where remoteFunctionCallStatus = "failure" having count(*) > 2;
-insert into CircuitBreakerCloseDesiredEvent select * from pattern[ every CircuitBreakerFailureRateExcessEvent -> not CircuitBreaker(remoteFunctionCallStatus = "failure") where timer:within(100 msec)];
+context SegmentedByCircuitBreaker insert into FailureRateExcessEvent select * from HttpRequestEvent.win:length(3 + 1) where statusCode = "failed" having count(*) > 3;
 
-@Name('Circuit Breaker Violation')select * from pattern [every (CircuitBreakerFailureRateExcessEvent -> CircuitBreaker(remoteFunctionCallStatus != "blocked" ) where timer:within(100 msec)) or (CircuitBreakerCloseDesiredEvent -> not CircuitBreakerFailureRateExcessEvent until CircuitBreaker(remoteFunctionCallStatus = "blocked"))];
+insert into TimeoutPeriodElapsedEvent select * from pattern [every a = FailureRateExcessEvent -> (timer:interval(1000 msec) and not b = HttpRequestEvent(serviceId = a.serviceId and statusCode = 'failed'))];
 
+@Name('Timeout Violation')select httpEvent.serviceId as serviceId from pattern [every (fe = FailureRateExcessEvent -> httpEvent=HttpRequestEvent(httpEvent.serviceId = fe.serviceId) where timer:within(1000 msec))];
 
+@Name('Closing Violation')select a.serviceId as serviceId from pattern [every a = TimeoutPeriodElapsedEvent -> ( timer:interval(5 sec) and not b = HttpRequestEvent(serviceId = a.serviceId))];

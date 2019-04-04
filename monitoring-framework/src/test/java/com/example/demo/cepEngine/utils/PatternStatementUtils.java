@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,13 @@ public class PatternStatementUtils {
         return subscriber;
     }
 
+    public List<PatternStatementSubscriber> preparePatternWithMultipleSubscriber(String patternName) throws FileNotFoundException, IOException {
+        String statementBuilder = fetchStatementFromFile(patternName);
+        List<String> eplStatements = Arrays.stream(statementBuilder.toString().split(";")).collect(Collectors.toList());
+        List <PatternStatementSubscriber> subscriber = insertStatementsIntoEventHandlerAndCreateSubscriberList(patternName, eplStatements);
+        return subscriber;
+    }
+
     private String fetchStatementFromFile(String filename) throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(new File(BASE_PATH + filename + ".epl")));
         StringBuilder statementBuilder = new StringBuilder();
@@ -69,4 +77,26 @@ public class PatternStatementUtils {
         return subscriber;
     }
 
+    private List<PatternStatementSubscriber> insertStatementsIntoEventHandlerAndCreateSubscriberList(String patternName, List<String> eplStatements) {
+        List <PatternStatementSubscriber> subscriberList = new ArrayList<>();
+        for (String statementString: eplStatements) {
+            if (statementString.contains("@")) {
+                PatternStatementSubscriber subscriber = subscriberFactory.createViolationSubscriber(statementString, patternName);
+                violationService.addSubscriber(subscriber);
+                statementHandler.addStatementSubscriber(subscriber);
+                subscriberList.add(subscriber);
+            } else {
+                statementHandler.addEplStatement(statementString);
+            }
+        }
+        return subscriberList;
+    }
+
+    public PatternStatementSubscriber getSubscriberByAnnotation (List<PatternStatementSubscriber> subscriberList, String annotation){
+       return subscriberList
+               .stream()
+               .filter(subscriber -> subscriber.getStatement().contains(annotation))
+               .findFirst()
+               .get();
+    }
 }
