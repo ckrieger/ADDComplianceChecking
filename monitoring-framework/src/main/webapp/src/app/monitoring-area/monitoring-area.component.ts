@@ -37,11 +37,20 @@ export class MonitoringAreaComponent implements OnInit {
     this.refreshMonitoringComponent();
   }
 
+  private orderByName(patternInstances: any) {
+    patternInstances.sort(function(a, b){
+      if(a.id < b.id) { return -1; }
+      if(a.id > b.id) { return 1; }
+      return 0;
+    });
+    return patternInstances;
+  }
+
   refreshMonitoringComponent() {
     this.monitoringAreaService.getAll().subscribe(data => {
       this.monitoringArea = data[0];
       console.log(this.monitoringArea)
-    })
+    });
     this.rxStompService.watch('/topic/violation').subscribe((message: Message) => {
       let violationMessage: PatternInstanceViolationMessage = JSON.parse(message.body);
       if(violationMessage.patternInstance.name == 'CircuitBreaker'){

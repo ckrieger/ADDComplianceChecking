@@ -44,7 +44,7 @@
 <mat-card class="card-pattern-list">
   <mat-card-title>Pattern Instances</mat-card-title>
     <mat-card-content>
-      <mat-list *ngFor="let patternInstance of monitoringArea?.patternInstances" class="horizontal-spaced-item">
+      <mat-list *ngFor="let patternInstance of orderByName(monitoringArea?.patternInstances)" class="horizontal-spaced-item">
         <mat-toolbar>
           <mat-toolbar-row *ngIf="!patternInstance.isViolated" class="statusCompliant">
             <span><h1 matTooltip="{{patternInstance.name}} is compliant">{{patternInstance.name}}</h1></span>
@@ -58,7 +58,7 @@
           </mat-toolbar-row>
           <mat-toolbar-row class="small-text">
             <span>
-              <mat-form-field matLine *ngFor="let variable of patternInstance.variables; let index = index;" class="input-cls">
+              <mat-form-field matLine *ngFor="let variable of orderByName(patternInstance.variables); let index = index;" class="input-cls">
                 <input name="{{index}}" [(ngModel)]="variable.value" matInput [placeholder]="variable.key" [value]="variable.value">
               </mat-form-field>
             </span>
