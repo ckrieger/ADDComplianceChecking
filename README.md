@@ -48,7 +48,7 @@ Execute the commands from the webapp directory.
 
 `npm start`
 
-## Example Application
+### Example Application
 Running the example application via docker swarm
 
 `docker stack deploy -c docker-compose.yaml motivation-scenario`
