@@ -16,6 +16,11 @@ public class VirtualMachine implements EventType {
         this.vmId = id;
         this.scalingGroupId = scalingGroupId;
     }
+
+    public VirtualMachine (double cpu) {
+        this.setCpu(cpu);
+    }
+
     public String getEventName() {
         return "VirtualMachine";
     }
