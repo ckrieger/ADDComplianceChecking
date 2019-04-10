@@ -35,6 +35,8 @@ The proxy intercepts each HTTP request sent by an application component and emit
 - npm
 - docker
 
+### Monitoring Framework
+
 Start Spring Boot backend of the Monitoring Framework
 
 `mvn spring-boot:run`
@@ -46,6 +48,7 @@ Execute the commands from the webapp directory.
 
 `npm start`
 
+## Example Application
 Running the example application via docker swarm
 
 `docker stack deploy -c docker-compose.yaml motivation-scenario`
