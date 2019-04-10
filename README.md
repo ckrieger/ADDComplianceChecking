@@ -19,7 +19,8 @@ Detected violations are displayed in the monitoring dashboard implemented within
 
 For the test setup we created *Pattern Compliance Rules* for the three patterns **Static Workload**, **Watchdog**, and **Circuit Breaker**.
 
-### Motivating Scenario
+### Example Application (Motivating Scenario)
+
 In order to simulate a running application emmiting a stream of events, we implemented an exemplary microservice application and packaged each application component as a docker container image.
 For each container image, we added a script that periodically sends messages containing information about the hosting environment to the running RabbitMQ instance.
 In addition we implemented a simple proxy that is deployed alongside the application, so that communication between application components always goes through the proxy.
@@ -32,15 +33,31 @@ The proxy intercepts each HTTP request sent by an application component and emit
 - Java 1.8
 - Maven
 - npm
+- docker
 
 Start Spring Boot backend of the Monitoring Framework
 
 `mvn spring-boot:run`
 
-Start the Angular frontend of the Monitoring Framework
+Start the Angular frontend of the Monitoring Framework.
+Execute the commands from the webapp directory.
 
 `npm install`
 
 `npm start`
+
+Running the example application via docker swarm
+
+`docker stack deploy -c docker-compose.yaml motivation-scenario`
+
+Scaling an service in the swarm
+
+`docker service scale SERVICE_NAME=INSTANCE_Count`
+
+For example scaling the inventory service
+
+`docker service scale motivation-scenario_inventory-service=INSTANCE_Count`
+
+
 
 ## Walkthrough
