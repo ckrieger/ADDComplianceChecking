@@ -73,7 +73,7 @@ public class DemoApplication {
 
 
 	private void initPatternRepo() throws IOException {
-		Stream.of("Watchdog", "CircuitBreaker").forEach(name -> {
+		Stream.of("Watchdog", "CircuitBreaker", "StaticWorkload").forEach(name -> {
 			Pattern pattern = new Pattern();
 			pattern.setName(name);
 			String filePath = name + ".epl";
