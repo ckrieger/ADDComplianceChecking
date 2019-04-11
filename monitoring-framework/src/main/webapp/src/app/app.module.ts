@@ -23,6 +23,7 @@ import { MonitoringAreaComponent } from './monitoring-area/monitoring-area.compo
 import { AddPatternDialogComponent } from './add-pattern-dialog/add-pattern-dialog.component';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
 import { rxStompConfig } from './rx-stomp.config';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,10 @@ import { rxStompConfig } from './rx-stomp.config';
       provide: RxStompService,
       useFactory: rxStompServiceFactory,
       deps: [InjectableRxStompConfig]
+    },
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
     }
   ],
   bootstrap: [AppComponent],

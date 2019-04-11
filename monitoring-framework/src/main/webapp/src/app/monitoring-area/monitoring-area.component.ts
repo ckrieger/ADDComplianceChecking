@@ -37,7 +37,7 @@ export class MonitoringAreaComponent implements OnInit {
     this.refreshMonitoringComponent();
   }
 
-  private orderByName(patternInstances: any) {
+  orderByName(patternInstances: any) {
     patternInstances.sort(function(a, b){
       if(a.id < b.id) { return -1; }
       if(a.id > b.id) { return 1; }
@@ -85,7 +85,7 @@ export class MonitoringAreaComponent implements OnInit {
     });
   }
 
-  private updateMonitoringArea() {
+   updateMonitoringArea() {
     this.monitoringAreaService.update(this.monitoringArea).subscribe(result =>{
       this.refreshMonitoringComponent();
       console.log('updated ' + result);
@@ -155,7 +155,7 @@ export class MonitoringAreaComponent implements OnInit {
     })
   }
 
-  private resetViolationsOfMonitoringArea(){
+   resetViolationsOfMonitoringArea(){
     this.monitoringArea.patternInstances.forEach(patternInstance => {
       patternInstance.isViolated = false;
     })
