@@ -8,7 +8,7 @@ create schema IncreaseCountEvent(number int);
 create window IncreaseCountEventWin.win:length(1) as IncreaseCountEvent;
 create context SegmentedByScalingGroup partition by scalingGroupId from VirtualMachine;
 
-insert into VMCount select cast(count(*),int) as number from VirtualMachine(scalingGroupId = "${scalingGrpId}").std:unique(vmId).win:time_batch(5 sec) vme;
+insert into VMCount select cast(count(*),int) as number from VirtualMachine(scalingGroupId = "${scalingGroupId}").std:unique(vmId).win:time_batch(5 sec) vme;
 
 insert into ReduceCountEvent select se.number as number from pattern [ every fe=VMCount -> se=VMCount(fe.number > se.number)];
 

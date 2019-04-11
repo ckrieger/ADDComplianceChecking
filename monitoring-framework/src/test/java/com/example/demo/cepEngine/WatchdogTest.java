@@ -38,7 +38,7 @@ public class WatchdogTest {
     private static final String PATTERN_NAME = "Watchdog";
     private static final String TIME_THRESHOLD = "300";
     private static final Map<String, String> PARAMETERS = new HashMap<String, String>() {{
-            put("scalingGrpId", INVENTORY_SERVICE_ID);
+            put("scalingGroupId", INVENTORY_SERVICE_ID);
             put("timeThreshold", TIME_THRESHOLD);
         }};
 
