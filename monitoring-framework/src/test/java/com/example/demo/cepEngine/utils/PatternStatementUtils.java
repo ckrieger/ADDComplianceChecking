@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
@@ -37,11 +35,30 @@ public class PatternStatementUtils {
         return subscriber;
     }
 
-    public PatternStatementSubscriber preparePattern(String patternName) throws FileNotFoundException, IOException {
+    public PatternStatementSubscriber preparePattern(String patternName, Map<String, String> parameters) throws FileNotFoundException, IOException {
         String statementBuilder = fetchStatementFromFile(patternName);
         List<String> eplStatements = Arrays.stream(statementBuilder.toString().split(";")).collect(Collectors.toList());
-        PatternStatementSubscriber subscriber = insertStatementsIntoEventHandlerAndCreateSubscriber(patternName, eplStatements);
+        List<String> eplStatementsWithParameters = insertParametersIntoStatements(eplStatements, parameters);
+        PatternStatementSubscriber subscriber = insertStatementsIntoEventHandlerAndCreateSubscriber(patternName, eplStatementsWithParameters);
         return subscriber;
+    }
+
+    private List<String> insertParametersIntoStatements(List<String> eplStatements, Map<String, String> parameters) {
+        for(int i = 0; i < eplStatements.size(); i++) {
+            String statementLine = eplStatements.get(i);
+            if (statementLine.contains("${")) {
+                int pos = statementLine.indexOf("${");
+                statementLine = statementLine.replace("${", "");
+                int endPos = statementLine.indexOf("}");
+                statementLine = statementLine.replace("}", "");
+                String paramName = statementLine.substring(pos, endPos);
+                if(parameters.containsKey(paramName)) {
+                    statementLine = statementLine.replace(paramName, parameters.get(paramName));
+                    eplStatements.set(i, statementLine);
+                }
+            }
+        }
+        return eplStatements;
     }
 
     public List<PatternStatementSubscriber> preparePatternWithMultipleSubscriber(String patternName) throws FileNotFoundException, IOException {

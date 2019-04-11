@@ -2,6 +2,8 @@ package com.example.demo.cepEngine;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
 import com.example.demo.cepEngine.service.StatementViolationService;
@@ -34,6 +36,11 @@ public class WatchdogTest {
     private static final String INVENTORY_SERVICE_ID = "InventoryService";
     private static final String SHIPPING_SERVICE_ID = "ShippingService";
     private static final String PATTERN_NAME = "Watchdog";
+    private static final String TIME_THRESHOLD = "300";
+    private static final Map<String, String> PARAMETERS = new HashMap<String, String>() {{
+            put("scalingGrpId", INVENTORY_SERVICE_ID);
+            put("timeThreshold", TIME_THRESHOLD);
+        }};
 
     private static PatternStatementSubscriber subscriber;
 
@@ -41,7 +48,7 @@ public class WatchdogTest {
     public void setup() throws IOException {
         statementHandler.deleteAllSubscribers();
         violationService.deleteStatementsAndViolations();
-        this.subscriber = patternUtils.preparePattern(PATTERN_NAME);
+        this.subscriber = patternUtils.preparePattern(PATTERN_NAME, PARAMETERS);
     }
 
     @Test
@@ -75,7 +82,7 @@ public class WatchdogTest {
     }
 
     @Test
-    public void shouldDifferntiateBetweenScalingGroups() throws Exception {
+    public void shouldDifferentiateBetweenScalingGroups() throws Exception {
 
         for (int i = 0; i < 3; i++) {
             vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 3);

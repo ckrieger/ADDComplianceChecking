@@ -13,6 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,31 +36,33 @@ public class StaticWorkloadTest {
     private static final String PATTERN_NAME = "StaticWorkload";
     private static final int TEST_DURATION = 100;
     private static final double CPU_LEVEL = 0.5;
-    private static final double HIGH_VARIATION = 0.1;
-    private static final double SMALL_VARIATION = 0.04;
+    private static final double TOLERATED_VARIATION = 0.1;
+    private static final Map<String, String> PARAMETERS = new HashMap<String, String>() {{
+            put("variation", String.valueOf(TOLERATED_VARIATION));
+        }};
 
     @Before
     public void setup() throws IOException {
         statementHandler.deleteAllSubscribers();
         violationService.deleteStatementsAndViolations();
-        this.subscriber = patternUtils.preparePattern(PATTERN_NAME);
+        this.subscriber = patternUtils.preparePattern(PATTERN_NAME, PARAMETERS);
     }
 
     @Test
     public void testStaticWorkloadViolatedWithBigVariations() {
-        vmGenerator.generateChangingCpuWorkload(HIGH_VARIATION, TEST_DURATION, CPU_LEVEL);
+        vmGenerator.generateBigChangingCpuWorkload(TOLERATED_VARIATION, TEST_DURATION, CPU_LEVEL);
         assertTrue(this.violationService.getViolationsFor(subscriber) >= 1);
     }
 
     @Test
     public void testStaticWorkloadCompliantWithSmallVariations() {
-        vmGenerator.generateStaticCpuWorkload(SMALL_VARIATION, TEST_DURATION, CPU_LEVEL);
+        vmGenerator.generateSmallChangingCpuWorkload(TOLERATED_VARIATION, TEST_DURATION, CPU_LEVEL);
         assertEquals(0, this.violationService.getViolationsFor(subscriber));
     }
 
     @Test
     public void testStaticWorkloadViolatedWithContinuouslyGrowingWorkload() {
-        vmGenerator.generateContinuouslyGrowingCpuWorkload(HIGH_VARIATION, TEST_DURATION, CPU_LEVEL);
+        vmGenerator.generateContinuouslyGrowingCpuWorkload(TOLERATED_VARIATION, TEST_DURATION, CPU_LEVEL);
         assertTrue(this.violationService.getViolationsFor(subscriber) >= 1);
     }
 }
