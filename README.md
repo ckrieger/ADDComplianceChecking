@@ -33,22 +33,12 @@ The fastest way to get the monitoring framework and the motivating-scenario up a
 
 `docker stack deploy -c docker-compose.yaml motivation-scenario`
 
-### Run Monitoring Framework only
-You can also start the monitoring framework via Maven
-#### Requirements
+The ports are mapped as follows:
 
-- Java 1.8
-- Maven
-
-Execute the following command in the monitoring framework folder
-
-`mvn spring-boot:run`
-
-### Run Example Application only
-Running the example application via docker swarm.
-Execute the following command in the motivation-scenario directory
-
-`docker stack deploy -c docker-compose.yaml motivation-scenario`
+monitoring framework: localhost:8080
+rabbitMq: localhost:  localhost:9090 (user: guest, pw: guest)
+inventory-service:    localhost:5000
+shipping-service:     localhost:8088
 
 Scaling an service in the swarm
 
@@ -57,6 +47,5 @@ Scaling an service in the swarm
 For example scaling the inventory service
 
 `docker service scale motivation-scenario_inventory-service=INSTANCE_Count`
-
 
 ## Walkthrough
