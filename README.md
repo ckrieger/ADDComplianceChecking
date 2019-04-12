@@ -28,20 +28,23 @@ The proxy intercepts each HTTP request sent by an application component and emit
 
 ## Getting Started
 
-### Requirements
+### Run via Docker Swarm
+The fastest way to get the monitoring framework and the motivating-scenario up and running is via the docker compose file located in the root folder. Just execute: 
+
+`docker stack deploy -c docker-compose.yaml motivation-scenario`
+
+### Monitoring Framework only
+You can also start the monitoring framework via Maven
+#### Requirements
 
 - Java 1.8
 - Maven
-- npm
-- docker
 
-### Monitoring Framework
-
-Start the Monitoring Framework
+Execute the following command in the monitoring framework folder
 
 `mvn spring-boot:run`
 
-### Example Application
+### Example Application only
 Running the example application via docker swarm.
 Execute the following command in the motivation-scenario directory
 
