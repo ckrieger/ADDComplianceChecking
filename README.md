@@ -33,7 +33,7 @@ The fastest way to get the monitoring framework and the motivating-scenario up a
 
 `docker stack deploy -c docker-compose.yaml motivation-scenario`
 
-### Monitoring Framework only
+### Run Monitoring Framework only
 You can also start the monitoring framework via Maven
 #### Requirements
 
@@ -44,7 +44,7 @@ Execute the following command in the monitoring framework folder
 
 `mvn spring-boot:run`
 
-### Example Application only
+### Run Example Application only
 Running the example application via docker swarm.
 Execute the following command in the motivation-scenario directory
 
