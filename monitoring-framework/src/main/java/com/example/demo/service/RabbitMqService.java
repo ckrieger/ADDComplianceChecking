@@ -12,14 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class RabbitMqService {
 
-    private final static String HOST = "localhost";
 
     private Connection connection;
     private Channel channel;
 
     public void start(String host, String queueName, DeliverCallback deliverCallback) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(HOST);
+        factory.setHost(host);
         connection = factory.newConnection();
         channel = connection.createChannel();
 

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,10 +28,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import static org.apache.log4j.helpers.LogLog.warn;
 
 @SpringBootApplication
 @ImportResource({"classpath*:application-context.xml"})
@@ -87,14 +93,15 @@ public class DemoApplication {
 	}
 
 	private String fetchStatementFromFile(String filename) throws FileNotFoundException, IOException {
-		BufferedReader br = new BufferedReader(new FileReader(ResourceUtils.getFile("classpath:" + filename)));
-		StringBuilder statementBuilder = new StringBuilder();
-		String next;
-		while ((next = br.readLine()) != null) {
-			statementBuilder.append(next);
+		String data = "";
+		ClassPathResource cpr = new ClassPathResource(filename);
+		try {
+			byte[] bdata = FileCopyUtils.copyToByteArray(cpr.getInputStream());
+			data = new String(bdata, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			warn("IOException", e);
 		}
-		br.close();
-		return statementBuilder.toString();
+		return data;
 	}
 
 	@Bean

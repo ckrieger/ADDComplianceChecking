@@ -82,6 +82,7 @@ public class PatternConstraintService {
             System.out.println(regex);
             preparedConstraint = preparedConstraint.replaceAll(regex, variable.getValue());
         }
+        preparedConstraint = preparedConstraint.replace("\n", "").replace("\r", "");
         return preparedConstraint;
     }
 
