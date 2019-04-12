@@ -35,10 +35,10 @@ The fastest way to get the monitoring framework and the motivating-scenario up a
 
 The ports are mapped as follows:
 
-monitoring framework: localhost:8080
-rabbitMq: localhost:  localhost:9090 (user: guest, pw: guest)
-inventory-service:    localhost:5000
-shipping-service:     localhost:8088
+- monitoring framework: localhost:8080
+- rabbitMq: localhost:  localhost:9090 (user: guest, pw: guest)
+- inventory-service:    localhost:5000
+- shipping-service:     localhost:8088
 
 Scaling an service in the swarm
 
