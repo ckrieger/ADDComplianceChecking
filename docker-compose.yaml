@@ -32,5 +32,9 @@ services:
     ports:
      - "9090:15672"
      - "5672:5672"
-
+  monitoring-framework:
+    hostname: "monitoring-framework"
+    image: ckrieger/monitoring-framework:latest  
+    ports: 
+      - "8080:8080"
       
