@@ -31,39 +31,42 @@ public class VirtualMachineEventGenerator {
         }
     }
 
-    public void generateChangingCpuWorkload(double variation, int duration, double cpuLevel) {
+    public void generateBigChangingCpuWorkload(double toleratedVariation, int duration, double cpuLevel) {
         long workloadStart = System.currentTimeMillis();
         Random workloadChange = new Random();
         double currentCpu = cpuLevel;
         while(workloadStart + duration > System.currentTimeMillis()) {
             generateCpuHandle(currentCpu);
-            currentCpu = setCpuWithVariation(cpuLevel, variation, workloadChange.nextDouble());
+            double workloadFluctuation = workloadChange.nextDouble() * toleratedVariation;
+            currentCpu = setCpuWithVariation(cpuLevel, toleratedVariation + workloadFluctuation);
         }
     }
 
-    public void generateStaticCpuWorkload(double variation, int duration, double cpuLevel) {
+    public void generateSmallChangingCpuWorkload(double toleratedVariation, int duration, double cpuLevel) {
         long workloadStart = System.currentTimeMillis();
         double currentCpu = cpuLevel;
         Random workloadChange = new Random();
         while(workloadStart + duration > System.currentTimeMillis()) {
             generateCpuHandle(currentCpu);
-            currentCpu = setCpuWithVariation(cpuLevel, variation, workloadChange.nextDouble());
+            double workloadFluctuation = workloadChange.nextDouble() * toleratedVariation;
+            currentCpu = setCpuWithVariation(cpuLevel, toleratedVariation - workloadFluctuation - toleratedVariation*0.1);
         }
     }
 
-    public void generateContinuouslyGrowingCpuWorkload(double variation, int duration, double cpuLevel) {
+    public void generateContinuouslyGrowingCpuWorkload(double toleratedVariation, int duration, double cpuLevel) {
         long workloadStart = System.currentTimeMillis();
-        double currentCpu = cpuLevel + variation;
+        double currentCpu = cpuLevel + toleratedVariation;
         Random workloadChange = new Random();
         generateCpuHandle(cpuLevel);
         while(workloadStart + duration > System.currentTimeMillis()) {
             generateCpuHandle(currentCpu);
-            currentCpu = setCpuWithVariation(currentCpu, 0.0, workloadChange.nextDouble());
+            double workloadFluctuation = workloadChange.nextDouble() * toleratedVariation;
+            currentCpu = setCpuWithVariation(currentCpu, workloadFluctuation);
         }
     }
 
-    private double setCpuWithVariation(double cpuLevel, double variation, double workloadChange) {
-        return cpuLevel + variation + (workloadChange * 0.05);
+    private double setCpuWithVariation(double cpuLevel, double workloadChange) {
+        return cpuLevel + workloadChange;
     }
 
     private void generateCpuHandle(double cpu) {
