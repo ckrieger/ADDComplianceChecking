@@ -37,19 +37,13 @@ The proxy intercepts each HTTP request sent by an application component and emit
 
 ### Monitoring Framework
 
-Start Spring Boot backend of the Monitoring Framework
+Start the Monitoring Framework
 
 `mvn spring-boot:run`
 
-Start the Angular frontend of the Monitoring Framework.
-Execute the commands from the webapp directory.
-
-`npm install`
-
-`npm start`
-
 ### Example Application
-Running the example application via docker swarm
+Running the example application via docker swarm.
+Execute the following command in the motivation-scenario directory
 
 `docker stack deploy -c docker-compose.yaml motivation-scenario`
 
@@ -60,7 +54,6 @@ Scaling an service in the swarm
 For example scaling the inventory service
 
 `docker service scale motivation-scenario_inventory-service=INSTANCE_Count`
-
 
 
 ## Walkthrough
