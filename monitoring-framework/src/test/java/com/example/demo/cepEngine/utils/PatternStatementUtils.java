@@ -43,24 +43,6 @@ public class PatternStatementUtils {
         return subscriber;
     }
 
-//    private List<String> insertParametersIntoStatements(List<String> eplStatements, Map<String, String> parameters) {
-//        for(int i = 0; i < eplStatements.size(); i++) {
-//            String statementLine = eplStatements.get(i);
-//            if (statementLine.contains("${")) {
-//                int pos = statementLine.indexOf("${");
-//                statementLine = statementLine.replace("${", "");
-//                int endPos = statementLine.indexOf("}");
-//                statementLine = statementLine.replace("}", "");
-//                String paramName = statementLine.substring(pos, endPos);
-//                if(parameters.containsKey(paramName)) {
-//                    statementLine = statementLine.replace(paramName, parameters.get(paramName));
-//                    eplStatements.set(i, statementLine);
-//                }
-//            }
-//        }
-//        return eplStatements;
-//    }
-
     private static List<String> insertParametersIntoStatements(List<String> eplStatements, Map<String, String> parameters) {
         for(int i = 0; i < eplStatements.size(); i++) {
             String statementLine = eplStatements.get(i);

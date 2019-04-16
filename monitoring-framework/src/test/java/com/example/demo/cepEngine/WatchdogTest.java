@@ -71,12 +71,13 @@ public class WatchdogTest {
 
         for (int i = 0; i < 5; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 3);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 3);
         }
         for (int i = 0; i < 10; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 2);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 2);
         }
+        Thread.sleep(10000); // temporary fix since the violations are not immediately available at this point
 
         assertTrue(this.violationService.getViolationsFor(subscriber) >= 1); // warum ist die violation nicht immer 1?
     }
@@ -100,15 +101,15 @@ public class WatchdogTest {
 
         for (int i = 0; i < 5; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 3);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 3);
         }
         for (int i = 0; i < 3; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 2);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 2);
         }
         for (int i = 0; i < 5; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 3);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 3);
         }
 
         assertEquals(0, this.violationService.getViolationsFor(subscriber));
@@ -119,20 +120,21 @@ public class WatchdogTest {
 
         for (int i = 0; i < 5; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 3);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 3);
         }
         for (int i = 0; i < 3; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 2);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 2);
         }
         for (int i = 0; i < 3; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 1);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 1);
         }
         for (int i = 0; i < 10; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 2);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 2);
         }
+        Thread.sleep(10000); // temporary fix since the violations are not immediately available at this point
 
         assertTrue(this.violationService.getViolationsFor(subscriber) >= 1);
     }
@@ -142,19 +144,19 @@ public class WatchdogTest {
 
         for (int i = 0; i < 5; i++) {
             Thread.sleep(100);
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 3);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 3);
         }
 
         Thread.sleep(100);
-        vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 1);
+        vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 1);
         Thread.sleep(100);
 
         Thread.sleep(50);
-        vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 2);
+        vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 2);
         Thread.sleep(10);
 
         for (int i = 0; i < 5; i++) {
-            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(ACCOUNT_SERVICE_ID, 3);
+            vmEventGenerator.generateVirtualMachineEventsOfScalingGroup(INVENTORY_SERVICE_ID, 3);
             Thread.sleep(100);
         }
 
