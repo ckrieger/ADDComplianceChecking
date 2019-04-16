@@ -52,4 +52,15 @@ For example scaling the inventory service
 
 ### Watchdog
 Test the watchdog pattern by starting with 3 instances of inventory_service and decreasing the number of instances to 2 for at least the time that is defined by the timeThreshold:
+
+1. Start instances of the scaling group
+    > docker service scale motivation-scenario_inventory-service=3
+
+2. Start the monitor
+
+3. Scale the group down to 2 instances
+    > docker service scale motivation-scenario_inventory-service=2
+
+4. Observe the monitoring pattern to be violated on the UI
+
 ![](docs/watchdog_walkthrough.gif)
