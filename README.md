@@ -49,3 +49,7 @@ For example scaling the inventory service
 `docker service scale motivation-scenario_inventory-service=INSTANCE_Count`
 
 ## Walkthrough
+
+### Watchdog
+Test the watchdog pattern by starting with 3 instances of inventory_service and decreasing the number of instances to 2 for at least the time that is defined by the timeThreshold:
+![](docs/watchdog_walkthrough.gif)
