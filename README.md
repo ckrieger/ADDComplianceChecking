@@ -51,37 +51,39 @@ For example scaling the inventory service
 ## Walkthrough
 
 ### Watchdog
-Test the watchdog pattern by starting with 3 instances of inventory_service and decreasing the number of instances to 2 for at least the time that is defined by the timeThreshold:
+Test the watchdog pattern by starting with **3** instances of **inventory-service** and decreasing the number of instances to **2** for at least the time that is defined by the *timeThreshold*:
 
-1. Start instances of the scaling group
+1. Start instances of the defined *scalingGroup*:
+   
     `docker service scale motivation-scenario_inventory-service=3`
 
 2. Start the monitor
 
-3. Scale the group down to 2 instances
-`docker service scale motivation-scenario_inventory-service=2`
+3. Scale the group down to **2** instances:
 
-4. Observe the monitoring pattern to be violated on the UI
+    `docker service scale motivation-scenario_inventory-service=2`
+
+4. The watchdog pattern instance will be displayed as **violated** since the number of instances in the corresponding *scalingGroup* have not reached **3** again in the defined *timeThreshold*.
 
 ![](docs/watchdog_walkthrough.gif)
 
 ### Circuit Breaker
 Test the Circuit Breaker pattern by executing the following steps:
 
-1. Make sure that at least one instance of scaling group inventory-service is running:
+1. Make sure that at least one instance of scaling group **inventory-service** is running:
 
      `docker service scale motivation-scenario_inventory-service=1`
 
-2. Start the monitor with the pattern instance of Circuit Breaker that has a timeoutDuration of around 10 seconds (10000ms).
+2. Start the monitor with the pattern instance of Circuit Breaker that has a *timeoutDuration* of around 10 seconds (10000ms).
 
-3. Scale down the shipping-service scaling group to 0:
+3. Scale down the **shipping-service** scaling group to 0:
 
     `docker service scale motivation-scenario_shipping-service=0`
 
-4. Navigate to the location of inventory-service (currently localhost:5000) which will open its user interface. In this UI, one can send requests to shipping-service.
+4. Navigate to the location of **inventory-service** (currently localhost:5000) which will open its user interface. In this UI, one can send requests to **shipping-service**.
 
-5. Quickly send more requests to shipping-service than the defined failureThreshold has been set by clicking the button.
+5. Quickly send more requests to **shipping-service** than the defined *failureThreshold* has been set by clicking the button.
 
-6. The Circuit Breaker pattern instance will be displayed as violated since there is no instance of shipping-service and thus the executed requests have failed within the timeoutDuration.
+6. The Circuit Breaker pattern instance will be displayed as **violated** since there is no instance of **shipping-service** and thus the executed requests have failed within the *timeoutDuration*.
 
 ![](docs/circuitbreaker_walkthrough.gif)
