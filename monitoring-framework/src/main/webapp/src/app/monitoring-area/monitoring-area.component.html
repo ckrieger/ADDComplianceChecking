@@ -49,12 +49,16 @@
           <mat-toolbar-row *ngIf="!patternInstance.isViolated" class="statusCompliant">
             <span><h1 matTooltip="{{patternInstance.name}} is compliant">{{patternInstance.name}}</h1></span>
             <span class="spacer"></span>
-            <span><mat-icon>check</mat-icon></span>
+            <button mat-mini-fab [color]="'success'" matTooltip="{{patternInstance.name}} is compliant">
+              <mat-icon>check</mat-icon>
+            </button>
           </mat-toolbar-row>
           <mat-toolbar-row *ngIf="patternInstance.isViolated" class="statusViolated">
             <span><h1 matTooltip="{{patternInstance.name}} is violated">{{patternInstance.name}}</h1></span>
             <span class="spacer"></span>
-            <span><mat-icon>warning</mat-icon></span>
+            <button mat-mini-fab color="warn" matTooltip="{{patternInstance.name}} is violated">
+              <mat-icon>warning</mat-icon>
+            </button>
           </mat-toolbar-row>
           <mat-toolbar-row class="small-text">
             <span>

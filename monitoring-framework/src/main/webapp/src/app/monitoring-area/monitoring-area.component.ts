@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+  import { Component, OnInit } from '@angular/core';
 import { MonitoringAreaService } from '../services/monitoring-area.service';
 import { AddPatternDialogComponent } from '../add-pattern-dialog/add-pattern-dialog.component';
 import { MatDialog, MatSnackBar } from '@angular/material';

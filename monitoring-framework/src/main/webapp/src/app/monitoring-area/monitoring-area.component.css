@@ -6,6 +6,11 @@
   margin-right: 1%;
 }
 
+.mat-success {
+  background-color: green;
+  color: #fff;
+}
+
 .example-button-row button,
 .example-button-row a {
   margin-right: 8px;
