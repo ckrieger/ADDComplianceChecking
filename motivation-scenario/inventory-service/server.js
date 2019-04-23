@@ -2,7 +2,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var app = express()
 var os = require("os");
-var sender = require('./message-service')
+var loggingService = require('./logging-service')
 const request = require('request-promise-native')
 
 const hostname = os.hostname();
@@ -11,7 +11,6 @@ const port = 5000;
 let failureCount = 0;
 
 const proxyUri = 'http://proxy:5050';
-//const shippinServiceUri = 'http://localhost:5050';
 
 // parse application/json
 app.use(bodyParser.json())
@@ -44,7 +43,7 @@ function sendRequestToShippingService(response){
 }
 
 // start sending messages to queue
- setInterval(sender.sendMessage, 1500);
+setInterval(loggingService.logContainerInfo, 1500);
 
 //serve static file (index.html, images, css)
 app.use(express.static(__dirname + '/views'));

@@ -25,3 +25,22 @@ exports.sendMessage = function sendMessage(serviceId, statusCode) {
     }
   });
 }
+
+exports.sendVmEventMessage = function sendVmEventMessage(data) {
+  amqp.connect("amqp://rabbitMq", function(err, conn) {
+    if(err){
+      console.log(err);
+    } else {
+      conn.createChannel(function(err, ch) {
+        var q = "applicationEvents";
+        ch.assertQueue(q, { durable: false });
+        ch.sendToQueue(q, Buffer.from(JSON.stringify(data)));
+        console.log(" [x] Sent %s", JSON.stringify(data));
+      });
+
+      setTimeout(function() {
+        conn.close();
+      }, 500);
+    }
+  });
+}

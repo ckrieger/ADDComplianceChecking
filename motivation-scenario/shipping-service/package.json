@@ -8,6 +8,7 @@
         "express": "3.x",
         "amqplib": "^0.5.3",
         "request": "^2.88.0",
-        "request-promise-native": "^1.0.5"
+        "request-promise-native": "^1.0.5",
+        "simple-node-logger": "^18.12.22"
     }
 }
