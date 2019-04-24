@@ -23,9 +23,9 @@ services:
     restart: always 
     depends_on: 
      - rabbitmq 
-  proxy:
-    hostname: "proxy"
-    image: ckrieger/proxy:latest
+  log-collector-sidecar:
+    hostname: "logCollectorSidecar"
+    image: ckrieger/log-collector:latest
     volumes: 
      - "loggingvolume:/loggingvolume/"
     ports:

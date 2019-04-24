@@ -5,12 +5,11 @@ var os = require("os");
 var loggingService = require('./logging-service')
 const request = require('request-promise-native')
 
-const hostname = os.hostname();
 const port = 5000;
 
 let failureCount = 0;
 
-const proxyUri = 'http://proxy:5050';
+const shippinServiceUri = 'http://motivation-scenario_shipping-service:8088';
 
 // parse application/json
 app.use(bodyParser.json())
@@ -21,24 +20,21 @@ app.post('/sendRequest', function(req, res) {
 
 function sendRequestToShippingService(response){
   var options = {
-      method: 'GET',
-      uri: proxyUri,
-      headers:{
-        'Origin': os.hostname()
-      },
-      json: true 
+    method: 'GET',
+    uri: shippinServiceUri,
+    json: true 
   };
-   
-  request(options)
+   request(options)
       .then(function (parsedBody) {
           console.log('Resopnse of Shipping-Service: ' + parsedBody);
           failureCount = 0;
           response.json({response: "Request Success", failureCount: failureCount })
+          loggingService.logHttpResponseStatus("success")
       })
       .catch(function (err) {
-        failureCount ++;
+          failureCount ++;
           response.json({response: "Request Failed", failureCount: failureCount })
-          console.log(err);
+          loggingService.logHttpResponseStatus("failed");
       });
 }
 

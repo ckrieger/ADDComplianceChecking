@@ -20,3 +20,11 @@ exports.logContainerInfo = function logContainerInfo() {
   };
   log.info(data);
 }
+
+exports.logHttpResponseStatus = function logHttpResponseStatus(statusCode) {
+  var data = {
+    serviceId: os.hostname(),
+    statusCode: statusCode
+  };
+  log.info(data);
+}

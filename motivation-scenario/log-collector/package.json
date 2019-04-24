@@ -1,0 +1,11 @@
+{
+  "name": "log-collector",
+  "private": false,
+  "version": "0.0.1",
+  "description": "",
+  "dependencies": {
+    "amqplib": "^0.5.3",
+    "body-parser": "^1.18.3",
+    "node-watch": "^0.6.2"
+  }
+}
