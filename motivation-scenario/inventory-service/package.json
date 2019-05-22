@@ -7,7 +7,9 @@
     "amqplib": "^0.5.3",
     "body-parser": "^1.18.3",
     "express": "3.x",
+    "os-utils": "0.0.14",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.5",
+    "simple-node-logger": "^18.12.22"
   }
 }

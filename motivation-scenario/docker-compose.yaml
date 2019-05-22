@@ -3,6 +3,8 @@ services:
   inventory-service:
     hostname: "inventoryService-{{.Task.ID}}"
     image: ckrieger/inventory-service:latest
+    volumes: 
+     - "loggingvolume:/loggingvolume/"
     ports:
      - "5000:5000"
     restart: always 
@@ -10,18 +12,22 @@ services:
      - rabbitmq 
     deploy: 
       mode: replicated
-      replicas: 3
+      replicas: 2
   shipping-service:
     hostname: "shippingService-{{.Task.ID}}"
     image: ckrieger/shipping-service:latest
+    volumes: 
+     - "loggingvolume:/loggingvolume/"
     ports: 
      - "8088:8088"
     restart: always 
     depends_on: 
      - rabbitmq 
-  proxy:
-    hostname: "proxy"
-    image: ckrieger/proxy:latest
+  log-collector-sidecar:
+    hostname: "logCollectorSidecar"
+    image: ckrieger/log-collector:latest
+    volumes: 
+     - "loggingvolume:/loggingvolume/"
     ports:
      - "5050:5050"
     depends_on: 
@@ -32,5 +38,7 @@ services:
     ports:
      - "9090:15672"
      - "5672:5672"
+volumes:
+ loggingvolume:         
 
       
