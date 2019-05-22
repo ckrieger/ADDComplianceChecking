@@ -1,5 +1,6 @@
 var amqp = require("amqplib/callback_api");
 var os = require("os");
+var osUtils = require("os-utils");
 const log = require('simple-node-logger').createSimpleFileLogger(`loggingvolume/${os.hostname()}.log`);
 
 var exports = module.exports = {};
@@ -13,12 +14,14 @@ function getScalingGroupId(){
 }
 
 exports.logContainerInfo = function logContainerInfo() {
-  var data = {
-    vmId: getVMId(),
-    scalingGroupId: getScalingGroupId(),
-    cpu: "0.5"
-  };
-  log.info(data);
+  osUtils.cpuUsage(function(value){
+    var data = {
+      vmId: getVMId(),
+      scalingGroupId: getScalingGroupId(),
+      cpu: value
+    };
+    log.info(data);
+  });
 }
 
 exports.logHttpResponseStatus = function logHttpResponseStatus(statusCode) {

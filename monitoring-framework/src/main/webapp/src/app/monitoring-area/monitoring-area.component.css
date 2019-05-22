@@ -72,3 +72,8 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+.info-text {
+  font-size: 70%;
+  margin-left: 5%;
+}

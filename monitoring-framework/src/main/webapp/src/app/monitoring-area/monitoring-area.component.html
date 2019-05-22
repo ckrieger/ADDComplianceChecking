@@ -16,6 +16,10 @@
                    placeholder="Queue Name" [value]="monitoringArea.queueName" [(ngModel)]="monitoringArea.queueName">
           </mat-form-field>
         </span>
+        <div class="info-text">
+          <mat-icon>info</mat-icon> Queue Host defines the host the broker is running on.
+          Change to localhost if the monitor is not started via docker-compose
+        </div>
       </mat-toolbar-row>
       <mat-toolbar-row>
         <mat-card-actions class="right-flex">

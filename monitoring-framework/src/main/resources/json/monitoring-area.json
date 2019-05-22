@@ -1,7 +1,7 @@
 {
   "id": null,
   "name": "motivation-scenario",
-  "queueHost": "localhost",
+  "queueHost": "rabbitmq",
   "queueName": "applicationEvents",
   "patternInstances": [
     {
