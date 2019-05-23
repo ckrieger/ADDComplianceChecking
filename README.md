@@ -80,10 +80,12 @@ Test the Circuit Breaker pattern by executing the following steps:
 
     `docker service scale motivation-scenario_shipping-service=0`
 
-4. Navigate to the location of **inventory-service** (currently localhost:5000) which will open its user interface. In this UI, one can send requests to **shipping-service**.
+4. Navigate to the location of **inventory-service** (currently localhost:5000) which will open its user interface. In this UI, one can send requests to **shipping-service** via the button.
 
-5. Quickly send more requests to **shipping-service** than the defined *failureThreshold* has been set by clicking the button.
+5. Send one more request to the **shipping-service** than the defined *failureThreshold*. A correctly implemented circuit breaker should trip now as the failure threshhold is exceeded. But uuups, someone forgot to implement a circuit breaker for this remote function call.  
 
-6. The Circuit Breaker pattern instance will be displayed as **violated** since there is no instance of **shipping-service** and thus the executed requests have failed within the *timeoutDuration*.
+6. So directly send another request within the defiend timout duration. 
+
+7. The Circuit Breaker pattern instance will be displayed as **violated** as the defined timeout was not adhered to. This indicates a non-compliance to the Circuit Breaker pattern.
 
 ![](docs/circuitbreaker_walkthrough.gif)
