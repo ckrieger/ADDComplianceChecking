@@ -46,7 +46,7 @@ public class PatternStatementUtils {
     private static List<String> insertParametersIntoStatements(List<String> eplStatements, Map<String, String> parameters) {
         for(int i = 0; i < eplStatements.size(); i++) {
             String statementLine = eplStatements.get(i);
-            if (statementLine.contains("${")) {
+            while (statementLine.contains("${")) {
                 int pos = statementLine.indexOf("${");
                 int endPos = statementLine.indexOf("}");
                 String paramName = statementLine.substring(pos+2, endPos);

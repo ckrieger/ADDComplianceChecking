@@ -6,3 +6,4 @@
 **/cpl/esper/bin/*
 cpl/.idea/
 monitor/.idea/
+node_modules
