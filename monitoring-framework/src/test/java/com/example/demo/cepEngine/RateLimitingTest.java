@@ -38,8 +38,8 @@ public class RateLimitingTest {
     private static final String REQUEST_LIMIT = "4";
     private static final String PATTERN_NAME = "RateLimiting";
 
-    private static final HttpRequestEvent httpEventClient1 = new HttpRequestEvent("1", "success");
-    private static final HttpRequestEvent httpEventClient2 = new HttpRequestEvent("2", "success");
+    private static final HttpRequestEvent httpEventClient1 = new HttpRequestEvent("1", "200");
+    private static final HttpRequestEvent httpEventClient2 = new HttpRequestEvent("2", "200");
     private static final Map<String, String> PARAMETERS = new HashMap<String, String>() {{
         put("interval", INTERVAL);
         put("requestLimit", REQUEST_LIMIT);
