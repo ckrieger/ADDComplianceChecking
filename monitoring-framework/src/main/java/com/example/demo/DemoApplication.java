@@ -4,17 +4,22 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.example.demo.cepEngine.model.CircuitBreaker;
+import com.example.demo.model.InstrumentationTemplate;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
 import com.example.demo.model.PatternInstance;
 import com.example.demo.model.PatternVariable;
+import com.example.demo.repository.InstrumentationTemplateRepository;
 import com.example.demo.repository.MonitoringAreaRepository;
 import com.example.demo.repository.PatternInstanceRepository;
 import com.example.demo.repository.PatternRepository;
@@ -22,6 +27,7 @@ import com.example.demo.repository.PatternVariableRepository;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -53,6 +59,8 @@ public class DemoApplication {
 	PatternConstraintService patternConstraintService;
 	@Autowired
     MonitoringAreaRepository monitoringAreaRepository;
+	@Autowired
+	InstrumentationTemplateRepository instrumentationTemplateRepository;
 
 	private static final String BASE_PATH = "templates/";
 	public static void main(String[] args) {
@@ -64,6 +72,7 @@ public class DemoApplication {
 	ApplicationRunner init(){
 		return args -> {
 			this.initPatternRepo();
+			//this.initTemplateRepo();
 			MonitoringArea monitoringArea = new Gson().fromJson(fetchStatementFromFile("json/monitoring-area.json"), MonitoringArea.class);
 			monitoringArea.getPatternInstances().forEach(patternInstance -> {
 				String filePath = patternInstance.getName() + ".epl";
@@ -79,7 +88,11 @@ public class DemoApplication {
 
 
 	private void initPatternRepo() throws IOException {
-		Stream.of("Watchdog", "CircuitBreaker", "StaticWorkload").forEach(name -> {
+		Type templateListType = new TypeToken<ArrayList<InstrumentationTemplate>>(){}.getType();
+		String templatesJson = fetchStatementFromFile("json/instrumentation-templates.json");
+		List<InstrumentationTemplate> templates = new Gson().fromJson(templatesJson, templateListType);
+
+		Stream.of("Watchdog", "CircuitBreaker", "StaticWorkload", "RateLimiting").forEach(name -> {
 			Pattern pattern = new Pattern();
 			pattern.setName(name);
 			String filePath = name + ".epl";
@@ -88,6 +101,21 @@ public class DemoApplication {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			if(name.contains("CircuitBreaker")){
+				pattern.setLinkedInstrumentationTemplates(templates);
+			}
+			patternRepository.save(pattern);
+		});
+	}
+
+	private void initTemplateRepo() throws IOException {
+		Type templateListType = new TypeToken<ArrayList<InstrumentationTemplate>>(){}.getType();
+		String templatesJson = fetchStatementFromFile("json/instrumentation-templates.json");
+		List<InstrumentationTemplate> templates = new Gson().fromJson(templatesJson, templateListType);
+		templates.forEach(template -> {
+			instrumentationTemplateRepository.save(template);
+			Pattern pattern = patternRepository.findById(1L).get();
+			pattern.getLinkedInstrumentationTemplates().add(template);
 			patternRepository.save(pattern);
 		});
 	}

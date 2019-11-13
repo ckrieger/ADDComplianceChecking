@@ -24,6 +24,9 @@ import { AddPatternDialogComponent } from './add-pattern-dialog/add-pattern-dial
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
 import { rxStompConfig } from './rx-stomp.config';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { InstrumentationTemplateOverviewComponent } from './instrumentation-template-overview/instrumentation-template-overview.component';
+import { TemplateEditComponent } from './template-edit/template-edit.component';
+
 
 @NgModule({
   declarations: [
@@ -32,7 +35,9 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     PatternEditComponent,
     ProjectListComponent,
     MonitoringAreaComponent,
-    AddPatternDialogComponent
+    AddPatternDialogComponent,
+    InstrumentationTemplateOverviewComponent,
+    TemplateEditComponent
   ],
   imports: [
     BrowserModule,

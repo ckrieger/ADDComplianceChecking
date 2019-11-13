@@ -1,0 +1,22 @@
+<mat-card>
+  <mat-card-title><h3>Instrumentation Templates</h3></mat-card-title>
+  <div class="right-flex">
+    <button mat-flat-button color="primary" [routerLink]="['/template-edit']">Add Template</button>
+  </div>
+</mat-card>
+<mat-accordion *ngFor="let template of templates">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h4>{{template.name}}</h4>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-card>
+      <mat-card-subtitle>Some Description</mat-card-subtitle>
+      <mat-card-content class="compliance-rule">{{template.content}}</mat-card-content>
+    </mat-card>
+    <div class="example-button-row">
+      <button mat-stroked-button color="primary" [routerLink]="['/template-edit', template]" >Edit</button>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

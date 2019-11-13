@@ -1,0 +1,11 @@
+[
+  {
+    "name": "HTTPIstioTemplate",
+    "content": "some content"
+  },
+  {
+    "name": "AOPTemplate",
+    "content": "some aop stuff"
+  }
+]
+

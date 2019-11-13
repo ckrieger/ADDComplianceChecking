@@ -1,0 +1,14 @@
+.block {
+  display: inline-block
+}
+
+.right-flex {
+  display: flex; justify-content: flex-end
+}
+
+.example-button-row button {
+  margin-top: 2%;
+}
+.example-button-row a {
+  margin-right: 8px;
+}
