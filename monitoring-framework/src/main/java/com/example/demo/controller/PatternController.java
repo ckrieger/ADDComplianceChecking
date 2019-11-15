@@ -27,6 +27,11 @@ public class PatternController {
         return repository.findAll();
     }
 
+    @GetMapping(path = "/{id}")
+    public Pattern getPattern(@PathVariable Long id){
+        return repository.findById(id).get();
+    }
+
     @GetMapping(path = "/{id}/templates")
     public Collection<InstrumentationTemplate> getTemplatesOfPattern(@PathVariable Long id) {
         //InstrumentationTemplate template = repository.findById(id).get().getPatterns();

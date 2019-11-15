@@ -31,6 +31,14 @@ export class PatternComponent implements OnInit {
   private fetchAllPatterns(){
     this.patternService.getAll().subscribe(data => {
       this.patterns = data;
+      this.patterns.forEach(pattern => this.fetchListOfLinkedTemplates(pattern))
+    })
+  }
+
+  private fetchListOfLinkedTemplates(pattern){
+    let index = this.patterns.findIndex(patternIn => patternIn.id === pattern.id);
+    this.patternService.getAllTemplatesOfPattern(pattern.id).subscribe((templates: any) => {
+      this.patterns[index].templates = templates;
     })
   }
 }

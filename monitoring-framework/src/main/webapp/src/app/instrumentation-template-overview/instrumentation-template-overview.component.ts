@@ -12,6 +12,17 @@ export class InstrumentationTemplateOverviewComponent implements OnInit {
   constructor(private templateService: TemplateService) { }
 
   ngOnInit() {
+   this.fetchAllTemplates();
+  }
+
+  remove(template) {
+    this.templateService.remove(template.id).subscribe(result => {
+      let index = this.templates.findIndex(templateIn => templateIn.id === template.id);
+      this.fetchAllTemplates();
+    }, error => console.error(error));
+  }
+
+  private fetchAllTemplates() {
     this.templateService.getAll().subscribe(data => {
       this.templates = data;
     })

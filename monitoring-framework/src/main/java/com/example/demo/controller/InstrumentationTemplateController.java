@@ -9,6 +9,7 @@ import com.example.demo.repository.InstrumentationTemplateRepository;
 import com.example.demo.repository.PatternRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,9 +63,15 @@ public class InstrumentationTemplateController {
        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping(path = "/delete")
-    public ResponseEntity<Object> removeTemplate(@RequestBody InstrumentationTemplate template) {
-        this.repository.delete(template);
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Object> removeTemplate(@PathVariable Long id) {
+        InstrumentationTemplate template = repository.findById(id).get();
+        for (Pattern p : template.getPatterns()) {
+            p.getLinkedInstrumentationTemplates().remove(template);
+            this.patternRepository.save(p);
+        }
+
+        this.repository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
