@@ -35,12 +35,13 @@ public class Pattern {
     private String pConstraint;
 
 
-    @ManyToMany(cascade= CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade= CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
             name = "linked_templates",
             joinColumns = @JoinColumn(name="pattern_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "instrumentationTemplate_id", referencedColumnName = "id"))
-    @JsonBackReference
+   // @JsonBackReference(value="someName")
+    @JsonIgnore
     List<InstrumentationTemplate> linkedInstrumentationTemplates;
 
     public Long getId() {

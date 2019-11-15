@@ -2,7 +2,9 @@ package com.example.demo.controller;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
+import com.example.demo.model.InstrumentationTemplate;
 import com.example.demo.model.Pattern;
 import com.example.demo.repository.PatternRepository;
 import com.google.gson.JsonObject;
@@ -25,6 +27,12 @@ public class PatternController {
         return repository.findAll();
     }
 
+    @GetMapping(path = "/{id}/templates")
+    public Collection<InstrumentationTemplate> getTemplatesOfPattern(@PathVariable Long id) {
+        //InstrumentationTemplate template = repository.findById(id).get().getPatterns();
+        return repository.findById(id).get().getLinkedInstrumentationTemplates();
+    }
+
 //    @PutMapping(path = "/")
 //    public ResponseEntity<Object> addPattern(@RequestBody Pattern pattern) {
 //        if(this.repository.findByName(pattern.getName()).isEmpty()) {
@@ -36,15 +44,22 @@ public class PatternController {
 //    }
 
     @PutMapping(path = "/")
-    public ResponseEntity<Object> addPattern(@RequestBody Pattern pattern) {
+    public Pattern addPattern(@RequestBody Pattern pattern) {
         this.repository.deleteByName(pattern.getName());
-        this.repository.save(pattern);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return this.repository.save(pattern);
     }
 
-    @PostMapping(path = "/delete")
-    public ResponseEntity<Object> removePattern(@RequestBody Pattern pattern) {
-        this.repository.deleteByName(pattern.getName());
-        return ResponseEntity.status(HttpStatus.OK).build();
+    @PutMapping(path = "/{id}/templates")
+    public Pattern updatePatternsOfTemplate(@PathVariable Long id, @RequestBody List<InstrumentationTemplate> templates) {
+        Pattern pattern = this.repository.findById(id).get();
+        pattern.setLinkedInstrumentationTemplates(templates);
+        //InstrumentationTemplate updatedTemplate = this.repository.save(template);
+        return repository.save(pattern);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public Collection<Pattern> removePattern(@PathVariable Long id) {
+        this.repository.deleteById(id);
+        return this.repository.findAll();
     }
 }

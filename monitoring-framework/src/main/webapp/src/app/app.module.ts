@@ -18,7 +18,7 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PatternEditComponent } from './pattern-edit/pattern-edit.component';
 import { ProjectListComponent } from './project-list/project-list.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonitoringAreaComponent } from './monitoring-area/monitoring-area.component';
 import { AddPatternDialogComponent } from './add-pattern-dialog/add-pattern-dialog.component';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
@@ -26,6 +26,9 @@ import { rxStompConfig } from './rx-stomp.config';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { InstrumentationTemplateOverviewComponent } from './instrumentation-template-overview/instrumentation-template-overview.component';
 import { TemplateEditComponent } from './template-edit/template-edit.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SortByPipe } from './pipes/sort-by.pipe';
 
 
 @NgModule({
@@ -37,7 +40,8 @@ import { TemplateEditComponent } from './template-edit/template-edit.component';
     MonitoringAreaComponent,
     AddPatternDialogComponent,
     InstrumentationTemplateOverviewComponent,
-    TemplateEditComponent
+    TemplateEditComponent,
+    SortByPipe
   ],
   imports: [
     BrowserModule,
@@ -56,7 +60,10 @@ import { TemplateEditComponent } from './template-edit/template-edit.component';
     MatDialogModule,
     MatIconModule,
     MatTooltipModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatChipsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule
   ],
   providers: [
     {

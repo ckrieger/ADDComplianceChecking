@@ -6,3 +6,10 @@
   min-height: 200px;
 }
 
+.example-chip-list {
+  width: 100%;
+}
+
+.right-flex {
+  display: flex; justify-content: flex-end
+}

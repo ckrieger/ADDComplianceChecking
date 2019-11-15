@@ -6,11 +6,14 @@
   display: flex; justify-content: flex-end
 }
 
-.example-button-row button,
-.example-button-row a {
+.example-button-row  {
   margin-right: 8px;
 }
 
 .compliance-rule{
   white-space: pre-wrap;
+}
+
+.delete-button{
+  margin-left: 92%;
 }

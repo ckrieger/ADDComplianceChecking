@@ -34,4 +34,12 @@ export class TemplateService {
   remove(template: any): Observable<any> {
     return this.http.post(this.templateApi + "/delete", template)
   }
+
+  getAllPatternsOfTemplate(id: string): Observable<any> {
+    return this.http.get(this.templateApi + "/" + id + "/patterns"  )
+  }
+
+  updatePatternsOfTemplate(id: string, patterns): Observable<any> {
+    return this.http.put(this.templateApi + "/" + id + "/patterns", patterns)
+  }
 }

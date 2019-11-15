@@ -14,13 +14,33 @@
       <mat-form-field class="full-width">
         <textarea class="full-height" matInput placeholder="Pattern Constraint" [(ngModel)]="pattern.pConstraint" required name="pConstraint" #constraint></textarea>
       </mat-form-field>
+      <mat-form-field class="example-chip-list">
+        <mat-chip-list #chipList aria-label="Template selection">
+          <mat-chip *ngFor="let template of selectedTemplates" [selectable]="false"
+                    [removable]="true" (removed)="removeTemplate(template)">
+            {{template.name}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="Add Template..."
+            #templateInput
+            [formControl]="templateCtrl"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="true">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let template of filteredTemplates  | async" [value]="template">
+            {{template.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" type="submit"
               [disabled]="!patternForm.form.valid">Save</button>
-      <button mat-raised-button color="secondary" (click)="remove(patternForm.value)"
-              *ngIf="pattern.name" type="button">Delete</button>
-      <a mat-button routerLink="/pattern-list" (ngSubmit)="cancel()">Cancel</a>
+      <button mat-raised-button color="secondary" (click)="cancel()" type="button">Cancel</button>
     </mat-card-actions>
   </form>
 </mat-card>

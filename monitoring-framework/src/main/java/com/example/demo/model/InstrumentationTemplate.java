@@ -1,8 +1,6 @@
 package com.example.demo.model;
 
 import java.util.List;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,11 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,14 +17,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InstrumentationTemplate {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
     private String name;
     private String content;
 
-    @ManyToMany(mappedBy = "linkedInstrumentationTemplates", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
-    @JsonManagedReference
+    @ManyToMany(mappedBy = "linkedInstrumentationTemplates", fetch = FetchType.EAGER)
+   // @JsonManagedReference(value="someName")
+    @JsonIgnore
     List<Pattern> patterns;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

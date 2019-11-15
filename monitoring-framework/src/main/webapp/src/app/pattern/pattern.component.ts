@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PatternService } from '../services/pattern.service';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pattern',
@@ -9,9 +11,24 @@ import { PatternService } from '../services/pattern.service';
 export class PatternComponent implements OnInit {
   patterns: Array<any>;
 
-  constructor(private patternService: PatternService) { }
+  constructor(
+    private patternService: PatternService,
+    private router: Router,
+  ) { }
 
   ngOnInit() {
+    this.fetchAllPatterns()
+  }
+
+
+  remove(pattern) {
+    this.patternService.remove(pattern.id).subscribe(result => {
+      let index = this.patterns.findIndex(patternIn => patternIn.id === pattern.id);
+      this.fetchAllPatterns();
+    }, error => console.error(error));
+  }
+
+  private fetchAllPatterns(){
     this.patternService.getAll().subscribe(data => {
       this.patterns = data;
     })

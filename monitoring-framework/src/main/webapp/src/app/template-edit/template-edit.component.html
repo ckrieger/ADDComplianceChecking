@@ -5,21 +5,46 @@
     </mat-card-header>
     <mat-card-content>
       <!--<input type="hidden" name="href" [(ngModel)]="pattern.href">-->
-      <mat-form-field>
+      <mat-form-field class="full-width">
         <input matInput placeholder="Template Name" [(ngModel)]="template.name"
                required name="name" #name>
       </mat-form-field>
     </mat-card-content>
     <mat-card-content>
       <mat-form-field class="full-width">
-        <textarea class="full-height" matInput placeholder="Template Code" [(ngModel)]="template.content" required name="content" #content></textarea>
+        <textarea class="full-height" matInput placeholder="Template Code" [(ngModel)]="template.content" required
+                  name="content" #content></textarea>
+      </mat-form-field>
+      <mat-form-field class="example-chip-list">
+        <mat-chip-list #chipList aria-label="Pattern selection">
+          <mat-chip *ngFor="let pattern of patterns" [selectable]="false"
+                    [removable]="true" (removed)="removePattern(pattern)">
+            {{pattern.name}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="Add Pattern..."
+            #patternInput
+            [formControl]="patternCtrl"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="true">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let pattern of filteredPatterns | async" [value]="pattern">
+            {{pattern.name}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" type="submit"
-              [disabled]="!templateForm.form.valid">Save</button>
+              [disabled]="!templateForm.form.valid">Save
+      </button>
       <button mat-raised-button color="secondary" (click)="remove(templateForm.value)"
-              *ngIf="template.name" type="button">Delete</button>
+              *ngIf="template.name" type="button">Delete
+      </button>
       <a mat-button routerLink="/template-list" (ngSubmit)="cancel()">Cancel</a>
     </mat-card-actions>
   </form>

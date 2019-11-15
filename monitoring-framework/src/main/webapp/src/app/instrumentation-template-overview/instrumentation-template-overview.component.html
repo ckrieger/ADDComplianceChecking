@@ -4,7 +4,7 @@
     <button mat-flat-button color="primary" [routerLink]="['/template-edit']">Add Template</button>
   </div>
 </mat-card>
-<mat-accordion *ngFor="let template of templates">
+<mat-accordion *ngFor="let template of templates | sortBy:'asc':'name'">
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
