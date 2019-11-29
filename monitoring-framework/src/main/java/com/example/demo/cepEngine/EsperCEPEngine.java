@@ -1,5 +1,7 @@
 package com.example.demo.cepEngine;
 
+import java.util.Map;
+
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
@@ -45,6 +47,14 @@ public class EsperCEPEngine implements InitializingBean, CEPEventHandler, CEPSta
         cepProvider.getEPAdministrator().getConfiguration().addEventType(eventType.getEventName(), eventType.getClass());
     }
 
+    public void addEventType(String type, String[] propertyNames, Object[] propertyTypes){
+        cepProvider.getEPAdministrator().getConfiguration().addEventType(type, propertyNames, propertyTypes);
+    }
+
+    public void addEventType(String type, Map<String, Object> eventDefinition){
+        cepProvider.getEPAdministrator().getConfiguration().addEventType(type, eventDefinition);
+    }
+
     public void addEplStatement(String statement) {
         System.out.println("added statement: " + statement);
         cepProvider.getEPAdministrator().createEPL(statement);
@@ -63,6 +73,16 @@ public class EsperCEPEngine implements InitializingBean, CEPEventHandler, CEPSta
 
     public void handle(Object event) {
         cepProvider.getEPRuntime().sendEvent(event);
+        System.out.println("handled " + event);
+    }
+
+    public void handle(Object[] event, String type){
+        cepProvider.getEPRuntime().sendEvent(event, type);
+        System.out.println("handled " + event);
+    }
+
+    public void handle(Map<String, Object> event, String type){
+        cepProvider.getEPRuntime().sendEvent(event, type);
         System.out.println("handled " + event);
     }
 

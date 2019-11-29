@@ -1,0 +1,1 @@
+@Name('StaticWorkload Violation')select * from FirstEvent();
