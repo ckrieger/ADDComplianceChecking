@@ -59,6 +59,7 @@ public class MonitoringAreaController {
     @PostMapping(path= "/start")
     public MonitoringArea startMonitoring(@RequestBody MonitoringArea monitoringArea) throws IOException, TimeoutException {
         patternConstraintService.activatePatternInstances(monitoringArea.getPatternInstances());
+        //eventHandlerService.addAllEventTyes();
         rabbitMqService.start(monitoringArea.getQueueHost(), monitoringArea.getQueueName(), eventHandlerService.deliverCallback);
         monitoringArea.setIsActive(true);
         return this.repository.save(monitoringArea);

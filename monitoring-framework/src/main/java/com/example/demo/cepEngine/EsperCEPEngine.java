@@ -9,9 +9,7 @@ import com.espertech.esper.client.EPStatement;
 
 import com.example.demo.cepEngine.handler.CEPEventHandler;
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
-import com.example.demo.cepEngine.model.CircuitBreaker;
 import com.example.demo.cepEngine.model.EventType;
-import com.example.demo.cepEngine.model.HttpRequestEvent;
 import com.example.demo.cepEngine.model.VirtualMachine;
 import com.example.demo.cepEngine.subscriber.PatternStatementSubscriber;
 import org.springframework.beans.factory.InitializingBean;
@@ -36,9 +34,8 @@ public class EsperCEPEngine implements InitializingBean, CEPEventHandler, CEPSta
     private Configuration setupConfig() {
         Configuration config = new Configuration();
 
-        config.addEventType("VirtualMachine", VirtualMachine.class.getName());
-        config.addEventType("HttpRequestEvent", HttpRequestEvent.class.getName());
-        config.addEventType("CircuitBreaker", CircuitBreaker.class.getName());
+        //config.addEventType("VirtualMachine", VirtualMachine.class.getName());
+        //config.addEventType("HttpRequestEvent", HttpRequestEvent.class.getName());
         EPServiceProvider epService = EPServiceProviderManager.getDefaultProvider(config);
         return config;
     }

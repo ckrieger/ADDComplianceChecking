@@ -13,7 +13,7 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class EventTypeEditComponent implements OnInit {
   sub: Subscription;
-  eventType = {};
+  eventType: any = {};
   displayedColumns: string[] = ['name', 'type', 'delete'];
 
   primitiveTypes: any[] = [

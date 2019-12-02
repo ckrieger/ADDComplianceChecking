@@ -1,14 +1,31 @@
 [
   {
-    "type": "FirstEvent",
+    "type": "HttpRequestEvent",
     "properties": [
       {
-        "name": "carId",
+        "name": "serviceId",
         "type": "java.lang.String"
       },
       {
-        "name": "direction",
-        "type": "java.lang.Integer"
+        "name": "statusCode",
+        "type": "java.lang.String"
+      }
+    ]
+  },
+  {
+    "type": "VirtualMachine",
+    "properties": [
+      {
+        "name": "vmId",
+        "type": "java.lang.String"
+      },
+      {
+        "name": "scalingGroupId",
+        "type": "java.lang.String"
+      },
+      {
+        "name": "cpu",
+        "type": "java.lang.Double"
       }
     ]
   }

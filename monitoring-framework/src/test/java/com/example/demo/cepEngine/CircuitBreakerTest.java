@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.example.demo.cepEngine.handler.CEPEventHandler;
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
-import com.example.demo.cepEngine.model.CircuitBreaker;
 import com.example.demo.cepEngine.model.HttpRequestEvent;
 import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternStatementSubscriber;

@@ -1,31 +1,24 @@
 package com.example.demo;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.example.demo.cepEngine.model.CircuitBreaker;
 import com.example.demo.model.EventType;
 import com.example.demo.model.InstrumentationTemplate;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
-import com.example.demo.model.PatternInstance;
-import com.example.demo.model.PatternVariable;
 import com.example.demo.repository.EventTypeRepository;
 import com.example.demo.repository.InstrumentationTemplateRepository;
 import com.example.demo.repository.MonitoringAreaRepository;
 import com.example.demo.repository.PatternInstanceRepository;
 import com.example.demo.repository.PatternRepository;
 import com.example.demo.repository.PatternVariableRepository;
+import com.example.demo.service.EventHandlerService;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
 import com.google.gson.Gson;
@@ -37,9 +30,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -65,6 +56,8 @@ public class DemoApplication {
 	InstrumentationTemplateRepository instrumentationTemplateRepository;
 	@Autowired
 	EventTypeRepository eventTypeRepository;
+	@Autowired
+	EventHandlerService eventHandlerService;
 
 	private static final String BASE_PATH = "templates/";
 	public static void main(String[] args) {
@@ -130,6 +123,7 @@ public class DemoApplication {
 		String eventTypesJson = fetchStatementFromFile("json/event-types.json");
 		List<EventType> eventTypes = new Gson().fromJson(eventTypesJson, eventTypeListType);
 		eventTypes.forEach(eventType -> eventTypeRepository.save(eventType));
+		eventHandlerService.addAllEventTyes();
 	}
 
 	private String fetchStatementFromFile(String filename) throws FileNotFoundException, IOException {
