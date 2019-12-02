@@ -1,0 +1,11 @@
+table{
+  width: 100%;
+}
+
+.add-Property{
+  margin-top: 2%;
+}
+
+.delete-icon{
+  cursor: pointer;
+}

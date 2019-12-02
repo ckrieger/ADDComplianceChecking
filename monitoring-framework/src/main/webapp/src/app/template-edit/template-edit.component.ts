@@ -25,6 +25,7 @@ export class TemplateEditComponent implements OnInit {
   allPatterns: any[] = [];
   sub: Subscription;
 
+
   // @ts-ignore
   @ViewChild('patternInput', {static: false}) patternInput: ElementRef<HTMLInputElement>;
   // @ts-ignore

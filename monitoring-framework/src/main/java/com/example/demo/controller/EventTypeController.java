@@ -10,6 +10,7 @@ import com.example.demo.model.Pattern;
 import com.example.demo.repository.EventTypeRepository;
 import com.example.demo.repository.InstrumentationTemplateRepository;
 import com.example.demo.repository.PatternRepository;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,5 +43,10 @@ public class EventTypeController {
     @PutMapping(path = "/")
     public EventType addEventType(@RequestBody EventType eventType) {
         return  repository.save(eventType);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public void deleteEventType(@PathVariable Long id){
+        this.repository.deleteById(id);
     }
 }

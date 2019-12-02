@@ -5,6 +5,8 @@ import { PatternEditComponent } from './pattern-edit/pattern-edit.component';
 import { MonitoringAreaComponent } from './monitoring-area/monitoring-area.component';
 import { InstrumentationTemplateOverviewComponent } from './instrumentation-template-overview/instrumentation-template-overview.component';
 import { TemplateEditComponent } from './template-edit/template-edit.component';
+import { EventTypesOverviewComponent } from './event-types-overview/event-types-overview.component';
+import { EventTypeEditComponent } from './event-type-edit/event-type-edit.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -35,6 +37,18 @@ const routes: Routes = [
   {
     path: 'template-edit:id',
     component: TemplateEditComponent
+  },
+  {
+    path: 'event-type-list',
+    component: EventTypesOverviewComponent
+  },
+  {
+    path: 'event-type-edit',
+    component: EventTypeEditComponent
+  },
+  {
+    path: 'event-type-edit/:id',
+    component: EventTypeEditComponent
   }
 ];
 

@@ -1,0 +1,15 @@
+[
+  {
+    "type": "FirstEvent",
+    "properties": [
+      {
+        "name": "carId",
+        "type": "java.lang.String"
+      },
+      {
+        "name": "direction",
+        "type": "java.lang.Integer"
+      }
+    ]
+  }
+]

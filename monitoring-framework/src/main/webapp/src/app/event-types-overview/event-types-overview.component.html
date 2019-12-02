@@ -1,0 +1,39 @@
+<mat-card>
+  <mat-card-title><h3>Event Types</h3></mat-card-title>
+  <div class="right-flex">
+    <button mat-flat-button color="primary" [routerLink]="['/event-type-edit']">Add Event Type</button>
+  </div>
+</mat-card>
+<mat-accordion *ngFor="let eventType of eventTypes | sortBy:'asc':'name'">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h4>{{eventType.type}}</h4>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-card>
+      <mat-card-subtitle>Properties</mat-card-subtitle>
+      <table mat-table [dataSource]="eventType.properties" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let property"> {{property.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef> Type </th>
+          <td mat-cell *matCellDef="let property"> {{property.type}} </td>
+        </ng-container>
+
+       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+
+    </mat-card>
+    <div class="example-button-row">
+      <button mat-stroked-button color="primary" [routerLink]="['/event-type-edit', eventType.id]" >Edit</button>
+      <button mat-stroked-button color="warn" class="delete-button" (click)="remove(eventType)">Delete</button>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

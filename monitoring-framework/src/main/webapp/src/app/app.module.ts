@@ -29,6 +29,9 @@ import { TemplateEditComponent } from './template-edit/template-edit.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SortByPipe } from './pipes/sort-by.pipe';
+import { EventTypesOverviewComponent } from './event-types-overview/event-types-overview.component';
+import { MatTableModule } from '@angular/material/table';
+import { EventTypeEditComponent } from './event-type-edit/event-type-edit.component';
 
 
 @NgModule({
@@ -41,30 +44,33 @@ import { SortByPipe } from './pipes/sort-by.pipe';
     AddPatternDialogComponent,
     InstrumentationTemplateOverviewComponent,
     TemplateEditComponent,
-    SortByPipe
+    SortByPipe,
+    EventTypesOverviewComponent,
+    EventTypeEditComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-    MatListModule,
-    MatToolbarModule,
-    FormsModule,
-    MatExpansionModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatSnackBarModule,
-    MatChipsModule,
-    ReactiveFormsModule,
-    MatAutocompleteModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatCardModule,
+        MatInputModule,
+        MatListModule,
+        MatToolbarModule,
+        FormsModule,
+        MatExpansionModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatSnackBarModule,
+        MatChipsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        MatTableModule
+    ],
   providers: [
     {
       provide: InjectableRxStompConfig,

@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.example.demo.cepEngine.model.CircuitBreaker;
+import com.example.demo.model.EventType;
 import com.example.demo.model.InstrumentationTemplate;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
 import com.example.demo.model.PatternInstance;
 import com.example.demo.model.PatternVariable;
+import com.example.demo.repository.EventTypeRepository;
 import com.example.demo.repository.InstrumentationTemplateRepository;
 import com.example.demo.repository.MonitoringAreaRepository;
 import com.example.demo.repository.PatternInstanceRepository;
@@ -61,6 +63,8 @@ public class DemoApplication {
     MonitoringAreaRepository monitoringAreaRepository;
 	@Autowired
 	InstrumentationTemplateRepository instrumentationTemplateRepository;
+	@Autowired
+	EventTypeRepository eventTypeRepository;
 
 	private static final String BASE_PATH = "templates/";
 	public static void main(String[] args) {
@@ -72,6 +76,7 @@ public class DemoApplication {
 	ApplicationRunner init(){
 		return args -> {
 			this.initPatternRepo();
+			this.initEventTypeRepo();
 			//this.initTemplateRepo();
 			MonitoringArea monitoringArea = new Gson().fromJson(fetchStatementFromFile("json/monitoring-area.json"), MonitoringArea.class);
 			monitoringArea.getPatternInstances().forEach(patternInstance -> {
@@ -118,6 +123,13 @@ public class DemoApplication {
 			pattern.getLinkedInstrumentationTemplates().add(template);
 			patternRepository.save(pattern);
 		});
+	}
+
+	private void initEventTypeRepo() throws IOException {
+		Type eventTypeListType = new TypeToken<ArrayList<EventType>>(){}.getType();
+		String eventTypesJson = fetchStatementFromFile("json/event-types.json");
+		List<EventType> eventTypes = new Gson().fromJson(eventTypesJson, eventTypeListType);
+		eventTypes.forEach(eventType -> eventTypeRepository.save(eventType));
 	}
 
 	private String fetchStatementFromFile(String filename) throws FileNotFoundException, IOException {
