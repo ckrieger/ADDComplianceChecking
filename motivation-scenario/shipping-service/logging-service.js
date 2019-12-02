@@ -14,9 +14,12 @@ function getScalingGroupId(){
 
 exports.logContainerInfo = function logContainerInfo() {
   var data = {
-    vmId: getVMId(),
-    scalingGroupId: getScalingGroupId(),
-    cpu: "0.5"
+    type: "VirtualMachine",
+    event: {
+      vmId: getVMId(),
+      scalingGroupId: getScalingGroupId(),
+      cpu: '5.0'
+    }
   };
   log.info(data);
 }

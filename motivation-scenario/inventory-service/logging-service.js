@@ -9,25 +9,31 @@ function getVMId() {
   return os.hostname().split("-")[1]
 }
 
-function getScalingGroupId(){
+function getScalingGroupId() {
   return os.hostname().split("-")[0]
 }
 
 exports.logContainerInfo = function logContainerInfo() {
-  osUtils.cpuUsage(function(value){
+  osUtils.cpuUsage(function (value) {
     var data = {
-      vmId: getVMId(),
-      scalingGroupId: getScalingGroupId(),
-      cpu: value
+      type: "VirtualMachine",
+      event: {
+        vmId: getVMId(),
+        scalingGroupId: getScalingGroupId(),
+        cpu: value
+      }
     };
     log.info(data);
   });
 }
 
 exports.logHttpResponseStatus = function logHttpResponseStatus(statusCode) {
-  var data = {
-    serviceId: os.hostname(),
-    statusCode: statusCode
+  var httpResponseLog = {
+    type: "HttpRequestEvent",
+    event: {
+      serviceId: os.hostname(),
+      statusCode: statusCode
+    }
   };
-  log.info(data);
+  log.info(httpResponseLog);
 }
