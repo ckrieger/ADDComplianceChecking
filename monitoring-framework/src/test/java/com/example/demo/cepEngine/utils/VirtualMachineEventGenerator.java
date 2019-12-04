@@ -5,6 +5,7 @@ import com.example.demo.cepEngine.model.VirtualMachine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Random;
 
 @Component
@@ -25,9 +26,13 @@ public class VirtualMachineEventGenerator {
 
     public void generateVirtualMachineEventsOfScalingGroup(String scalingGroupId, int amountInstances){
         for (int i = 0; i < amountInstances; i++) {
-            VirtualMachine vmEvent = new VirtualMachine(Integer.toString(i), scalingGroupId);
-            System.out.println("Sending nodeEvent:" + vmEvent);
-            eventHandler.handle(vmEvent);
+            int finalI = i;
+            HashMap<String, Object> eventAsMap = new HashMap<String, Object>(){{
+              put("vmId", Integer.toString(finalI));
+              put("scalingGroupId", scalingGroupId);
+              put("cpu", 5.0);
+            }};
+            eventHandler.handle(eventAsMap, "VirtualMachine");
         }
     }
 
@@ -70,7 +75,11 @@ public class VirtualMachineEventGenerator {
     }
 
     private void generateCpuHandle(double cpu) {
-        VirtualMachine nodeEventCpu = new VirtualMachine(cpu);
-        eventHandler.handle(nodeEventCpu);
+        HashMap<String, Object> eventAsMap = new HashMap<String, Object>(){{
+            put("vmId", "1");
+            put("scalingGroupId", "1");
+            put("cpu", cpu);
+        }};
+        eventHandler.handle(eventAsMap, "VirtualMachine");
     }
 }

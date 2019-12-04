@@ -3,6 +3,7 @@ package com.example.demo.cepEngine;
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
 import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternStatementSubscriber;
+import com.example.demo.cepEngine.utils.EventTypeUtils;
 import com.example.demo.cepEngine.utils.PatternStatementUtils;
 import com.example.demo.cepEngine.utils.VirtualMachineEventGenerator;
 import org.junit.Before;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.beans.EventHandler;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,8 @@ public class StaticWorkloadTest {
     private PatternStatementUtils patternUtils;
     @Autowired
     private VirtualMachineEventGenerator vmGenerator;
+    @Autowired
+    private EventTypeUtils eventTypeUtils;
 
     private static PatternStatementSubscriber subscriber;
 
@@ -43,6 +47,7 @@ public class StaticWorkloadTest {
 
     @Before
     public void setup() throws IOException {
+        eventTypeUtils.addEventTypes();
         statementHandler.deleteAllSubscribers();
         violationService.deleteStatementsAndViolations();
         this.subscriber = patternUtils.preparePattern(PATTERN_NAME, PARAMETERS);

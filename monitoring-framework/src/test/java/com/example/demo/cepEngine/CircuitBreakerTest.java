@@ -10,8 +10,11 @@ import com.example.demo.cepEngine.handler.CEPStatementHandler;
 import com.example.demo.cepEngine.model.HttpRequestEvent;
 import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternStatementSubscriber;
+import com.example.demo.cepEngine.utils.EventTypeUtils;
 import com.example.demo.cepEngine.utils.PatternStatementUtils;
 
+import com.example.demo.model.EventInstance;
+import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,38 +36,52 @@ public class CircuitBreakerTest {
     private PatternStatementUtils patternUtils;
     @Autowired
     private CEPEventHandler eventHandler;
+    @Autowired
+    private EventTypeUtils eventTypeUtils;
 
     private static final int functionCallFailureThreshold = 3;
     private static final int circuitBreakerTimeOutInMilliseconds = 1000;
     private static final int expectedHttpRequestInterval = 5000;
 
-    private static final HttpRequestEvent httpFailureEvent = new HttpRequestEvent("1", "failed");
-    private static final HttpRequestEvent httpSuccessEvent = new HttpRequestEvent("1", "success");
+    private static final String FAILED_HTTP_REQUESTEVENT = "{'type': 'HttpRequestEvent', 'event' : {'serviceId': '1', 'statusCode': 'failed'}}";
+    private static final String SUCCEDED_HTTP_REQUESTEVENT = "{'type': 'HttpRequestEvent', 'event' : {'serviceId': '1', 'statusCode': 'success'}}";
 
-    private static final HttpRequestEvent httpFailureEventService2 = new HttpRequestEvent("2", "failed");
-    private static final HttpRequestEvent httpSuccessEventService2 = new HttpRequestEvent("2", "success");
+    private static final String FAILED_HTTP_REQUESTEVENT2 = "{'type': 'HttpRequestEvent', 'event' : {'serviceId': '2', 'statusCode': 'failed'}}";
+
+    private static EventInstance httpFailureEvent;
+    private static EventInstance httpSuccessEvent;
+    private static EventInstance httpFailureEventService2;
 
     private static final String CLOSING_VIOLATION = "Closing Violation";
     private static final String TIMEOUT_VIOLATION = "Timeout Violation";
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
+        setupTestEvents();
         statementHandler.deleteAllSubscribers();
         violationService.deleteStatementsAndViolations();
+        eventTypeUtils.addEventTypes();
+    }
+
+    private void setupTestEvents() {
+        Gson g = new Gson();
+        httpFailureEvent = g.fromJson(FAILED_HTTP_REQUESTEVENT, EventInstance.class);
+        httpSuccessEvent = g.fromJson(SUCCEDED_HTTP_REQUESTEVENT, EventInstance.class);
+        httpFailureEventService2 = g.fromJson(FAILED_HTTP_REQUESTEVENT2, EventInstance.class);
     }
 
 
     @Test
-    public void shouldThrowViolationIfCircuitBreakerDoesNotTripAfterThresholdExceededAndSleepPeriodIsViolated() throws IOException {
+    public void shouldThrowViolationIfCircuitBreakerDoesNotTripAfterThresholdExceededOrSleepPeriodIsViolated() throws IOException {
         List<PatternStatementSubscriber> subscriberList = patternUtils.preparePatternWithMultipleSubscriber("CircuitBreaker");
         PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, TIMEOUT_VIOLATION);
         // exceed threshold
         for (int i = 0; i <= functionCallFailureThreshold; i++) {
-            eventHandler.handle(httpFailureEvent);
+            eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
         }
         assertEquals(0, this.violationService.getViolationsFor(subscriber));
         // violate timeout
-        eventHandler.handle(httpSuccessEvent);
+        eventHandler.handle(httpSuccessEvent.getEvent(), httpSuccessEvent.getType());
         assertEquals(1, this.violationService.getViolationsFor(subscriber));
     }
 
@@ -73,22 +90,22 @@ public class CircuitBreakerTest {
         List<PatternStatementSubscriber> subscriberList = patternUtils.preparePatternWithMultipleSubscriber("CircuitBreaker");
         PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, TIMEOUT_VIOLATION);
         // failures are not consecutive -> threshold not exceeded
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpSuccessEvent);
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpSuccessEvent);
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpFailureEvent);
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpSuccessEvent.getEvent(), httpSuccessEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpSuccessEvent.getEvent(), httpSuccessEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
         assertEquals(0, this.violationService.getViolationsFor(subscriber));
 
         // add another two failure event -> threshold exceeded but timeout not violated
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpFailureEvent);
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
         assertEquals(0, this.violationService.getViolationsFor(subscriber));
 
         // violate timeout
-        eventHandler.handle(httpSuccessEvent);
+        eventHandler.handle(httpSuccessEvent.getEvent(), httpSuccessEvent.getType());
         assertEquals(1, this.violationService.getViolationsFor(subscriber));
     }
 
@@ -98,18 +115,18 @@ public class CircuitBreakerTest {
         PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, TIMEOUT_VIOLATION);
 
         // no threshold exceeded as events from different Circuit Breaker
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpFailureEventService2);
-        eventHandler.handle(httpFailureEventService2);
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEventService2.getEvent(), httpFailureEventService2.getType());
+        eventHandler.handle(httpFailureEventService2.getEvent(), httpFailureEventService2.getType());
 
         // fourth consecutive failure of Circuit Breaker 1 -> it should trip
-        eventHandler.handle(httpFailureEvent);
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
         assertEquals(0, this.violationService.getViolationsFor(subscriber));
 
         // violate timeout
-        eventHandler.handle(httpSuccessEvent);
+        eventHandler.handle(httpSuccessEvent.getEvent(), httpSuccessEvent.getType());
         assertEquals(1, this.violationService.getViolationsFor(subscriber));
     }
 
@@ -120,15 +137,15 @@ public class CircuitBreakerTest {
         Long delta = Math.round(circuitBreakerTimeOutInMilliseconds * 0.1);
         // exceed threshold of consecutive failures
         for (int i = 0; i <= functionCallFailureThreshold; i++) {
-            eventHandler.handle(httpFailureEvent);
+            eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
         }
 
         // adhere to timeout
         TimeUnit.MILLISECONDS.sleep(circuitBreakerTimeOutInMilliseconds + delta);
-        eventHandler.handle(httpSuccessEvent);
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpFailureEvent);
-        eventHandler.handle(httpFailureEvent);
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
+        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
         assertEquals(0, this.violationService.getViolationsFor(subscriber)); // @todo fails on every third run
     }
 
@@ -138,7 +155,7 @@ public class CircuitBreakerTest {
         PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, CLOSING_VIOLATION);
         // exceed threshold of consecutive failures
         for (int i = 0; i < 4 ; i++) {
-            eventHandler.handle(httpFailureEvent);
+            eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
         }
 
         // adhere to timeout -> emits a TimeoutPeriodElapsedEvent

@@ -1,4 +1,5 @@
-package com.example.demo.cepEngine.utils;
+package com.example.demo.cepEngine;
+import java.io.IOException;
 
 public class RemoteServiceTestSimulator {
 
@@ -10,13 +11,12 @@ public class RemoteServiceTestSimulator {
         this.shouldFail = shouldFail;
     }
 
-    String execute() throws InterruptedException {
+    String execute() throws InterruptedException, IOException {
         System.out.println("Call Executed");
         Thread.sleep(wait);
-        if(shouldFail){
+        if (shouldFail) {
             return "Failed";
         }
         return "Success";
     }
-
 }

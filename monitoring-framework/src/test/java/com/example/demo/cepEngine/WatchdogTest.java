@@ -8,6 +8,7 @@ import java.util.Map;
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
 import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternStatementSubscriber;
+import com.example.demo.cepEngine.utils.EventTypeUtils;
 import com.example.demo.cepEngine.utils.PatternStatementUtils;
 import com.example.demo.cepEngine.utils.VirtualMachineEventGenerator;
 import org.junit.Before;
@@ -31,6 +32,8 @@ public class WatchdogTest {
     private PatternStatementUtils patternUtils;
     @Autowired
     private VirtualMachineEventGenerator vmEventGenerator;
+    @Autowired
+    private EventTypeUtils eventTypeUtils;
 
     private static final String ACCOUNT_SERVICE_ID = "AccountService";
     private static final String INVENTORY_SERVICE_ID = "InventoryService";
@@ -46,6 +49,7 @@ public class WatchdogTest {
 
     @Before
     public void setup() throws IOException {
+        eventTypeUtils.addEventTypes();
         statementHandler.deleteAllSubscribers();
         violationService.deleteStatementsAndViolations();
         this.subscriber = patternUtils.preparePattern(PATTERN_NAME, PARAMETERS);
