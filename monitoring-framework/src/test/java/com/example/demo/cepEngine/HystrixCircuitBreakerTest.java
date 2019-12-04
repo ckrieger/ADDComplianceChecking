@@ -40,47 +40,52 @@ public class HystrixCircuitBreakerTest {
 
     private static final int functionCallFailureThreshold = 3;
     private static final String TIMEOUT_VIOLATION = "Timeout Violation";
-    HystrixCommand.Setter config;
+    HystrixCommand.Setter faultyConfig;
+    HystrixCommand.Setter correctConfig;
 
     @Before
     public void setup() throws IOException {
         statementHandler.deleteAllSubscribers();
         violationService.deleteStatementsAndViolations();
         eventTypeUtils.addEventTypes();
+        faultyConfig = createConfig(functionCallFailureThreshold + 1, "FaultyCircuitBreaker");
+        correctConfig = createConfig(functionCallFailureThreshold, "CorrectCircuitBreaker");
+    }
+
+    private HystrixCommand.Setter createConfig(int failureThreshold, String groupKey) {
+        HystrixCommand.Setter config;
         config = HystrixCommand
                 .Setter
-                .withGroupKey(HystrixCommandGroupKey.Factory.asKey("RemoteServiceGroupCircuitBreaker"));
+                .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey));
+
         HystrixCommandProperties.Setter properties = HystrixCommandProperties.Setter();
-
         properties.withExecutionTimeoutInMilliseconds(2000); // timeout for considering request as failed
-
-        properties.withCircuitBreakerSleepWindowInMilliseconds(5000);
+        properties.withCircuitBreakerSleepWindowInMilliseconds(1000);
         properties.withExecutionIsolationStrategy(
                 HystrixCommandProperties.ExecutionIsolationStrategy.THREAD);
         properties.withCircuitBreakerEnabled(true);
-        properties.withCircuitBreakerRequestVolumeThreshold(functionCallFailureThreshold + 1); // configuration of circuit breaker violates expected failure threshold
-
+        properties.withCircuitBreakerRequestVolumeThreshold(failureThreshold);
         config.andCommandPropertiesDefaults(properties);
-
-        config.andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter()
-                .withMaxQueueSize(1)
-                .withCoreSize(1)
-                .withQueueSizeRejectionThreshold(1));
+//        config.andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter()
+//                .withMaxQueueSize(1)
+//                .withCoreSize(1)
+//                .withQueueSizeRejectionThreshold(1));
+        return config;
     }
+    
 
     @Test
     public void shouldThrowViolationIfCircuitBreakerDoesNotTripAfterThresholdExceededOrSleepPeriodIsViolated() throws InterruptedException, IOException {
-
         List<PatternStatementSubscriber> subscriberList = patternUtils.preparePatternWithMultipleSubscriber("CircuitBreaker");
         PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, TIMEOUT_VIOLATION);
 
         // exceed threshold
         for (int i = 0; i <= functionCallFailureThreshold; i++) {
-            this.invokeRemoteService(config, 1000, true);
+            this.invokeRemoteService(faultyConfig, 0, true);
         }
         assertEquals(0, this.violationService.getViolationsFor(subscriber));
         // violate timeout
-        this.invokeRemoteService(config, 1000, true);
+        this.invokeRemoteService(faultyConfig, 0, true);
         assertEquals(1, this.violationService.getViolationsFor(subscriber));
     }
 
