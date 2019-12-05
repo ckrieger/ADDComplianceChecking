@@ -18,4 +18,8 @@ export class FileUploadService {
     return this.http.post(this.baseUrl + "uploadFile", file)
   }
 
+  downloadFile(fileId): Observable<any> {
+    return this.http.get(this.baseUrl + "downloadFile/" + fileId)
+  }
+
 }

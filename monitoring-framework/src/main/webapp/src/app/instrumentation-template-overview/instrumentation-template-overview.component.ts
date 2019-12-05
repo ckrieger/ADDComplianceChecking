@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TemplateService } from '../services/template.service';
+import { FileUploadService } from '../services/fileUpload.service';
 
 @Component({
   selector: 'app-instrumentation-template-overview',
@@ -9,25 +10,12 @@ import { TemplateService } from '../services/template.service';
 export class InstrumentationTemplateOverviewComponent implements OnInit {
   templates: Array<any>;
   language = "typescript";
-  sampleContent = `
-  <pre>
-     <code class="typescript highlight">
-         class Greeter {
-             constructor(public greeting: string) { }
-             greet() {
-                 return "hello world";
-             }
-         };
-     </code>
- </pre>
- <pre>
-     <code class="javascript highlight">
-         alert('Hello, World!');
-     </code>
- </pre>
- `;
+  dataToDisplay;
 
-  constructor(private templateService: TemplateService) { }
+  constructor(
+    private templateService: TemplateService,
+    private fileService: FileUploadService
+    ) { }
 
   ngOnInit() {
    this.fetchAllTemplates();
@@ -43,7 +31,19 @@ export class InstrumentationTemplateOverviewComponent implements OnInit {
   private fetchAllTemplates() {
     this.templateService.getAll().subscribe(data => {
       this.templates = data;
+      this.fetchFilesOfTemplates()
     })
   }
+
+  fetchFilesOfTemplates(){
+    this.templates.forEach(template => {
+      if(template.file) {
+        let decodedString = atob(template.file.data);
+        template.decodedFile = decodedString;
+        console.log(decodedString);
+      }
+    })
+  }
+
 
 }
