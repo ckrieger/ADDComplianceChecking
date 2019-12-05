@@ -1,10 +1,10 @@
 [
   {
-    "name": "HTTPIstioTemplate",
-    "content": "some content"
+    "name": "IstioHttpEventTemplate",
+    "content": "public class Greeter{}"
   },
   {
-    "name": "AOPTemplate",
+    "name": "AspectJHttpEventTemplate",
     "content": "some aop stuff"
   }
 ]

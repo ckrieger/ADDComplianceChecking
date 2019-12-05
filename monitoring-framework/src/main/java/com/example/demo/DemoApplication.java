@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.example.demo.config.FileStorageProperties;
 import com.example.demo.model.EventType;
 import com.example.demo.model.InstrumentationTemplate;
 import com.example.demo.model.MonitoringArea;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
@@ -39,6 +41,9 @@ import static org.apache.log4j.helpers.LogLog.warn;
 
 @SpringBootApplication
 @ImportResource({"classpath*:application-context.xml"})
+@EnableConfigurationProperties({
+		FileStorageProperties.class
+})
 public class DemoApplication {
 	@Autowired
 	RabbitMqService rabbitMqService;
