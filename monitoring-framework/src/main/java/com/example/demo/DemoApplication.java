@@ -24,7 +24,9 @@ import com.example.demo.repository.PatternVariableRepository;
 import com.example.demo.service.EventHandlerService;
 import com.example.demo.service.PatternConstraintService;
 import com.example.demo.service.RabbitMqService;
+import com.example.demo.utils.ByteArrayToBase64TypeAdapter;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -79,7 +81,7 @@ public class DemoApplication {
 		return args -> {
 			this.initPatternRepo();
 			this.initEventTypeRepo();
-			this.initDBFilesAndAddToTemplate();
+		//	this.initDBFilesAndAddToTemplate();
 			//this.initTemplateRepo();
 			MonitoringArea monitoringArea = new Gson().fromJson(fetchStatementFromFile("json/monitoring-area.json"), MonitoringArea.class);
 			monitoringArea.getPatternInstances().forEach(patternInstance -> {
@@ -98,7 +100,9 @@ public class DemoApplication {
 	private void initPatternRepo() throws IOException {
 		Type templateListType = new TypeToken<ArrayList<InstrumentationTemplate>>(){}.getType();
 		String templatesJson = fetchStatementFromFile("json/instrumentation-templates.json");
-		List<InstrumentationTemplate> templates = new Gson().fromJson(templatesJson, templateListType);
+		Gson customGson = new GsonBuilder().registerTypeHierarchyAdapter(byte[].class,
+				new ByteArrayToBase64TypeAdapter()).create();
+		List<InstrumentationTemplate> templates = customGson.fromJson(templatesJson, templateListType);
 
 		Stream.of("Watchdog", "CircuitBreaker", "StaticWorkload", "RateLimiting").forEach(name -> {
 			Pattern pattern = new Pattern();

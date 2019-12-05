@@ -5,7 +5,11 @@
   },
   {
     "name": "AspectJHttpEventTemplate",
-    "content": "some aop stuff"
+    "file": {
+      "data":"IyBDb25maWd1cmUgdGhlIERvY2tlciBwcm92aWRlcg0KcHJvdmlkZXIgImRvY2tlciIgew0KICBob3N0ID0gInRjcDovLzEyNy4wLjAuMToyMzc1LyINCn0NCg0KIyBDcmVhdGUgYSBjb250YWluZXINCnJlc291cmNlICJkb2NrZXJfY29udGFpbmVyIiAiZm9vIiB7DQogIGltYWdlID0gIiR7ZG9ja2VyX2ltYWdlLnVidW50dS5sYXRlc3R9Ig0KICBuYW1lICA9ICJmb28iDQp9DQoNCnJlc291cmNlICJkb2NrZXJfaW1hZ2UiICJ1YnVudHUiIHsNCiAgbmFtZSA9ICJ1YnVudHU6bGF0ZXN0Ig0KfQ==",
+      "fileName": "docker.tf",
+      "fileType": "application/octec-stream"
+    }
   }
 ]
 
