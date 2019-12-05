@@ -6,7 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -21,10 +23,11 @@ public class InstrumentationTemplate {
     @GeneratedValue
     private Long id;
     private String name;
-    private String content;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "file_id", referencedColumnName = "id")
+    private DBFile file;
 
     @ManyToMany(mappedBy = "linkedInstrumentationTemplates", fetch = FetchType.EAGER)
-   // @JsonManagedReference(value="someName")
     @JsonIgnore
     List<Pattern> patterns;
 
@@ -44,12 +47,12 @@ public class InstrumentationTemplate {
         this.name = name;
     }
 
-    public String getContent() {
-        return content;
+    public DBFile getFile() {
+        return file;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setFile(DBFile file) {
+        this.file = file;
     }
 
     public List<Pattern> getPatterns() {

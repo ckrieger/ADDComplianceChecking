@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { EventTypeService } from '../services/event-type.service';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-event-type-edit',
@@ -17,13 +16,13 @@ export class EventTypeEditComponent implements OnInit {
   displayedColumns: string[] = ['name', 'type', 'delete'];
 
   primitiveTypes: any[] = [
-    {value: 'java.lang.String', viewValue: 'String'},
-    {value: 'java.lang.Integer', viewValue: 'Integer'},
-    {value: 'java.lang.Boolean', viewValue: 'Boolean'},
-    {value: 'java.lang.Long', viewValue: 'Long'},
-    {value: 'java.lang.Double', viewValue: 'Double'},
-    {value: 'java.lang.Float', viewValue: 'Float'},
-    {value: 'java.lang.Byte', viewValue: 'Byte'}
+    { value: 'java.lang.String', viewValue: 'String' },
+    { value: 'java.lang.Integer', viewValue: 'Integer' },
+    { value: 'java.lang.Boolean', viewValue: 'Boolean' },
+    { value: 'java.lang.Long', viewValue: 'Long' },
+    { value: 'java.lang.Double', viewValue: 'Double' },
+    { value: 'java.lang.Float', viewValue: 'Float' },
+    { value: 'java.lang.Byte', viewValue: 'Byte' }
   ];
 
   propertyToAdd = {
@@ -33,12 +32,14 @@ export class EventTypeEditComponent implements OnInit {
 
   // @ts-ignore
   @ViewChild('table', { static: true }) table;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private eventTypeService: EventTypeService,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
@@ -65,19 +66,18 @@ export class EventTypeEditComponent implements OnInit {
     });
   }
 
-  deleteProperty(property){
+  deleteProperty(property) {
     let index = this.eventType.properties.indexOf(property);
     this.eventType.properties.splice(index, 1);
     this.table.renderRows()
   }
 
-  addProperty(){
-      this.eventType.properties.push(JSON.parse(JSON.stringify(this.propertyToAdd))); // deep copy
-      this.table.renderRows();
-      this.propertyToAdd.type = "";
-      this.propertyToAdd.name = "";
-    }
-
+  addProperty() {
+    this.eventType.properties.push(JSON.parse(JSON.stringify(this.propertyToAdd))); // deep copy
+    this.table.renderRows();
+    this.propertyToAdd.type = "";
+    this.propertyToAdd.name = "";
+  }
 
   save(form: NgForm) {
     if (form.name.trim() != "") {
@@ -97,4 +97,5 @@ export class EventTypeEditComponent implements OnInit {
   cancel() {
     this.goToList();
   }
+
 }

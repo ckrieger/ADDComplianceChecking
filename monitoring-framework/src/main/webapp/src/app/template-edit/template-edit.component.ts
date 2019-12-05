@@ -9,6 +9,7 @@ import { map, startWith } from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { PatternService } from '../services/pattern.service';
+import { FileUploadService } from '../services/fileUpload.service';
 
 @Component({
   selector: 'app-template-edit',
@@ -24,6 +25,9 @@ export class TemplateEditComponent implements OnInit {
   filteredPatterns: Observable<any[]>;
   allPatterns: any[] = [];
   sub: Subscription;
+  srcResult;
+
+  fileToUpload: File = null;
 
 
   // @ts-ignore
@@ -36,7 +40,8 @@ export class TemplateEditComponent implements OnInit {
     private router: Router,
     private templateService: TemplateService,
     private patternService: PatternService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private fileUploadService: FileUploadService
   ) {}
 
   ngOnInit() {
@@ -104,6 +109,7 @@ export class TemplateEditComponent implements OnInit {
     if (form.name.trim() != "") {
       this.templateService.add(this.template).subscribe(response => {
         this.savePattensOfTemplate(response.body);
+        this.saveFileOfTemplate(response.body);
       }, error => {
         console.error(error);
       });
@@ -116,6 +122,13 @@ export class TemplateEditComponent implements OnInit {
     this.templateService.updatePatternsOfTemplate(template.id, this.patterns).subscribe(response => {
       this.gotoList();
     })
+  }
+
+  private saveFileOfTemplate(template){
+    let formData = new FormData();
+    formData.append("file", this.fileToUpload);
+    this.templateService.uploadFileOfTemplate(template.id, formData)
+      .subscribe((succ) => console.log(succ), err => console.log(err))
   }
 
   remove(form: NgForm) {
@@ -140,6 +153,23 @@ export class TemplateEditComponent implements OnInit {
     return this.allPatterns.splice(index, 1);
   }
 
+  onFileChanged(event) {
+    this.fileToUpload = event.target.files.item(0);
+  }
+
+  onFileSelected() {
+    const inputNode: any = document.querySelector('#file');
+
+    if (typeof (FileReader) !== 'undefined') {
+      const reader = new FileReader();
+
+      reader.onload = (e: any) => {
+        this.srcResult = e.target.result;
+      };
+
+      reader.readAsArrayBuffer(inputNode.files[0]);
+    }
+  }
   // addPattern(event: MatChipInputEvent): void {
   //   // Add fruit only when MatAutocomplete is not open
   //   // To make sure this does not conflict with OptionSelected Event

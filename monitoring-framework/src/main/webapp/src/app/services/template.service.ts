@@ -42,4 +42,8 @@ export class TemplateService {
   updatePatternsOfTemplate(id: string, patterns): Observable<any> {
     return this.http.put(this.templateApi + "/" + id + "/patterns", patterns)
   }
+
+  uploadFileOfTemplate(id: string, file): Observable<any> {
+    return this.http.post(this.templateApi + "/" + id + "/uploadFile", file)
+  }
 }

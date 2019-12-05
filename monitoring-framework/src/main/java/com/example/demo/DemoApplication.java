@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.example.demo.config.FileStorageProperties;
+import com.example.demo.model.DBFile;
 import com.example.demo.model.EventType;
 import com.example.demo.model.InstrumentationTemplate;
 import com.example.demo.model.MonitoringArea;
 import com.example.demo.model.Pattern;
+import com.example.demo.repository.DBFileRepository;
 import com.example.demo.repository.EventTypeRepository;
 import com.example.demo.repository.InstrumentationTemplateRepository;
 import com.example.demo.repository.MonitoringAreaRepository;
@@ -63,6 +65,8 @@ public class DemoApplication {
 	EventTypeRepository eventTypeRepository;
 	@Autowired
 	EventHandlerService eventHandlerService;
+	@Autowired
+	private DBFileRepository dbFileRepository;
 
 	private static final String BASE_PATH = "templates/";
 	public static void main(String[] args) {
@@ -75,6 +79,7 @@ public class DemoApplication {
 		return args -> {
 			this.initPatternRepo();
 			this.initEventTypeRepo();
+			this.initDBFilesAndAddToTemplate();
 			//this.initTemplateRepo();
 			MonitoringArea monitoringArea = new Gson().fromJson(fetchStatementFromFile("json/monitoring-area.json"), MonitoringArea.class);
 			monitoringArea.getPatternInstances().forEach(patternInstance -> {
@@ -121,6 +126,12 @@ public class DemoApplication {
 			pattern.getLinkedInstrumentationTemplates().add(template);
 			patternRepository.save(pattern);
 		});
+	}
+
+	private void initDBFilesAndAddToTemplate(){
+		InstrumentationTemplate template = instrumentationTemplateRepository.findByName("AspectJHttpEventTemplate");
+		DBFile file = new DBFile("someFileName", "tf", null);
+		template.setFile(dbFileRepository.save(file));
 	}
 
 	private void initEventTypeRepo() throws IOException {
