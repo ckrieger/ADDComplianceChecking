@@ -32,7 +32,13 @@ import { SortByPipe } from './pipes/sort-by.pipe';
 import { EventTypesOverviewComponent } from './event-types-overview/event-types-overview.component';
 import { MatTableModule } from '@angular/material/table';
 import { EventTypeEditComponent } from './event-type-edit/event-type-edit.component';
+import hljs from 'highlight.js/lib/highlight';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import { AngularHighlightJsModule } from 'angular2-highlight-js';
 
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('javascript', javascript);
 
 @NgModule({
   declarations: [
@@ -69,7 +75,8 @@ import { EventTypeEditComponent } from './event-type-edit/event-type-edit.compon
         MatChipsModule,
         ReactiveFormsModule,
         MatAutocompleteModule,
-        MatTableModule
+        MatTableModule,
+        AngularHighlightJsModule
     ],
   providers: [
     {

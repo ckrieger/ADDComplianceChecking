@@ -8,6 +8,24 @@ import { TemplateService } from '../services/template.service';
 })
 export class InstrumentationTemplateOverviewComponent implements OnInit {
   templates: Array<any>;
+  language = "typescript";
+  sampleContent = `
+  <pre>
+     <code class="typescript highlight">
+         class Greeter {
+             constructor(public greeting: string) { }
+             greet() {
+                 return "hello world";
+             }
+         };
+     </code>
+ </pre>
+ <pre>
+     <code class="javascript highlight">
+         alert('Hello, World!');
+     </code>
+ </pre>
+ `;
 
   constructor(private templateService: TemplateService) { }
 

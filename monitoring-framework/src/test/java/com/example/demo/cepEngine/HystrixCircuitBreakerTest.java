@@ -72,7 +72,7 @@ public class HystrixCircuitBreakerTest {
 //                .withQueueSizeRejectionThreshold(1));
         return config;
     }
-    
+
 
     @Test
     public void shouldThrowViolationIfCircuitBreakerDoesNotTripAfterThresholdExceededOrSleepPeriodIsViolated() throws InterruptedException, IOException {
