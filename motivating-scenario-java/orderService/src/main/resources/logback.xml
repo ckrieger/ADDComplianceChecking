@@ -20,7 +20,7 @@
         <password>guest</password>
         <exchangeType>queue</exchangeType>
         <applicationId>AmqpAppenderTest</applicationId>
-        <routingKeyPattern>logs-test</routingKeyPattern>
+        <routingKeyPattern>event-logs</routingKeyPattern>
         <generateId>true</generateId>
         <charset>UTF-8</charset>
         <durable>false</durable>
@@ -32,8 +32,15 @@
         <appender-ref ref="Console" />
     </root>
 
-    <!-- LOG everything from aspects to rabbitMQ -->
-    <logger name="com.motivatingscenario.orderService.HomeController" level="info" additivity="false">
+    <!-- LOG everything from HostEventLoggingAspect to rabbitMQ -->
+    <logger name="com.motivatingscenario.orderService.aspect.HostEventLoggingAspect" level="info" additivity="false">
         <appender-ref ref="AMQP" />
     </logger>
+
+    <!-- LOG everything from HttpEventLoggingAspect to rabbitMQ -->
+    <logger name="com.motivatingscenario.orderService.aspect.HttpEventLoggingAspect" level="info" additivity="false">
+        <appender-ref ref="AMQP" />
+    </logger>
+
+
 </configuration>
