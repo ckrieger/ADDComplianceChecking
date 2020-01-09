@@ -1,10 +1,6 @@
-create schema TimeoutPeriodElapsedEvent(serviceId string, statusCode string);
 create context SegmentedByCircuitBreaker partition by serviceId from HttpRequestEvent;
 
-context SegmentedByCircuitBreaker insert into FailureRateExcessEvent select * from HttpRequestEvent.win:length(3 + 1) where statusCode = "failed" having count(*) > 3;
+context SegmentedByCircuitBreaker insert into FailureRateExcessEvent select * from HttpRequestEvent.win:length(${failureThreshold} + 1) where statusCode = "failed" having count(*) > ${failureThreshold};
 
-insert into TimeoutPeriodElapsedEvent select * from pattern [every a = FailureRateExcessEvent -> (timer:interval(1000 msec) and not b = HttpRequestEvent(serviceId = a.serviceId and statusCode = 'failed'))];
+@Name('Timeout Violation')select httpEvent.serviceId as serviceId from pattern [every (fe = FailureRateExcessEvent -> httpEvent=HttpRequestEvent(httpEvent.serviceId = fe.serviceId) where timer:within(${timeout} msec))];
 
-@Name('Timeout Violation')select httpEvent.serviceId as serviceId from pattern [every (fe = FailureRateExcessEvent -> httpEvent=HttpRequestEvent(httpEvent.serviceId = fe.serviceId) where timer:within(1000 msec))];
-
-@Name('Closing Violation')select a.serviceId as serviceId from pattern [every a = TimeoutPeriodElapsedEvent -> ( timer:interval(5 sec) and not b = HttpRequestEvent(serviceId = a.serviceId))];
