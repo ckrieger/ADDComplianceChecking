@@ -2,12 +2,13 @@ package com.example.demo.cepEngine;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.example.demo.cepEngine.handler.CEPEventHandler;
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
-import com.example.demo.cepEngine.model.HttpRequestEvent;
 import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternStatementSubscriber;
 import com.example.demo.cepEngine.utils.EventTypeUtils;
@@ -39,9 +40,10 @@ public class CircuitBreakerTest {
     @Autowired
     private EventTypeUtils eventTypeUtils;
 
+
     private static final int functionCallFailureThreshold = 3;
     private static final int circuitBreakerTimeOutInMilliseconds = 1000;
-    private static final int expectedHttpRequestInterval = 5000;
+   
 
     private static final String FAILED_HTTP_REQUESTEVENT = "{'type': 'HttpRequestEvent', 'event' : {'serviceId': '1', 'statusCode': 'failed'}}";
     private static final String SUCCEDED_HTTP_REQUESTEVENT = "{'type': 'HttpRequestEvent', 'event' : {'serviceId': '1', 'statusCode': 'success'}}";
@@ -52,6 +54,10 @@ public class CircuitBreakerTest {
     private static EventInstance httpSuccessEvent;
     private static EventInstance httpFailureEventService2;
 
+    private static final Map<String, String> PARAMETERS = new HashMap<String, String>() {{
+        put("failureThreshold", String.valueOf(functionCallFailureThreshold));
+        put("timeout", String.valueOf(circuitBreakerTimeOutInMilliseconds));
+    }};
     private static final String CLOSING_VIOLATION = "Closing Violation";
     private static final String TIMEOUT_VIOLATION = "Timeout Violation";
 
@@ -73,8 +79,7 @@ public class CircuitBreakerTest {
 
     @Test
     public void shouldThrowViolationIfCircuitBreakerDoesNotTripAfterThresholdExceededOrSleepPeriodIsViolated() throws IOException {
-        List<PatternStatementSubscriber> subscriberList = patternUtils.preparePatternWithMultipleSubscriber("CircuitBreaker");
-        PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, TIMEOUT_VIOLATION);
+        PatternStatementSubscriber subscriber = patternUtils.preparePattern("CircuitBreaker", PARAMETERS);
         // exceed threshold
         for (int i = 0; i <= functionCallFailureThreshold; i++) {
             eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
@@ -87,8 +92,7 @@ public class CircuitBreakerTest {
 
     @Test
     public void shouldOnlyThrowViolationIfFailuresAreConsecutiveAndSleepPeriodIsViolated() throws FileNotFoundException, IOException, InterruptedException {
-        List<PatternStatementSubscriber> subscriberList = patternUtils.preparePatternWithMultipleSubscriber("CircuitBreaker");
-        PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, TIMEOUT_VIOLATION);
+        PatternStatementSubscriber subscriber = patternUtils.preparePattern("CircuitBreaker", PARAMETERS);
         // failures are not consecutive -> threshold not exceeded
         eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
         eventHandler.handle(httpSuccessEvent.getEvent(), httpSuccessEvent.getType());
@@ -111,8 +115,7 @@ public class CircuitBreakerTest {
 
     @Test
     public void differentiateByCircuitBreakerId() throws FileNotFoundException, IOException, InterruptedException {
-        List<PatternStatementSubscriber> subscriberList = patternUtils.preparePatternWithMultipleSubscriber("CircuitBreaker");
-        PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, TIMEOUT_VIOLATION);
+        PatternStatementSubscriber subscriber = patternUtils.preparePattern("CircuitBreaker", PARAMETERS);
 
         // no threshold exceeded as events from different Circuit Breaker
         eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
@@ -127,44 +130,6 @@ public class CircuitBreakerTest {
 
         // violate timeout
         eventHandler.handle(httpSuccessEvent.getEvent(), httpSuccessEvent.getType());
-        assertEquals(1, this.violationService.getViolationsFor(subscriber));
-    }
-
-    @Test
-    public void shouldNotThrowVioilationIfTimeoutIsAdhered() throws FileNotFoundException, IOException, InterruptedException {
-        List<PatternStatementSubscriber> subscriberList = patternUtils.preparePatternWithMultipleSubscriber("CircuitBreaker");
-        PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, TIMEOUT_VIOLATION);
-        Long delta = Math.round(circuitBreakerTimeOutInMilliseconds * 0.1);
-        // exceed threshold of consecutive failures
-        for (int i = 0; i <= functionCallFailureThreshold; i++) {
-            eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
-        }
-
-        // adhere to timeout
-        TimeUnit.MILLISECONDS.sleep(circuitBreakerTimeOutInMilliseconds + delta);
-        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
-        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
-        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
-        eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
-        assertEquals(0, this.violationService.getViolationsFor(subscriber)); // @todo fails on every third run
-    }
-
-    @Test
-    public void shouldThrowViolationIfCircuitBreakerDoesNotCloseAfterTimeout() throws FileNotFoundException, IOException, InterruptedException {
-        List<PatternStatementSubscriber> subscriberList = patternUtils.preparePatternWithMultipleSubscriber("CircuitBreaker");
-        PatternStatementSubscriber subscriber = patternUtils.getSubscriberByAnnotation(subscriberList, CLOSING_VIOLATION);
-        // exceed threshold of consecutive failures
-        for (int i = 0; i < 4 ; i++) {
-            eventHandler.handle(httpFailureEvent.getEvent(), httpFailureEvent.getType());
-        }
-
-        // adhere to timeout -> emits a TimeoutPeriodElapsedEvent
-        TimeUnit.MILLISECONDS.sleep(circuitBreakerTimeOutInMilliseconds);
-
-        // do not emit another HttpRequest with same serviceId within the given time frame after a TimeOutPeriodEvent --> emits a closing violation.
-        // Please note that this is just an indication for a possible closing violation. It could also be possible, that the remote function call wasn't invoked during this time.
-        TimeUnit.MILLISECONDS.sleep(expectedHttpRequestInterval + 1000);
-
         assertEquals(1, this.violationService.getViolationsFor(subscriber));
     }
 
