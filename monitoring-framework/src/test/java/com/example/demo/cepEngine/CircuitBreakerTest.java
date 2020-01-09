@@ -3,9 +3,7 @@ package com.example.demo.cepEngine;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import com.example.demo.cepEngine.handler.CEPEventHandler;
 import com.example.demo.cepEngine.handler.CEPStatementHandler;
@@ -13,7 +11,6 @@ import com.example.demo.cepEngine.service.StatementViolationService;
 import com.example.demo.cepEngine.subscriber.PatternStatementSubscriber;
 import com.example.demo.cepEngine.utils.EventTypeUtils;
 import com.example.demo.cepEngine.utils.PatternStatementUtils;
-
 import com.example.demo.model.EventInstance;
 import com.google.gson.Gson;
 import org.junit.Before;
@@ -40,10 +37,8 @@ public class CircuitBreakerTest {
     @Autowired
     private EventTypeUtils eventTypeUtils;
 
-
     private static final int functionCallFailureThreshold = 3;
     private static final int circuitBreakerTimeOutInMilliseconds = 1000;
-   
 
     private static final String FAILED_HTTP_REQUESTEVENT = "{'type': 'HttpRequestEvent', 'event' : {'serviceId': '1', 'statusCode': 'failed'}}";
     private static final String SUCCEDED_HTTP_REQUESTEVENT = "{'type': 'HttpRequestEvent', 'event' : {'serviceId': '1', 'statusCode': 'success'}}";
@@ -75,7 +70,6 @@ public class CircuitBreakerTest {
         httpSuccessEvent = g.fromJson(SUCCEDED_HTTP_REQUESTEVENT, EventInstance.class);
         httpFailureEventService2 = g.fromJson(FAILED_HTTP_REQUESTEVENT2, EventInstance.class);
     }
-
 
     @Test
     public void shouldThrowViolationIfCircuitBreakerDoesNotTripAfterThresholdExceededOrSleepPeriodIsViolated() throws IOException {
@@ -132,5 +126,4 @@ public class CircuitBreakerTest {
         eventHandler.handle(httpSuccessEvent.getEvent(), httpSuccessEvent.getType());
         assertEquals(1, this.violationService.getViolationsFor(subscriber));
     }
-
 }

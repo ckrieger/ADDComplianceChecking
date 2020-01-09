@@ -86,8 +86,4 @@ public class RateLimitingTest {
         }
         assertEquals(0, this.violationService.getViolationsFor(subscriber));
     }
-
-
-
-
 }
