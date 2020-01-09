@@ -1,6 +1,6 @@
 # ADDCompliance
 
-This repo contains the prototype for monitoring behavioral compliance of pattern-based architectural design decisions during runtime.
+This repo contains the prototype implemented within in the scope of the research paper "Monitoring Behavioral Compliance with Architectural Patterns based on Complex Event Processing".
 
 ## Overview
 
@@ -9,13 +9,10 @@ The Pattern Compliance Monitor is based on the Spring Framework and the Esper co
 An overview of the main components is shown below: 
 
 ![Overview of Components](docs/architecture.png)
-
-A repository was implemented that stores *Pattern Compliance Rules* each consisting of a pattern name and a set of EPL statements describing the order of events indicating a violation of the behavior described by the pattern.
-The stored EPl statements serve as configuration for the *CEP Engine* which is based on the Esper CEP engine.
-The collection of application events was implemented based on the RabbitMQ message broker.
-Applications can connect to broker and publish messages on a queue.
-The *Event Handler* consumes the messages and adds them to the event stream observed by the *CEP Engine*.
-Detected violations are displayed in the monitoring dashboard implemented within the *Web UI*.
+A *Web UI*, implemented using Angular, provides access to the functionality of the Pattern Compliance Monitor.
+The business logic layer comprises the five major components *CEP Engine*, *Violation Subscriber*, *Event Handler*, *PCR Manager*, and *Instrumentation Template Manager*. The CEP Engine implements a complex event processing engine based on the Esper CEP engine.
+The PCR Manager is responsible for retrieving application-agnostic Pattern Compliance Rules stored in the Pattern Compliance Rule repository, binding them to application-specific details, and configuring the CEP Engine using the resulting application-specific Pattern Compliance Rules. The collection of application events was implemented based on the RabbitMQ message broker.
+Applications can connect to broker and publish messages on a queue. The Event Handler consumes the messages and adds them to the event stream observed by the CEP Engine. The Violation Subscriber subscribes to the Pattern Compliance Rules used as configuration for the CEP engine and receives updates about compliance violations detected by the engine. The Instrumentation Template Manager is used to manage Instrumentation Templates stored in the Instrumentation Template Repository and to retrieve a set of Instrumentation Templates based on the chosen Pattern Compliance Rules and technology-specific details of the application to be monitored.
 
 For the test setup we created *Pattern Compliance Rules* for the three patterns **Rate Limiting**, **Watchdog**, and **Circuit Breaker**.
 
@@ -25,6 +22,9 @@ In order to simulate a running application emmiting a stream of events, we imple
 For each container image, we added a script that periodically sends messages containing information about the hosting environment to the running RabbitMQ instance.
 In addition we implemented a simple proxy that is deployed alongside the application, so that communication between application components always goes through the proxy.
 The proxy intercepts each HTTP request sent by an application component and emits a message containing the id of the sender and the status code of the request to indicate if the request failed or succeeded.
+
+In order to simulate a running application to-be monitored, we prototypically implemented a microservice application using Java. We used Java's aspect-oriented extension AspectJ for realizing unified logging of run-time events without modifying the application code itself. We created aspects for logging the run-time events described by the Pattern Compliance Rules, which were then woven into the application code. Advices in the aspects implemented the logging functionality and pointcuts associated with the advices defined the execution points at which the they should run. We used Logback as a logging framework and added a configuration for pushing all logs necessary for monitoring to the RabbitMQ message broker.
+
 
 ## Getting Started
 
