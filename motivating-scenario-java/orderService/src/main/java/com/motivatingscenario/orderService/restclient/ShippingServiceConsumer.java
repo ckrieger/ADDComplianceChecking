@@ -24,4 +24,5 @@ public class ShippingServiceConsumer {
               = restTemplate.getForEntity(fooResourceUrl + "/1", String.class);
       return response.getBody();
   }
+
 }
