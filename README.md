@@ -18,12 +18,7 @@ For the test setup we created *Pattern Compliance Rules* for the three patterns 
 
 ### Motivating Scenario (Example Application)
 
-In order to simulate a running application emmiting a stream of events, we implemented an exemplary microservice application and packaged each application component as a docker container image.
-For each container image, we added a script that periodically sends messages containing information about the hosting environment to the running RabbitMQ instance.
-In addition we implemented a simple proxy that is deployed alongside the application, so that communication between application components always goes through the proxy.
-The proxy intercepts each HTTP request sent by an application component and emits a message containing the id of the sender and the status code of the request to indicate if the request failed or succeeded.
-
-In order to simulate a running application to-be monitored, we prototypically implemented a microservice application using Java. We used Java's aspect-oriented extension AspectJ for realizing unified logging of run-time events without modifying the application code itself. We created aspects for logging the run-time events described by the Pattern Compliance Rules, which were then woven into the application code. Advices in the aspects implemented the logging functionality and pointcuts associated with the advices defined the execution points at which the they should run. We used Logback as a logging framework and added a configuration for pushing all logs necessary for monitoring to the RabbitMQ message broker.
+In order to simulate a running application to-be monitored, we prototypically implemented a microservice application using Java and packaged each application component as a docker container image. We used Java's aspect-oriented extension AspectJ for realizing unified logging of run-time events without modifying the application code itself. We created aspects for logging the run-time events described by the Pattern Compliance Rules, which were then woven into the application code. Advices in the aspects implemented the logging functionality and pointcuts associated with the advices defined the execution points at which the they should run. We used Logback as a logging framework and added a configuration for pushing all logs necessary for monitoring to the RabbitMQ message broker.
 
 
 ## Getting Started
