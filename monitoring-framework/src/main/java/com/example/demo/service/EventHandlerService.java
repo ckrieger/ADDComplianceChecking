@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import com.example.demo.model.EventType;
 import com.example.demo.model.EventTypeProperty;
 import com.example.demo.repository.EventTypeRepository;
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.rabbitmq.client.DeliverCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +34,10 @@ public class EventHandlerService {
     public DeliverCallback deliverCallback = (consumerTag, delivery) -> {
         String message = new String(delivery.getBody(), "UTF-8");
         Gson g = new Gson();
+        message = message.replaceAll("/", "");
 
         if(!useHardcodedMessageTypes){
-            EventInstance eventInstance = g.fromJson(message, EventInstance.class);
+            EventInstance eventInstance = g.fromJson(message.trim(), EventInstance.class);
             eventHandler.handle(eventInstance.getEvent(), eventInstance.getType());
         } else {
             // hardcoded checking for message type

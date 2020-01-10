@@ -1,8 +1,8 @@
 {
   "id": null,
   "name": "motivation-scenario",
-  "queueHost": "rabbitmq",
-  "queueName": "applicationEvents",
+  "queueHost": "localhost",
+  "queueName": "event-logs-queue",
   "patternInstances": [
     {
       "id": null,
@@ -35,7 +35,7 @@
         },
         {
           "id": null,
-          "key": "timeoutDuration",
+          "key": "timeout",
           "value": "10000"
         }
       ],

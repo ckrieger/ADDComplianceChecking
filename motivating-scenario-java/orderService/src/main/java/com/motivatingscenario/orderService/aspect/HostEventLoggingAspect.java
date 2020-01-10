@@ -20,7 +20,7 @@ public class HostEventLoggingAspect {
 
     class Task extends TimerTask{
         public void run(){
-            logger.info("{ type: VirtualMachine, event: {vmId: " + getVMId() + ", scalingGroupId:" + getScalingGroup() + "}}");
+            logger.info("{type:VirtualMachine, event:{vmId:" + getVMId() + ", scalingGroupId:" + getScalingGroup() + "}}");
         }
     }
 

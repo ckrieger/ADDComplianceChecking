@@ -11,7 +11,7 @@
 
     <appender name="AMQP" class="org.springframework.amqp.rabbit.logback.AmqpAppender">
         <layout>
-            <pattern><![CDATA[ %d %p %t [%c] - <%m>%n ]]></pattern>
+            <pattern>%m</pattern>
         </layout>
         <exchangeName>my-exchange</exchangeName>
         <host>localhost</host>

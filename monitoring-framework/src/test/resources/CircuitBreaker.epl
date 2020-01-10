@@ -1,6 +1,6 @@
-create context SegmentedByCircuitBreaker partition by serviceId from HttpRequestEvent;
+create context SegmentedByCB partition by serviceId from HttpRequestEvent;
 
-context SegmentedByCircuitBreaker insert into FailureRateExcessEvent select * from HttpRequestEvent.win:length(${failureThreshold} + 1) where statusCode = "failed" having count(*) > ${failureThreshold};
+context SegmentedByCB insert into FailureRateExcessEvent select * from HttpRequestEvent.win:length(${failureThreshold} + 1) where statusCode = "failed" having count(*) > ${failureThreshold};
 
 @Name('Timeout Violation')select httpEvent.serviceId as serviceId from pattern [every (fe = FailureRateExcessEvent -> httpEvent=HttpRequestEvent(httpEvent.serviceId = fe.serviceId) where timer:within(${timeout} msec))];
 

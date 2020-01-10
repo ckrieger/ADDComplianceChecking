@@ -31,7 +31,7 @@ public class HttpEventLoggingAspect {
             throws Throwable {
         // log 404 not found exceptions
         if (ex instanceof HttpClientErrorException.NotFound) {
-            logger.info("{ type: HttpRequestEvent, event: {serviceId: " + InetAddress.getLocalHost() + ", statusCode: 404}}");
+            logger.info("{ type: HttpRequestEvent, event: {serviceId: " + InetAddress.getLocalHost() + ", statusCode: failed}}");
         }
     }
 }

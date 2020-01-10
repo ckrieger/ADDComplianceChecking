@@ -1,0 +1,19 @@
+version: '3'
+services:
+  order-service:
+    hostname: "orderService-{{.Task.ID}}"
+    image: ckrieger/order-service-java:latest
+    ports:
+      - "5000:5000"
+    restart: always
+    depends_on:
+      - rabbitmq
+    deploy:
+      mode: replicated
+      replicas: 2
+  rabbitmq:
+    hostname: "my-rabbit"
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"

@@ -20,4 +20,9 @@ public class HomeController {
         shippingServiceConsumer.get();
         return "Hello Shafique!";
     }
+
+    @GetMapping("/health")
+    public String health(){
+        return "OrderSerice healthy";
+    }
 }
