@@ -1,0 +1,19 @@
+#spring:
+#  main:
+#    allow-bean-definition-overriding: true
+
+zuul:
+  routes:
+    serviceTestRateLimit:
+      path: /api/testRateLimit
+      url: forward:/
+  ratelimit:
+    enabled: true
+    repository: JPA
+    policy-list:
+      serviceTestRateLimit:
+        - limit: 5
+          refresh-interval: 60
+          type:
+            - origin
+  strip-prefix: true
