@@ -24,9 +24,16 @@ public class ShippingServiceConsumer {
   }
 
   public String get(){
-      String fooResourceUrl = "http://" + host + ":" + port +"/api/shippingInfos";
+      String resourceUrl = "http://" + host + ":" + port +"/api/shippingInfos";
       ResponseEntity<String> response
-              = restTemplate.getForEntity(fooResourceUrl, String.class);
+              = restTemplate.getForEntity(resourceUrl, String.class);
+      return response.getBody();
+  }
+
+  public String testRateLimit(){
+      String resourceUrl = "http://" + host + ":" + port +"/api/testRateLimit";
+      ResponseEntity<String> response
+              = restTemplate.getForEntity(resourceUrl, String.class);
       return response.getBody();
   }
 

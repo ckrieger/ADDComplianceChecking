@@ -26,7 +26,6 @@ public class HeartbeatLoggingAspect {
 
     @After("execution(* com.motivatingscenario.orderService.OrderServiceApplication.*(..))")
     public void logAfterReturning(JoinPoint joinPoint) {
-        System.out.println("Advice");
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new Task(), 0, 3000);
     }

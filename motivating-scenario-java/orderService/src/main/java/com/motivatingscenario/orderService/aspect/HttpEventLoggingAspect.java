@@ -10,16 +10,16 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 @Aspect
 @Configuration
-public class HttpEventLoggingForCircuitBreakerAspect {
-    private static final Logger logger = LoggerFactory.getLogger(HttpEventLoggingForCircuitBreakerAspect.class);
+public class HttpEventLoggingAspect {
+    private static final Logger logger = LoggerFactory.getLogger(HttpEventLoggingAspect.class);
 
     @AfterReturning(
-            pointcut = "execution(* com.motivatingscenario.orderService.restclient.ShippingServiceConsumer.get(..))",
+            pointcut = "execution(* com.motivatingscenario.orderService.restclient.*.*(..))",
             returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) throws UnknownHostException {
         logger.info("{ type: HttpRequestEvent, event: {serviceId: " + InetAddress.getLocalHost() + ", statusCode: success}}");
@@ -28,10 +28,10 @@ public class HttpEventLoggingForCircuitBreakerAspect {
     @AfterThrowing(
             pointcut = "execution(* com.motivatingscenario.orderService.restclient.*.*(..))",
             throwing = "ex")
-    public void logAfterThrowing(HttpStatusCodeException ex)
+    public void logAfterThrowing(Exception ex)
             throws Throwable {
-        // log 404 not found exceptions
-        if (ex instanceof HttpClientErrorException.NotFound) {
+
+        if (ex instanceof HttpServerErrorException|| ex instanceof ResourceAccessException) {
             logger.info("{ type: HttpRequestEvent, event: {serviceId: " + InetAddress.getLocalHost() + ", statusCode: failed}}");
         }
     }

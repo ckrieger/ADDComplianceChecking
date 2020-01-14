@@ -21,6 +21,12 @@ public class HomeController {
         return "Orders with shipping info";
     }
 
+    @GetMapping("/testRateLimit")
+    public String testRateLimit(){
+        shippingServiceConsumer.testRateLimit();
+        return "Test Rate Limit";
+    }
+
     @GetMapping("/health")
     public String health() {
         return "OrderSerice healthy";
