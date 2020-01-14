@@ -1,2 +1,2 @@
-@Name('Rate Limiting Violation') select count(*) from HttpRequestEvent().win:time_batch(${interval} sec) where statusCode = '200' group by serviceId having count(*) > ${requestLimit};
+@Name('Rate Limiting Violation') select count(*) from HttpRequestEvent().win:time_batch(${interval} sec) where statusCode = 'success' group by serviceId having count(*) > ${requestLimit};
 

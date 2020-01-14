@@ -97,7 +97,7 @@
 				<artifactId>dockerfile-maven-plugin</artifactId>
 				<version>1.4.9</version>
 				<configuration>
-					<repository>${docker.image.prefix}/order-service-java</repository>
+					<repository>${docker.image.prefix}/shipping-service-java</repository>
 				</configuration>
 			</plugin>
 		</plugins>

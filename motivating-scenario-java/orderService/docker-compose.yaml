@@ -1,6 +1,6 @@
 version: '3'
 services:
-  order-service:
+  orderService:
     hostname: "orderService-{{.Task.ID}}"
     image: ckrieger/order-service-java:latest
     ports:
@@ -11,6 +11,17 @@ services:
     deploy:
       mode: replicated
       replicas: 2
+  shippingService:
+    hostname: "shippingService-{{.Task.ID}}"
+    image: ckrieger/shipping-service-java:latest
+    ports:
+      - "5050:5050"
+    restart: always
+    depends_on:
+      - rabbitmq
+    deploy:
+      mode: replicated
+      replicas: 1
   rabbitmq:
     hostname: "my-rabbit"
     image: rabbitmq:3-management

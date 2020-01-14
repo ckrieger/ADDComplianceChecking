@@ -17,7 +17,7 @@
         {
           "id": null,
           "key": "scalingGroupId",
-          "value": "inventoryService"
+          "value": "orderService"
         }
       ],
       "isActive": false,
@@ -44,13 +44,18 @@
     },
     {
       "id": null,
-      "name": "StaticWorkload",
-      "constraintStatement": "create schema FirstEvent(value double); create window FirstEventWin.win:length(1) as FirstEvent; insert into FirstEvent select firstEvent.cpu as value from pattern [ firstEvent=VirtualMachine]; create variable double variation = \"${variation}\"; @Name('StaticWorkload Violation')select * from VirtualMachine.win:length(1) n, FirstEvent.win:length(1) fe having cpu > fe.value + variation or cpu < fe.value - variation;",
+      "name": "RateLimiting",
+      "constraintStatement": "",
       "variables": [
         {
           "id": null,
-          "key": "variation",
-          "value": "0.1"
+          "key": "interval",
+          "value": "60"
+        },
+        {
+          "id": null,
+          "key": "requestLimit",
+          "value": "4"
         }
       ],
       "isActive": false,
