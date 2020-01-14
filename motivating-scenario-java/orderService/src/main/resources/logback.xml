@@ -33,12 +33,12 @@
     </root>
 
     <!-- LOG everything from HostEventLoggingAspect to rabbitMQ -->
-    <logger name="com.motivatingscenario.orderService.aspect.HostEventLoggingAspect" level="info" additivity="false">
+    <logger name="com.motivatingscenario.orderService.aspect.HeartbeatLoggingAspect" level="info" additivity="false">
         <appender-ref ref="AMQP" />
     </logger>
 
     <!-- LOG everything from HttpEventLoggingAspect to rabbitMQ -->
-    <logger name="com.motivatingscenario.orderService.aspect.HttpEventLoggingAspect" level="info" additivity="false">
+    <logger name="com.motivatingscenario.orderService.aspect.HttpEventLoggingForCircuitBreakerAspect" level="info" additivity="false">
         <appender-ref ref="AMQP" />
     </logger>
 

@@ -14,9 +14,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Aspect
 @Configuration
-public class HostEventLoggingAspect {
+public class HeartbeatLoggingAspect {
 
-    private  static final Logger logger = LoggerFactory.getLogger(HostEventLoggingAspect.class);
+    private  static final Logger logger = LoggerFactory.getLogger(HeartbeatLoggingAspect.class);
 
     class Task extends TimerTask{
         public void run(){

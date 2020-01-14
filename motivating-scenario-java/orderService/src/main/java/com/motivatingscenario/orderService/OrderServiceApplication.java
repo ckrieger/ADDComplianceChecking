@@ -1,6 +1,5 @@
 package com.motivatingscenario.orderService;
 
-import com.motivatingscenario.orderService.aspect.HostEventLoggingAspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;

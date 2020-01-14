@@ -1,6 +1,7 @@
 package com.motivatingscenario.orderService.aspect;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -14,14 +15,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 @Aspect
 @Configuration
-public class HttpEventLoggingAspect {
-    private static final Logger logger = LoggerFactory.getLogger(HttpEventLoggingAspect.class);
+public class HttpEventLoggingForCircuitBreakerAspect {
+    private static final Logger logger = LoggerFactory.getLogger(HttpEventLoggingForCircuitBreakerAspect.class);
 
     @AfterReturning(
             pointcut = "execution(* com.motivatingscenario.orderService.restclient.ShippingServiceConsumer.get(..))",
             returning = "result")
-    public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        logger.info("after execution of {}", joinPoint);
+    public void logAfterReturning(JoinPoint joinPoint, Object result) throws UnknownHostException {
+        logger.info("{ type: HttpRequestEvent, event: {serviceId: " + InetAddress.getLocalHost() + ", statusCode: success}}");
     }
 
     @AfterThrowing(

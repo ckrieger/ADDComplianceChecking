@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class HomeController {
-    private  static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
     @Autowired
     ShippingServiceConsumer shippingServiceConsumer;
 
-    @GetMapping("/hello")
-    public String hello(){
+    @GetMapping("/orders")
+    public String getOrdersWithShippingInfo() {
         shippingServiceConsumer.get();
-        return "Hello Shafique!";
+        return "Orders with shipping info";
     }
 
     @GetMapping("/health")
-    public String health(){
+    public String health() {
         return "OrderSerice healthy";
     }
 }
