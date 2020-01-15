@@ -1,49 +1,35 @@
 version: '3'
 services:
-  inventory-service:
-    hostname: "inventoryService-{{.Task.ID}}"
-    image: ckrieger/inventory-service:latest
-    volumes: 
-     - "loggingvolume:/loggingvolume/"
+  orderService:
+    hostname: "orderService-{{.Task.ID}}"
+    image: ckrieger/order-service-java:latest
     ports:
-     - "5000:5000"
-    restart: always 
-    depends_on: 
-     - rabbitmq 
-    deploy: 
+      - "5000:5000"
+    restart: always
+    depends_on:
+      - rabbitmq
+    deploy:
       mode: replicated
-      replicas: 2
-  shipping-service:
+      replicas: 1
+  shippingService:
     hostname: "shippingService-{{.Task.ID}}"
-    image: ckrieger/shipping-service:latest
-    volumes: 
-     - "loggingvolume:/loggingvolume/"
-    ports: 
-     - "8088:8088"
-    restart: always 
-    depends_on: 
-     - rabbitmq 
-  log-collector-sidecar:
-    hostname: "logCollectorSidecar"
-    image: ckrieger/log-collector:latest
-    volumes: 
-     - "loggingvolume:/loggingvolume/"
+    image: ckrieger/shipping-service-java:latest
     ports:
-     - "5050:5050"
-    depends_on: 
-     - "rabbitmq"    
+      - "5050:5050"
+    restart: always
+    depends_on:
+      - rabbitmq
+    deploy:
+      mode: replicated
+      replicas: 1
   rabbitmq:
     hostname: "my-rabbit"
     image: rabbitmq:3-management
     ports:
-     - "9090:15672"
-     - "5672:5672"
+      - "15672:15672"
+      - "5672:5672"
   monitoring-framework:
     hostname: "monitoring-framework"
-    image: ckrieger/monitoring-framework:latest  
-    ports: 
+    image: ckrieger/monitoring-framework:latest
+    ports:
       - "8080:8080"
-volumes:
- loggingvolume:         
-
-      
