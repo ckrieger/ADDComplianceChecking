@@ -114,3 +114,5 @@ Test the Rate Limiting PCR by executing the following steps:
 3. Exceed the request limit by sending at least five requests within 20 seconds to the REST API route `localhost:5000/api/testRateLimit`
 
 4. After the interval of 20 seconds is elapsed, the application-agnostic Rate Limiting PCR will be displayed as **violated**.
+
+![](docs/ratelimiting.gif)
