@@ -1,7 +1,7 @@
 <mat-card>
-  <mat-card-title><h3>Patterns</h3></mat-card-title>
+  <mat-card-title><h3>Pattern Compliance Rules</h3></mat-card-title>
   <div class="right-flex">
-    <button mat-flat-button color="primary" [routerLink]="['/pattern-edit']">Add pattern</button>
+    <button mat-flat-button color="primary" [routerLink]="['/pattern-edit']">Add PCR</button>
   </div>
 </mat-card>
 <mat-accordion *ngFor="let pattern of patterns | sortBy:'asc':'name'">

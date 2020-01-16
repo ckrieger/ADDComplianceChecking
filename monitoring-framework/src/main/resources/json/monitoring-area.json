@@ -1,7 +1,7 @@
 {
   "id": null,
   "name": "motivation-scenario",
-  "queueHost": "localhost",
+  "queueHost": "rabbitmq",
   "queueName": "event-logs-queue",
   "patternInstances": [
     {
@@ -50,7 +50,7 @@
         {
           "id": null,
           "key": "interval",
-          "value": "60"
+          "value": "20"
         },
         {
           "id": null,

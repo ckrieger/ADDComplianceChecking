@@ -18,7 +18,7 @@
         </span>
         <div class="info-text">
           <mat-icon>info</mat-icon> Queue Host defines the host the broker is running on.
-          Change to localhost if the monitor is not started via docker-compose
+          Change to localhost if the monitor is not started via docker-compose.
         </div>
       </mat-toolbar-row>
       <mat-toolbar-row>
@@ -46,7 +46,7 @@
 </mat-card>
 
 <mat-card class="card-pattern-list">
-  <mat-card-title>Pattern Instances</mat-card-title>
+  <mat-card-title>application-specific Pattern Compliance Rules</mat-card-title>
     <mat-card-content>
       <mat-list *ngFor="let patternInstance of orderByName(monitoringArea?.patternInstances)" class="horizontal-spaced-item">
         <mat-toolbar>

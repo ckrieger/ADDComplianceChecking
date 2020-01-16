@@ -4,6 +4,8 @@ This repo contains the prototype implemented within in the scope of the research
 
 ## Overview
 
+**Please use Chrome for accessing the protoype. For some reason other browsers throw a regexgroup exception.** 
+
 ### Pattern Compliance Monitor (Monitoring Framework)
 The Pattern Compliance Monitor is based on the Spring Framework and the Esper complex event processing runtime. 
 An overview of the main components is shown below: 
@@ -95,3 +97,20 @@ Test the Circuit Breaker PCR by executing the following steps:
 7. The application-agnostic Circuit Breaker PCR will be displayed as **violated** as the defined timeout was not adhered to. This indicates a non-compliance to the Circuit Breaker pattern.
 
 ![](docs/circuitbreaker_walkthrough.gif)
+
+### Rate Limiting 
+Test the Rate Limiting PCR by executing the following steps:
+
+1. Scale **orderService** and **shippingService** to one instance each:
+
+     `docker service scale motivation-scenario_orderService=1`
+
+     `docker service scale motivation-scenario_shippingService=1`
+
+2. Start the monitor with the application-specific Rate Limiting PCR that has a **requestLimit** of 4 and an **interval** of 60 seconds
+
+2. Invoke the REST API route `localhost:5000/api/testRateLimit`. This executes a request to the **shippingService**. The API of the **shippingService** implements rate-limiting, however the request limit per second does not comply with the limit defined in the Rate Limiting PCR. Let's test if the Compliance Monitor detects this violation.
+
+3. Exceed the request limit by sending at least five requests within 60 seconds to the REST API route `localhost:5000/api/testRateLimit`
+
+4. After the interval of 60 seconds is elapsed, the application-agnostic Rate Limiting PCR will be displayed as **violated**.
