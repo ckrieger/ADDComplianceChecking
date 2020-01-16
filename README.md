@@ -107,10 +107,10 @@ Test the Rate Limiting PCR by executing the following steps:
 
      `docker service scale motivation-scenario_shippingService=1`
 
-2. Start the monitor with the application-specific Rate Limiting PCR that has a **requestLimit** of 4 and an **interval** of 60 seconds
+2. Start the monitor with the application-specific Rate Limiting PCR that has a **requestLimit** of 4 and an **interval** of 20 seconds
 
 2. Invoke the REST API route `localhost:5000/api/testRateLimit`. This executes a request to the **shippingService**. The API of the **shippingService** implements rate-limiting, however the request limit per second does not comply with the limit defined in the Rate Limiting PCR. Let's test if the Compliance Monitor detects this violation.
 
-3. Exceed the request limit by sending at least five requests within 60 seconds to the REST API route `localhost:5000/api/testRateLimit`
+3. Exceed the request limit by sending at least five requests within 20 seconds to the REST API route `localhost:5000/api/testRateLimit`
 
-4. After the interval of 60 seconds is elapsed, the application-agnostic Rate Limiting PCR will be displayed as **violated**.
+4. After the interval of 20 seconds is elapsed, the application-agnostic Rate Limiting PCR will be displayed as **violated**.
