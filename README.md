@@ -4,7 +4,7 @@ This repo contains the prototype implemented within in the scope of the research
 
 ## Overview
 
-**Please use Chrome for accessing the protoype. For some reason other browsers throw a regexgroup exception.** 
+**Please use Chrome for accessing the protoype. For some reason other browsers throw a regexgroup exception due to some problems in the Angular application.** 
 
 ### Pattern Compliance Monitor (Monitoring Framework)
 The Pattern Compliance Monitor is based on the Spring Framework and the Esper complex event processing runtime. 
@@ -24,6 +24,8 @@ In order to simulate a running application to-be monitored, we prototypically im
 
 
 ## Getting Started
+
+**Please use Chrome for accessing the protoype. For some reason other browsers throw a regexgroup exception due to some problems in the Angular application.** 
 
 ### Run via Docker Swarm
 The fastest way to get the monitoring framework and the motivating-scenario up and running is via the docker compose file located in the root folder. Just execute: 
