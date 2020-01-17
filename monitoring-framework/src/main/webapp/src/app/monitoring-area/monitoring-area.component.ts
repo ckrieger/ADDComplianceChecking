@@ -137,14 +137,25 @@ export class MonitoringAreaComponent implements OnInit {
 
   private getVariablesOfConstraintStatement(constraintStatement: string){
     let variables = [];
-    let regexp = /(?<=\${).+?(?=\})/g
+    let regexp = /\${(.*?)\}/g
+    //let regexp = /(?<=\${).+?(?=\})/g
+
     let results = constraintStatement.match(regexp);
     results.forEach( result => {
-        variables.push({key: result, value: ''})
+        let resultWithoutBrackets = result.replace('${', '');
+        resultWithoutBrackets = resultWithoutBrackets.replace('}', '');
+        if (!this.isInArray(variables, resultWithoutBrackets)){
+          variables.push({key: resultWithoutBrackets, value: ''})
+        }
       }
     );
     return variables;
   }
+
+  private isInArray(array, key) {
+    return array.find(el => el.key == key);
+  }
+
 
   private deletePatternInstance(patternInstance: PatternInstance){
     let patternInstances = this.monitoringArea.patternInstances;
