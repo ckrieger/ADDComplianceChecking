@@ -3,7 +3,7 @@
 This repo contains the prototype implemented within in the scope of the research paper "Monitoring Behavioral Compliance with Architectural Patterns based on Complex Event Processing".
 
 ## Overview
-
+![Overview of Components](docs/technologies.png)
 ### Pattern Compliance Monitor (Monitoring Framework)
 The Pattern Compliance Monitor is based on the Spring Framework and the Esper complex event processing runtime. 
 An overview of the main components is shown below: 
